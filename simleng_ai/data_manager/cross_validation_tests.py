@@ -1,12 +1,11 @@
-     
-    #================================================================================
-    # CHECKING HERE TESTING MODEL AND BACK SCORES OF THEM
-    #print("== Logistic Ridge (L2 penalty) ==")
-    #model = lm.LogisticRegressionCV(class_weight='balanced', scoring=balanced_acc, n_jobs=-1)
-    # Let sklearn select a list of alphas with default LOO-CV (N=K)
-    #scores = cross_val_score(estimator=model, X=X, y=y, cv=5)
-    #print("Test ACC:%.2f" % scores.mean())
-    #===============================================================================
+# ================================================================================
+# CHECKING HERE TESTING MODEL AND BACK SCORES OF THEM
+# print("== Logistic Ridge (L2 penalty) ==")
+# model = lm.LogisticRegressionCV(class_weight='balanced', scoring=balanced_acc, n_jobs=-1)
+# Let sklearn select a list of alphas with default LOO-CV (N=K)
+# scores = cross_val_score(estimator=model, X=X, y=y, cv=5)
+# print("Test ACC:%.2f" % scores.mean())
+# ===============================================================================
 
 '''
     def cross_validation_classification():
@@ -211,3 +210,4 @@
             plt.tight_layout()
             plt.show()
     
+'''

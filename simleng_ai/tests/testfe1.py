@@ -9,9 +9,9 @@ Created on Wed Jul  5 15:03:55 2023
 import pandas as pd
 from ..data_manager.feature_eng import Correlation
 
-filename='/home/delta/Downloads/DATASETS/pimas/pima-indians-diabetes.csv'
-df=pd.read_csv(filename)
-columns=df.columns[:-1]
+filename = "/home/delta/Downloads/DATASETS/pimas/pima-indians-diabetes.csv"
+df = pd.read_csv(filename)
+columns = df.columns[:-1]
 """
 runfile('/home/delta/Downloads/simleng_ai/testfe1.py', wdir='/home/delta/Downloads/simleng_ai')
 
@@ -27,8 +27,8 @@ Out[4]:
 3      1   89  66    23   94  28.1  0.167   21     0
 4      0  137  40    35  168  43.1  2.288   33     1
 """
-cr=Correlation(df,columns)
-#Test correlation_training
+cr = Correlation(df, columns)
+# Test correlation_training
 cr.correlation_training()
 
 """
@@ -67,9 +67,10 @@ Treshold value , correlation=0.90
 The predictors are slightly correlationed
 """
 from ..data_manager.feature_eng import PCA
-pc=PCA(df,5).pca_draw_major_minor_factors('None')
 
-pq=PCA(df,5).pca_show_table()
+pc = PCA(df, 5).pca_draw_major_minor_factors("None")
+
+pq = PCA(df, 5).pca_show_table()
 
 """
               Eigenvalues in descending order               
@@ -88,9 +89,9 @@ pq=PCA(df,5).pca_show_table()
 ╘════╧══════════════╧═══════════╧═══════════════╛
 """
 
-pr=PCA(df,5).pca_draw_by_components()
+pr = PCA(df, 5).pca_draw_by_components()
 
-pn=PCA(df,8).pca_transformation()
+pn = PCA(df, 8).pca_transformation()
 """
 print(pn)
          npreg        glu         bp  ...       bmi       ped       age
@@ -109,11 +110,13 @@ print(pn)
 [768 rows x 8 columns]
 """
 from ..data_manager.feature_eng import SVD
+
 SVD.svd()
 
 from ..data_manager.feature_eng import Best_features_filter
-columns=df.columns[:-1]
-Best_features_filter(df[columns],columns,10).variance_influence_factors()
+
+columns = df.columns[:-1]
+Best_features_filter(df[columns], columns, 10).variance_influence_factors()
 """
 Variance Influence Factors
          VIF Factor
@@ -128,8 +131,8 @@ npreg         3.276
  ins          2.064
 The following features are collinears: bmi,glu,bp,age
 """
-pt=Best_features_filter(df[columns],columns,0.95).show_best_pca_predictors()
+pt = Best_features_filter(df[columns], columns, 0.95).show_best_pca_predictors()
 """
 ['npreg', 'glu', 'bp', 'skin', 'ins', 'ped']
 """
-from  ..data_manager.feature_eng import Best_features_wrap
+from ..data_manager.feature_eng import Best_features_wrap

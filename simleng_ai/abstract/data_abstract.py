@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -6,13 +5,22 @@ Created on Sat Jun 17 18:17:39 2023
 
 @author: delta
 """
-from abc import ABC, abstractmethod, abstractclassmethod, abstractstaticmethod, abstractproperty
-#,update_abstractmethods
+from abc import (
+    ABC,
+    abstractmethod,
+    abstractclassmethod,
+    abstractstaticmethod,
+    abstractproperty,
+)
+
+# ,update_abstractmethods
+
 
 class DATA(ABC):
     @abstractmethod
     def data_generation_from_table(self):
         pass
+
     """
     @abstractmethod
     def data_generation_from_cloud(self, arg1):

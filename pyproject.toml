@@ -40,10 +40,10 @@ namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 [tool.setuptools.dynamic]
 #version = {attr = "simleng.__version__"}
 
-[versioneer]
-VCS=git
-style = pep440
-versionfile_source = simleng_ai/_version.py
-versionfile_build = simleng_ai/_version.py
-tag_prefix =
-parentdir_prefix =
+#[versioneer]
+#VCS= Git
+#style = pep440
+#versionfile_source = simleng_ai/_version.py
+#versionfile_build = simleng_ai/_version.py
+#tag_prefix =
+#parentdir_prefix =
