@@ -1,0 +1,41 @@
+	[build-system]
+requires=["setuptools","importlib.metadata"]							
+build-backend="setuptools.build_meta"
+
+#configuring metadata
+[metadata]
+#version = "attr: simleng.__version__"
+
+[project]
+name="simlemg_ai"
+dynamic=["version"]
+authors=[{name="Ph.D. Ruperto Pedro Bonet Chaple", email="ruperto.bonet@modelphysmat.com"}]
+#version="0.0.1"
+description="A module to develop Data_Analysis starategies"
+readme="Readme.md"
+requires-python = ">=3.8"
+classifiers = [
+"Programming Language :: Python :: 3",
+# License, see https://choosealicense.com
+#"License :: OSI Approved :: MIT License",
+"Operating System :: OS Independent",
+]
+#dynamic=["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/sednabcn/simleng_ai"
+"Bug Tracker" = "https://github.com/sednabcn/simleng_ai/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["backup"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+#py-modules=[]
+[tool.setuptools]
+# intentionally empty/commented out
+# write_to option leads to an unclean workspace during build
+# which again is leading setuptools to interpret this during build and producing wheels with unclean version numbers
+# write_to = "version.txt"
+[tool.setuptools.dynamic]
+#version = {attr = "simleng.__version__"}

@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: simlemg-ai
+Version: 0.0.1
+Summary: A module to develop Data_Analysis starategies
+Home-page: ['https://github.com/sednabcn/simleng_ai', 'https://github.com/sednabcn/simleng_ai/issues']
+Author: Ruperto Pedro Bonet Chaple
+Author-email: "Ph.D. Ruperto Pedro Bonet Chaple" <ruperto.bonet@modelphysmat.com>
+License: MIT
+Project-URL: Homepage, https://github.com/sednabcn/simleng_ai
+Project-URL: Bug Tracker, https://github.com/sednabcn/simleng_ai/issues
+Keywords: simleng data_analisys setuptools development
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Example Package
+This is a simple example package. You can use
+[Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+to write your content

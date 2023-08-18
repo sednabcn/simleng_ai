@@ -1,0 +1,23 @@
+[build-system]
+requires=["setuptools"]
+build-backend="setuptools.build_meta"
+
+#configuring metadata
+
+[project]
+name="simlemg_ai"
+version="0.0.1"
+authors=[{name="Ph.D. Ruperto Pedro Bonet Chaple", email="ruperto.bonet@modelphysmat.com"}]
+description="A module to develop Data_Analysis starategies"
+readme="Readme.md"
+requires-python = ">=3.8"
+classifiers = [
+"Programming Language :: Python :: 3",
+# License, see https://choosealicense.com
+#"License :: OSI Approved :: MIT License",
+"Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/sednabcn/simleng_ai"
+"Bug Tracker" = "https://github.com/sednabcn/simleng_ai/issues"
