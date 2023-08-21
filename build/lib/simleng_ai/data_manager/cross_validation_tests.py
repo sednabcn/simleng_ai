@@ -1,15 +1,13 @@
-     
-    #================================================================================
-    # CHECKING HERE TESTING MODEL AND BACK SCORES OF THEM
-    #print("== Logistic Ridge (L2 penalty) ==")
-    #model = lm.LogisticRegressionCV(class_weight='balanced', scoring=balanced_acc, n_jobs=-1)
-    # Let sklearn select a list of alphas with default LOO-CV (N=K)
-    #scores = cross_val_score(estimator=model, X=X, y=y, cv=5)
-    #print("Test ACC:%.2f" % scores.mean())
-    #===============================================================================
-
-'''
-    def cross_validation_classification():
+# ================================================================================
+# CHECKING HERE TESTING MODEL AND BACK SCORES OF THEM
+# print("== Logistic Ridge (L2 penalty) ==")
+# model = lm.LogisticRegressionCV(class_weight='balanced', scoring=balanced_acc, n_jobs=-1)
+# Let sklearn select a list of alphas with default LOO-CV (N=K)
+# scores = cross_val_score(estimator=model, X=X, y=y, cv=5)
+# print("Test ACC:%.2f" % scores.mean())
+# =============================================================================
+"""
+def cross_validation_classification():
         
         X, y = datasets.make_classification(n_samples=100, n_features=100,
                                             n_informative=10, random_state=42)
@@ -36,7 +34,7 @@
         scores = cross_val_score(estimator=model, X=X, y=y, cv=5)
         scores.mean()
         # provide CV and score
-    def balanced_acc(estimator, X, y):
+def balanced_acc(estimator, X, y):
             
             Balanced acuracy scorer
             
@@ -67,7 +65,7 @@
                scores = cross_val_score(estimator=model, X=X, y=y, cv=cv)
                print("Test r2:%.2f" % scores.mean())
 
-    def cross_validation_regression():
+def cross_validation_regression():
         # Dataset
         X, y, coef = datasets.make_regression(n_samples=50, n_features=100,
                                               noise=10,
@@ -129,7 +127,7 @@
            scores = cross_val_score(estimator=model, X=X, y=y, cv=cv)
            print("Test r2:%.2f" % scores.mean())
 
-    def cross_model_selection_bic():
+def cross_model_selection_bic():
         
         iris = datasets.load_iris()
 
@@ -149,7 +147,7 @@
             print("Choose k=", k_chosen)
             plt.show()
 
-    def fit_on_increasing_size(model):
+def fit_on_increasing_size(model):
         n_samples = 100
         n_features_ = np.arange(10, 800, 20)
         r2_train, r2_test, snr = [], [], []
@@ -175,10 +173,10 @@
             r2_test.append(metrics.r2_score(ytest, y_pred_test))
             return n_features_, np.array(r2_train), np.array(r2_test), np.array(snr)
 
-    def plot_r2_snr(n_features_, r2_train, r2_test, xvline, snr, ax):
-        """
+def plot_r2_snr(n_features_, r2_train, r2_test, xvline, snr, ax):
+        
         #Two scales plot. Left y-axis: train test r-squared. Right y-axis SNR.
-        """
+        
         ax.plot(n_features_, r2_train, label="Train r-squared", linewidth=2)
         ax.plot(n_features_, r2_test, label="Test r-squared", linewidth=2)
         ax.axvline(x=xvline, linewidth=2, color='k', ls='--')
@@ -210,4 +208,5 @@
             snr[n_features <= 100],axis[1])
             plt.tight_layout()
             plt.show()
-    
+"""    
+

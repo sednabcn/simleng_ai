@@ -1,7 +1,0 @@
-include README.md
-include LICENSE
-include requirements.txt
-graft simleng_ai
-recursive-exclude * *.py[co]
-include versioneer.py
-include is_number/_version.py

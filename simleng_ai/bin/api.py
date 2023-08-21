@@ -62,7 +62,7 @@ __all__=[
 
 __version__=get_versions()["Version"]
 
-def get_versions():
+#def get_versions():
     
 __all__import=[
  """   

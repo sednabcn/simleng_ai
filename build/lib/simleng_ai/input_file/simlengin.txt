@@ -1,0 +1,39 @@
+                                 Simlengin.txt
+
+DATA_PROJECT
+DATASET     TYPE    STRUCT  SYNTHETIC    DATASOURCE IMBALANCE 
+pimas      numeric  table     False         table    True     
+
+FILES
+NUMBER   FORMAT  READER   MODE INDEX_COL HEADER  SEP
+  1        csv    pandas   read     0     None    \n
+# 2        csv    pandas   read     0     on      \n
+# 3        zip    zipfile  read     1     None    \n
+
+LISTFILES
+FILENAME
+pima-indians-diabetes.csv
+# iris.csv
+# mnist.zip
+
+# FEATURES
+# TOTALNUMBER SAMPLESIZE CORRELATION(%) FEATUREONE
+#    9           789
+
+TARGET
+GOAL                NCLASS   METHOD  SOLVER      SCORE  SPLITDATA          
+CLASSIFICATION         2     SUPERV   stats       ---     0.2
+
+STRATEGIES
+STRATEGY              METHOD                     REPORT
+Features_selection  full_features               False
+# Features_selection  features_selection_z_score  False
+# Features_selection  K_fold_cross_validation     False
+# Features_selection  pca                         False
+# Features_selection  additional_test             False
+# Features_selection    discriminant_methods        False
+
+
+PARAMS          
+GenLogit_shape   columns_search   min_shuffle_size  subset_search  shuffle_mode  filter_cond  K_fold
+0.1              [0,1,4,5,6]          3               [3,4,5]      combinations       same      10

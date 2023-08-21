@@ -6,9 +6,6 @@ Created on Sat Jul 22 11:07:28 2023
 @author: delta
 """
 
-from packaging.version import version, page
-from resources.package import requirements, all_names_import, all_names_class
-
 __all__ = [
     """
     "Best_features_filter",
@@ -61,7 +58,7 @@ __all__ = [
 """
 ]
 
-__version__ = get_versions()["Version"]
+#__version__ = versioneer.get_versions()["Version"]
 
 all_names_import = [
 """   
@@ -226,7 +223,6 @@ all_names_import = [
 """
 ]
 
-
 __all__names__ = [
     """    
 neighbors
@@ -317,3 +313,12 @@ multiclass
 discriminant_analysis
 """
 ]
+import re
+import sys
+
+from simleng_ai import run_simleng_line
+
+
+if __name__ =='__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(run_simleng_line.main())

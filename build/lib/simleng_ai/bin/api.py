@@ -7,16 +7,70 @@ Created on Sat Jul 22 11:07:28 2023
 """
 
 from packaging.version import version,page
-from resources.package import requirements,all_names
-__all__=[]
+from ..resources.package import requirements,all_names_import,all_names_class
 
+__all__=[
+    """
+    "Best_features_filter",
+    "Best_features_wrap",
+    "BinaryModel",
+    "BinaryResults",
+    "BinaryResultsWrapper",
+    "Collocation_points_simula",
+    "Collocation_simula",
+    "Correlation",
+    "DATA",
+    "Data_Analytics",
+    "Data_Engineering",
+    "Data_Generation",
+    "Data_Output",
+    "Data_Quality",
+    "Data_Visualisation",
+    "DiscreteModelShape",
+    "DiscreteResults",
+    "Draw_binary_classification_results",
+    "Draw_numerical_results",
+    "Drawing2d",
+    "Features_selection",
+    "GenLogit",
+    "GenLogitResults",
+    "GenLogit_output",
+    "Init",
+    "L1BinaryResults",
+    "L1BinaryResultsWrapper",
+    "Logit",
+    "LogitResults",
+    "MDS",
+    "MetricBinaryClassifier",
+    "Multivariate_pdf",
+    "MyDB",
+    "Nothing",
+    "OrderedResults",
+    "PCA",
+    "Pipeline",
+    "SVD",
+    "Simleng",
+    "Simleng_strategies",
+    "Sklearn_linear_filter",
+    "Sklearn_simula",
+    "Statsmodels_linear_filter",
+    "Statsmodels_simula",
+    "Table_results",
+    "nincrease",
+    "pw",
+"""]
+
+__version__=get_versions()["Version"]
+
+#def get_versions():
+    
 __all__import=[
  """   
  from sklearn.feature_selection import VarianceThreshold as skVT
  from sklearn.mixture import GaussianMixture
  from statsmodels.distributions import genpoisson_p
  import sys
- from resources.db import MyDB
+ from ..resources.db import MyDB
  import statsmodels.api as sm
  from sklearn.ensemble import IsolationForest as skIF
  from sklearn.ensemble import AdaBoostRegressor as skABR
@@ -33,12 +87,12 @@ __all__import=[
  from sklearn.metrics import balanced_accuracy_score as balanced_acc
  from sklearn.ensemble import RandomForestRegressor as skRFR
  import statsmodels.discrete.discrete_model as smd
- from data_manager.feature_eng import Correlation
+ from ..data_manager.feature_eng import Correlation
  import re
- from resources.sets import data_list_unpack_dict
- from data_manager.feature_eng import Best_features_filter
+ from ..resources.sets import data_list_unpack_dict
+ from ..data_manager.feature_eng import Best_features_filter
  from sklearn.ensemble import GradientBoostingRegressor as skGBR
- from resources.distributions import lump_dataset,cdf_lump
+ from ..resources.distributions import lump_dataset,cdf_lump
  from abc import ABC, abstractmethod, abstractclassmethod, abstractstaticmethod, abstractproperty
  from collections import OrderedDict
  from IPython import get_ipython
@@ -49,33 +103,33 @@ __all__import=[
  from sklearn.gaussian_process.kernels import RBF as skRBF,Matern as skMatern
  from sklearn import datasets
  from statsmodels.datasets import utils as du
- from data_manager.feature_eng import PCA
- from data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality 
+ from ..data_manager.feature_eng import PCA
+ from ..data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality 
  from sklearn.multiclass import OneVsRestClassifier,OneVsOneClassifier,OutputCodeClassifier
  from statsmodels.tools.decorators import cache_readonly
  import sklearn
  from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
  import seaborn as sns
- from resources.sets import array_sort_y_on_x, data_list_to_matrix
+ from ..resources.sets import array_sort_y_on_x, data_list_to_matrix
  from subprocess import call,run
  from sklearn.feature_selection import SelectKBest as skSB
- from data_abstract import DATA
+ from ..data_abstract import DATA
  from scipy import stats
  from sklearn import linear_model as sklm
- from resources.io import find_full_path
+ from ..resources.io import find_full_path
  from sklearn.model_selection import learning_curve as sklearncur,validation_curve as skvalcur
  from scipy.linalg import svd as sksvd
  from sklearn.linear_model import PassiveAggressiveClassifier, PassiveAggressiveRegressor, Perceptron
- from supervised.metrics_classifier_statsmodels import MetricBinaryClassifier
+ from ..supervised.metrics_classifier_statsmodels import MetricBinaryClassifier
  from pandas import MultiIndex, get_dummies
  from sklearn.feature_selection import RFECV as skRFECV
  from statsmodels.tools.numdiff import approx_fprime_cs
  import time
  from sklearn.linear_model import SGDClassifier, SGDRegressor, SquaredLoss, TheilSenRegressor
  from statsmodels.compat.pandas import Appender
- from output.table import Table_results
- from output.graphics import Draw_numerical_results, Draw_binary_classification_results
- from data_manager.quality import Data_Visualisation 
+ from ..output.table import Table_results
+ from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
+ from ..data_manager.quality import Data_Visualisation 
  from sklearn.linear_model import ARDRegression,BayesianRidge, ElasticNet,ElasticNetCV
  from sklearn.svm import SVC, NuSVC, SVR, NuSVR, OneClassSVM, LinearSVC, \
  from sklearn.kernel_approximation import RBFSampler as skRBFSampler,SkewedChi2Sampler as skSChi2Sampler,AdditiveChi2Sampler as skAdChi2Sampler,Nystroem as skNystroem
@@ -88,21 +142,21 @@ __all__import=[
  from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB 
  from matplotlib import colors as mcolors
  from sklearn.feature_selection import mutual_info_classif as skmiC
- from   data_manager.feature_eng import Best_features_wrap
+ from ..data_manager.feature_eng import Best_features_wrap
  from sklearn.semi_supervised import LabelPropagation, LabelSpreading
  from sklearn.linear_model import Hinge,Huber, HuberRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsCV, LassoLarsIC
  from smt.surrogate_models import rbf
  from collections import OrderedDict,defaultdict
  from sklearn.preprocessing import Binarizer,\
  from sklearn.model_selection import GridSearchCV as skGridSCV
- from supervised.metrics_classifier import MetricBinaryClassifier
- from data_manager.feature_eng import Data_Engineering,Correlation,PCA,SVD,Best_features_filter, Best_features_wrap
- from init import Init
- from data_manager.generation import Data_Generation
+ from ..supervised.metrics_classifier import MetricBinaryClassifier
+ from ..data_manager.feature_eng import Data_Engineering,Correlation,PCA,SVD,Best_features_filter, Best_features_wrap
+ from ..ini.init import Init
+ from ..data_manager.generation import Data_Generation
  import matplotlib.pyplot as plt
  from sklearn.feature_selection import mutual_info_regression as skmiR
- from resources.output import table
- from resources.sets import reduce_value_list_double_to_single_key
+ from ..resources.output import table
+ from ..resources.sets import reduce_value_list_double_to_single_key
  from statsmodels.base.l1_slsqp import fit_l1_slsqp
  import os
  from statsmodels.discrete.discrete_model import BinaryModel,BinaryResults,BinaryResultsWrapper
@@ -115,23 +169,23 @@ __all__import=[
  from resources.scrapping import read_txt_to_dict
  from sklearn.feature_selection import RFE as skRFE
  import numpy as np
- from resources.sets import x_add_list
- from supervised.simulation_statsmodels import Statsmodels_linear_filter
+ from ..resources.sets import x_add_list
+ from ..supervised.simulation_statsmodels import Statsmodels_linear_filter
  import statsmodels.base.wrapper as wrap
  from sklearn.manifold import MDS as skMDS, smacof as sksmacof,Isomap as skIsomap,TSNE as skTSNE,spectral_embedding as skSpectEmbed
- from resources.io import find_full_path,file_reader
+ from ..resources.io import find_full_path,file_reader
  from sklearn.ensemble import BaggingClassifier as skBagC
  from sklearn.ensemble import VotingClassifier as skVC
  from sklearn import svm
  from sklearn import metrics 
  from sklearn.gaussian_process import GaussianProcessClassifier as skGPC
- from resources.pandas import mapping_zero_one
+ from ..resources.pandas import mapping_zero_one
  from mpl_toolkits.mplot3d import Axes3D
  from statsmodels.tools import data as data_tools, tools
  from sklearn.gaussian_process import GaussianProcessRegressor as skGPR
  from sklearn.kernel_ridge import KernelRidge as skKRidge
  from sklearn.model_selection import train_test_split
- from output.Draw_numerical_results import frame_from_dict
+ from ..output.Draw_numerical_results import frame_from_dict
  from functools import wraps
  from biokit.viz import corrplot         
  from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
@@ -139,38 +193,39 @@ __all__import=[
  from scipy import stats,linalg
  from sklearn.svm import SVC as skSVC
  from sklearn.linear_model import OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV
- from supervised.metrics_classifier_statsmodels import MetricBinaryClassifier as ac
+ from ..supervised.metrics_classifier_statsmodels import MetricBinaryClassifier as ac
  from sklearn.ensemble import RandomForestClassifier as skRFC
- from data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality
+ from ..data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality
  from sklearn.ensemble import BaggingRegressor as skBagR
  from biokit.viz import corrplot
  from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor,\
- from data_manager.feature_eng import Data_Engineering
+ from ..data_manager.feature_eng import Data_Engineering
  from sklearn import preprocessing
  from statsmodels.tools.sm_exceptions import (
- from resources.algebra import array_mapping_zero_one
+ from ..resources.algebra import array_mapping_zero_one
  from sklearn.random_projection import BaseRandomProjection, GaussianRandomProjection, SparseRandomProjection
  import statsmodels.base.model as base
  from sklearn.isotonic import IsotonicRegression as skIR
  from sklearn.model_selection import cross_val_score
- from data_manager.quality import Data_Visualisation, Data_Analytics
+ from ..data_manager.quality import Data_Visualisation, Data_Analytics
  from scipy import special, stats
  from sklearn.neural_network import BernoulliRBM,MLPClassifier,MLPRegressor
  from sklearn.model_selection import KFold
- from data_manager.feature_eng import SVD
+ from ..data_manager.feature_eng import SVD
  from statsmodels.base.data import handle_data  # for mnlogit
- from resources.manipulation_data import data_add_constant,find_subsets_predictors
- from simula.strategies_features_selection import Features_selection
- from resources.manipulation_data import data_dummy_binary_classification
+ from ..resources.manipulation_data import data_add_constant,find_subsets_predictors
+ from ..simula.strategies_features_selection import Features_selection
+ from ..resources.manipulation_data import data_dummy_binary_classification
  from distutils.dir_util import copy_tree
- from tests.clsport import port
+ from ..tests.clsport import port
  from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
  from scipy.stats import nbinom
  from sklearn.feature_selection import SelectFromModel as skFM
- from resources.manipulation_data import data_add_constant
+ from ..resources.manipulation_data import data_add_constant
  from sklearn.linear_model import ModifiedHuber, MultiTaskElasticNet, MultiTaskElasticNetCV, MultiTaskLasso, MultiTaskLassoCV
- from supervised import GenLogitclass
+ from ..supervised import GenLogitclass
 """   ]
+
 __all__names__=[
 """    
 neighbors
