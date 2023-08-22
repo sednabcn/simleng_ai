@@ -208,5 +208,4 @@ def plot_r2_snr(n_features_, r2_train, r2_test, xvline, snr, ax):
             snr[n_features <= 100],axis[1])
             plt.tight_layout()
             plt.show()
-"""    
-
+"""

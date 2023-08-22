@@ -58,10 +58,10 @@ __all__ = [
 """
 ]
 
-#__version__ = versioneer.get_versions()["Version"]
+# __version__ = versioneer.get_versions()["Version"]
 
 all_names_import = [
-"""   
+    """   
  from sklearn.feature_selection import VarianceThreshold as skVT
  from sklearn.mixture import GaussianMixture
  from statsmodels.distributions import genpoisson_p
@@ -319,6 +319,6 @@ import sys
 from simleng_ai import run_simleng_line
 
 
-if __name__ =='__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+if __name__ == "__main__":
+    sys.argv[0] = re.sub(r"(-script\.pyw?|\.exe)?$", "", sys.argv[0])
     sys.exit(run_simleng_line.main())

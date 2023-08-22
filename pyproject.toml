@@ -1,10 +1,11 @@
 [build-system]
-requires=["setuptools>=42","versioneer-518","importlib.metadata"]							
+requires=["setuptools>=42","versioneer[toml]","importlib.metadata"]							
 build-backend="setuptools.build_meta"
 
 #configuring metadata
 [metadata]
 version = "attr: simleng.__version__"
+dynamic=["version","keywords"]
 
 [project]
 name="simleng_ai"
@@ -23,25 +24,12 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/sednabcn/simleng_ai"
 "Bug Tracker" = "https://github.com/sednabcn/simleng_ai/issues"
+#[tols.setuptools.packages]
 
 [tool.setuptools.packages.find]
-where = ["."]  # list of folders that contain the packages (["."] by default)
-include = ["*"]  # package names should match these glob patterns (["*"] by default)
-exclude = ["backup"]  # exclude packages matching these glob patterns (empty by default)
-namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
-#py-modules=[]
-#[tool.setuptools]
-# intentionally empty/commented out
-# write_to option leads to an unclean workspace during build
-# which again is leading setuptools to interpret this during build and producing wheels with unclean version numbers
-# write_to = "version.txt"
-#[tool.setuptools.dynamic]
-#version = {attr = "simleng.__version__"}
+where = ["."]  # list of default folders that contain the packages (["."])
+include = ["*"] #package names should match the glob patterns (["*"] by default)
+exclude = [ ]  #exclude packages matching these glob patterns (empty by default)
+namespaces =false  # to disable scanning PEP 420 namespaces (true by default)
 
-#[versioneer]
-#VCS= Git
-#style = pep440
-#versionfile_source = simleng_ai/_version.py
-#versionfile_build = simleng_ai/_version.py
-#tag_prefix =
-#parentdir_prefix =
+
