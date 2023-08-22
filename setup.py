@@ -32,15 +32,15 @@ setup(
     # manifest_in=["./input_file/simleng.txt","./datasets/*"],
  
     install_requires=[
-        "biokit==0.5.0",
-        "colormap==1.0.4",
-        "matplotlib==3.7.1",
-        "numpy==1.24.2",  # 1.24.4
-        "packaging==23",  # 21.3
-        "pandas==1.5.3",  # 2.0.3
+        "biokit >=0.5.0",
+        "colormap>=1.0.4",
+        "matplotlib>=3.7.1",
+        "numpy>=1.24.4",  # 1.24.4
+        "packaging>=23",  # 21.3
+        "pandas>=2.0.3",  # 2.0.3
         "scipy==1.10.1",  # 1.8.0
-        "statsmodels==0.0.0",  # 0.14.0
-        "scikit-learn==1.3.0",
+        "statsmodels>=0.14.0",  # 0.14.0
+        "scikit-learn>=1.3.0",
     ],
     test_suite="nose.collector",
     tests_require=["nose"],
