@@ -5,7 +5,7 @@ build-backend="setuptools.build_meta"
 #configuring metadata
 [metadata]
 version = "attr: simleng.__version__"
-dynamic=["version","keywords"]
+dynamic=["version","keywords","license"]
 
 [project]
 name="simleng_ai"

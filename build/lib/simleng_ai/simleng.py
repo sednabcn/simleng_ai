@@ -26,7 +26,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-#file_input = "simlengin4.txt"
+# file_input = "simlengin4.txt"
 
 
 class Simleng:
@@ -41,7 +41,7 @@ class Simleng:
         self.qual = Data_Quality()
         self.strategies = {}
         self.params = {}
-        #self.strategies = {}
+        # self.strategies = {}
         self.strategies_client = {}
 
         (
@@ -205,4 +205,4 @@ class Simleng:
 # print(dict(MACROSIN.items()))
 
 # Simleng(file_input,score=0.90).simulation_strategies()
-Simleng(file_input, score=0.90).simulation_strategies()
+# Simleng(file_input, score=0.90).simulation_strategies()

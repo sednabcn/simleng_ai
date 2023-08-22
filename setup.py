@@ -24,7 +24,7 @@ setup(
     # },
     author="Ruperto Pedro Bonet Chaple",
     author_email="ruperto.bonet@modelphysmat.com",
-    license="MIT",
+    License=["MIT"],
     # packages=["simleng_ai"],
     readme="Readme.md",  # unknown option
     python_requires=">=3.8",

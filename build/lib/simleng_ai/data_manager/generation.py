@@ -1,252 +1,306 @@
 import os
-from data_abstract import DATA
-from ini.init import Init
-from resources.sets import reduce_value_list_double_to_single_key
-from resources.io import find_full_path,file_reader
-from resources.manipulation_data import data_dummy_binary_classification
-from resources.pandas import mapping_zero_one
-from resources.db import MyDB
+from ..abstract.data_abstract import DATA
+from ..ini.init import Init
+from ..resources.sets import reduce_value_list_double_to_single_key
+from ..resources.io import find_full_path, file_reader
+from ..resources.manipulation_data import data_dummy_binary_classification
+from ..resources.pandas import mapping_zero_one
+from ..resources.db import MyDB
 
-#file_input='simlengin.txt'
+# file_input='simlengin.txt'
 
-MACROS=['Simlengin.txt','DATA_PROJECT','FILES','LISTFILES','FEATURES','TARGET','STRATEGIES','PARAMS']
+MACROS = [
+    "Simlengin.txt",
+    "DATA_PROJECT",
+    "FILES",
+    "LISTFILES",
+    "FEATURES",
+    "TARGET",
+    "STRATEGIES",
+    "PARAMS",
+]
 
 
-class Data_Generation(DATA,Init):
-       
-       def __init__(self,file_input,score):
-            self.file_input=file_input
-            self.score=score
-            super().__init__(file_input,score)
-            self.title=None 
-            self.dataset={}
-            self.files={}
-            self.listfiles={}
-            self.features={}
-            self.target={}
-            self.strategies={}
-            self.params={}
-            
-            self.data_dummy_train={}
-            self.data_dummy_test={}
+class Data_Generation(DATA, Init):
+    def __init__(self, file_input, score):
+        self.file_input = file_input
+        self.score = score
+        super().__init__(file_input, score)
+        self.title = None
+        self.dataset = {}
+        self.files = {}
+        self.listfiles = {}
+        self.features = {}
+        self.target = {}
+        self.strategies = {}
+        self.params = {}
 
-            
-            MACROSIN=Init(file_input,score).get_macros()
-            #print(list(MACROSIN.items()))
-            
-            input={}   
-            for key,value in MACROSIN.items():  
-                          input.update(reduce_value_list_double_to_single_key({key:value}))
-                        
-                          if key=="DATA_PROJECT":
-                                self.dataset.update(input)
-                                input={}
-                          elif key=="FILES":
-                                self.files.update(input)
-                                input={}
-                          elif key=="LISTFILES":
-                                self.listfiles.update(input)
-                                input={}
-                          elif key=="FEATURES":
-                                self.features.update(input)
-                                input={}
-                          elif key=="TARGET":
-                                self.target.update(input)
-                                if not self.target['SCORE'].isnumeric():
-                                       self.target['SCORE']=self.score
-                                input={}
-                          elif key=="STRATEGIES":
-                                self.strategies.update(input)
-                                input={}
-                          elif key=="PARAMS":
-                                self.params.update(input) 
-                          else:
-                                self.title=key
-                                
-       def print_input_info(self):
-                 #programming try to empty results  
-                 return print(self.title,self.dataset ,self.files,self.listfiles,\
-                              self.features,self.target,self.strategies,self.params)
-                                         
-       def get_input_info(self):
-                 #programming try to empty results  
-                 return self.title,self.dataset ,self.files,self.listfiles,\
-          self.features,self.target,self.strategies,self.params
+        self.data_dummy_train = {}
+        self.data_dummy_test = {}
 
-       """
+        MACROSIN = Init(file_input, score).get_macros()
+        # print(list(MACROSIN.items()))
+
+        input = {}
+        for key, value in MACROSIN.items():
+            input.update(reduce_value_list_double_to_single_key({key: value}))
+
+            if key == "DATA_PROJECT":
+                self.dataset.update(input)
+                input = {}
+            elif key == "FILES":
+                self.files.update(input)
+                input = {}
+            elif key == "LISTFILES":
+                self.listfiles.update(input)
+                input = {}
+            elif key == "FEATURES":
+                self.features.update(input)
+                input = {}
+            elif key == "TARGET":
+                self.target.update(input)
+                if not self.target["SCORE"].isnumeric():
+                    self.target["SCORE"] = self.score
+                input = {}
+            elif key == "STRATEGIES":
+                self.strategies.update(input)
+                input = {}
+            elif key == "PARAMS":
+                self.params.update(input)
+            else:
+                self.title = key
+
+    def print_input_info(self):
+        # programming try to empty results
+        return print(
+            self.title,
+            self.dataset,
+            self.files,
+            self.listfiles,
+            self.features,
+            self.target,
+            self.strategies,
+            self.params,
+        )
+
+    def get_input_info(self):
+        # programming try to empty results
+        return (
+            self.title,
+            self.dataset,
+            self.files,
+            self.listfiles,
+            self.features,
+            self.target,
+            self.strategies,
+            self.params,
+        )
+
+    """
        Python 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0] on linux
        Type "help", "copyright", "credits" or "license" for more information.
        >>> from data_manager.generation import Data_Generation
        >>> Data_Generation().get_input_info()
        Simlengin.txt {'DATASET': 'pimas', 'TYPE': 'numeric', 'STRUCT': 'table', 'SYNTHETIC': 'False', 'DATASOURCE': 'table', 'IMBALANCE': 'False', 'DUMMY': 'True'} {'NUMBER': '1', 'FORMAT': 'csv', 'reader': 'pandas', 'mode': 'read', 'index_col': '0', 'header': 'None', 'sep': '\\n'} {'filename': 'pima-indians-diabetes.csv'} {} {'GOAL': 'CLASSI', 'NCLASS': '2', 'METHOD': 'SUPERV', 'SOLVER': 'stats', 'SCORE': '---', 'SPLITDATA': '0.25'}
        """
-       def get_update_parameters_to_read_files(self):
-                  pass   
-                
-       def data_generation_from_table(self):
-           """load data_from_file"""
-           from sklearn.model_selection import train_test_split
-           from resources.pandas import col_data
-           from resources.manipulation_data import isdummy,isimbalance
-           import pandas as pd
-           
-           type_file_pd=['csv','xls','xlsx','json','sql',\
-                         'html','pickle','tsv','excel']
-           type_file_reader=['tar','tar.gz','pdf','HDF5','docx','mp3','mp4']
 
-           type_file_open=["txt"]
+    def get_update_parameters_to_read_files(self):
+        pass
 
-           imbalance=self.dataset["IMBALANCE"]
-           
-           nfiles=self.files['NUMBER']
+    def data_generation_from_table(self):
+        """load data_from_file"""
+        from sklearn.model_selection import train_test_split
+        from ..resources.pandas import col_data
+        from ..resources.manipulation_data import isdummy, isimbalance
+        import pandas as pd
 
-           type_file=self.files['FORMAT']
+        type_file_pd = [
+            "csv",
+            "xls",
+            "xlsx",
+            "json",
+            "sql",
+            "html",
+            "pickle",
+            "tsv",
+            "excel",
+        ]
+        type_file_reader = ["tar", "tar.gz", "pdf", "HDF5", "docx", "mp3", "mp4"]
 
-          
-           reader=self.files["READER"]
+        type_file_open = ["txt"]
 
-           mode=self.files["MODE"]
+        imbalance = self.dataset["IMBALANCE"]
 
-           index_col=self.files['INDEX_COL']
+        nfiles = self.files["NUMBER"]
 
-           header=self.files["HEADER"]
+        type_file = self.files["FORMAT"]
 
-           sep=self.files["SEP"]
+        reader = self.files["READER"]
 
-           pars=[mode,index_col,header,sep]
+        mode = self.files["MODE"]
 
-     
-           name=self.listfiles['FILENAME']
+        index_col = self.files["INDEX_COL"]
 
-           test_size=float(self.target['SPLITDATA'])
-           
-           train_size= 1.0 - test_size
-           
-           self.full_path=find_full_path(name)
-           
-           self.data=file_reader(self.full_path,type_file,*pars)
+        header = self.files["HEADER"]
 
-           #update datasets_store
+        sep = self.files["SEP"]
 
-           dataset=self.dataset['DATASET']
-           source=self.dataset['DATASOURCE']
-           
-           MyDB(dataset,'datasets',kind=source).datasets_store()
-           
-           # columns_data_to selected
-           last=col_data(self.data,-1)
+        pars = [mode, index_col, header, sep]
 
-           nolast=col_data(self.data,range(self.data.shape[1]-1))
+        name = self.listfiles["FILENAME"]
 
-           
-           if not(imbalance):
-                  stratify=None
-           else:
-                  stratify=last
+        test_size = float(self.target["SPLITDATA"])
 
-           #print("pimas",'\n',self.data)
-           
-           #print("Y_data",'\n',last,'\n',"X_data",'\n',nolast)
-           
-           self.X_train, self.X_test, self.y_train, self.y_test= \
-           train_test_split(nolast,last, test_size=test_size, random_state=1,\
-                       stratify=stratify)
+        train_size = 1.0 - test_size
 
-           #Older implementations of data_base COMPATIBILITY
-           train_size=self.X_train.shape[0]
-           df=pd.DataFrame()
-           df=self.data.iloc[:train_size,:]
-           de=pd.DataFrame()
-           de=self.data.iloc[train_size:,:]
-           self.data_train={}
-           self.data_train["train"] = [self.X_train.columns,self.X_train,self.y_train,df]
-           self.data_test={}
-           self.data_test["test"]=[self.X_test.columns,self.X_test,self.y_test,de]
-           #=====================END COMPATIBILITY============================== 
-           if not(imbalance):
-                  stratify=None
-           else:
-                  stratify=self.y_train
-           
-           self.X_train_val, self.X_test_val, self.y_train_val, self.y_test_val= \
-           train_test_split(self.X_train, self.y_train, test_size=0.25*test_size, random_state=1,\
-                            stratify=stratify) # 0.25 x 0.8 = 0.2
-           
-           #print (self.X_train.columns)
-           
-           return self.data_train,self.data_test, self.data,self.X_train, self.X_test, self.y_train, self.y_test, \
-                  self.X_train_val, self.X_test_val, self.y_train_val, self.y_test_val 
+        self.full_path = find_full_path(name)
 
-       def data_generation_binary_classification(self):
-          """Generation of dummy variables to Binary Classification Task
-             for a balanced dataset
-          """
-          from resources.pandas import mapping_zero_one
-          from resources.manipulation_data import isdummy
-          
-          data_dummy_train={}
-          data_dummy_test={}
+        self.data = file_reader(self.full_path, type_file, *pars)
 
-          # Dummy variables to categorical variable
-          if  isdummy(self.y_train):
-                
-                V_train=self.y_train
-                V_test=self.y_test
-          else:
-                V_train=data_dummy_binary_classification(self.y_train,"No",0,1)
-                V_test=data_dummy_binary_classification(self.y_test,"No",0,1)
-           
-          # Mapping 'Training and Testing data to [0,1]".X->U
-          if isdummy(self.X_train):
-                 U_train=X_train
-                 U_test=X_test
-          else:
-                 U_train=mapping_zero_one(self.X_train)
-                 U_test=mapping_zero_one(self.X_test)
+        # update datasets_store
 
-          self.data_dummy_train['train']=[U_train,V_train]
-          self.data_dummy_test['test']=[U_test,V_test]
+        dataset = self.dataset["DATASET"]
+        source = self.dataset["DATASOURCE"]
 
+        MyDB(dataset, "datasets", kind=source).datasets_store()
 
-          return self.data_dummy_train,self.data_dummy_test
-          
-               
-       def data_generation_target(self):
-                target=self.target['GOAL']
-                nclass=int(self.target['NCLASS'])
-                
-                if target=='CLASSIFICATION':
-                       if nclass==2:
-                          return self.data_generation_binary_classification()                             
-                       elif nclass >2:
-                          pass
-                       else:
-                            pass             
-                elif target=='REGRESSION':
-                       pass
+        # columns_data_to selected
+        last = col_data(self.data, -1)
 
-                else:
-                       pass
-       def data_generation_functions(self):
-                 source=self.dataset['DATASOURCE'] 
-                 if source=='table':
-                       return self.data_generation_from_table()
-                 elif source=='cloud':
-                       return data_generation_from_cloud()
-                 elif source=='web':
-                       return data_generation_from_web()
-                 elif source=='multiple_sources':
-                       return data_generation_from_multiple_sources()
-                 elif source=='streaming':
-                       return data_generation_from_streaming_data()
-                 elif source=='geophysics':
-                       return data_generation_from_geophysics()
-                 elif source=='synthetic':
-                       return data_generation_syntehtic_data()
-                 elif source=='time_series':
-                       return data_generation_from_time_series()
-                 else:
-                       pass
+        nolast = col_data(self.data, range(self.data.shape[1] - 1))
+
+        if not (imbalance):
+            stratify = None
+        else:
+            stratify = last
+
+        # print("pimas",'\n',self.data)
+
+        # print("Y_data",'\n',last,'\n',"X_data",'\n',nolast)
+
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            nolast, last, test_size=test_size, random_state=1, stratify=stratify
+        )
+
+        # Older implementations of data_base COMPATIBILITY
+        train_size = self.X_train.shape[0]
+        df = pd.DataFrame()
+        df = self.data.iloc[:train_size, :]
+        de = pd.DataFrame()
+        de = self.data.iloc[train_size:, :]
+        self.data_train = {}
+        self.data_train["train"] = [
+            self.X_train.columns,
+            self.X_train,
+            self.y_train,
+            df,
+        ]
+        self.data_test = {}
+        self.data_test["test"] = [self.X_test.columns, self.X_test, self.y_test, de]
+        # =====================END COMPATIBILITY==============================
+        if not (imbalance):
+            stratify = None
+        else:
+            stratify = self.y_train
+
+        (
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val,
+        ) = train_test_split(
+            self.X_train,
+            self.y_train,
+            test_size=0.25 * test_size,
+            random_state=1,
+            stratify=stratify,
+        )  # 0.25 x 0.8 = 0.2
+
+        # print (self.X_train.columns)
+
+        return (
+            self.data_train,
+            self.data_test,
+            self.data,
+            self.X_train,
+            self.X_test,
+            self.y_train,
+            self.y_test,
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val,
+        )
+
+    def data_generation_binary_classification(self):
+        """Generation of dummy variables to Binary Classification Task
+        for a balanced dataset
+        """
+        from ..resources.pandas import mapping_zero_one
+        from ..resources.manipulation_data import isdummy
+
+        data_dummy_train = {}
+        data_dummy_test = {}
+
+        # Dummy variables to categorical variable
+        if isdummy(self.y_train):
+            V_train = self.y_train
+            V_test = self.y_test
+        else:
+            V_train = data_dummy_binary_classification(self.y_train, "No", 0, 1)
+            V_test = data_dummy_binary_classification(self.y_test, "No", 0, 1)
+
+        # Mapping 'Training and Testing data to [0,1]".X->U
+        if isdummy(self.X_train):
+            U_train = X_train
+            U_test = X_test
+        else:
+            U_train = mapping_zero_one(self.X_train)
+            U_test = mapping_zero_one(self.X_test)
+
+        self.data_dummy_train["train"] = [U_train, V_train]
+        self.data_dummy_test["test"] = [U_test, V_test]
+
+        return self.data_dummy_train, self.data_dummy_test
+
+    def data_generation_target(self):
+        target = self.target["GOAL"]
+        nclass = int(self.target["NCLASS"])
+
+        if target == "CLASSIFICATION":
+            if nclass == 2:
+                return self.data_generation_binary_classification()
+            elif nclass > 2:
+                pass
+            else:
+                pass
+        elif target == "REGRESSION":
+            pass
+
+        else:
+            pass
+
+    def data_generation_functions(self):
+        source = self.dataset["DATASOURCE"]
+        if source == "table":
+            return self.data_generation_from_table()
+        elif source == "cloud":
+            return data_generation_from_cloud()
+        elif source == "web":
+            return data_generation_from_web()
+        elif source == "multiple_sources":
+            return data_generation_from_multiple_sources()
+        elif source == "streaming":
+            return data_generation_from_streaming_data()
+        elif source == "geophysics":
+            return data_generation_from_geophysics()
+        elif source == "synthetic":
+            return data_generation_syntehtic_data()
+        elif source == "time_series":
+            return data_generation_from_time_series()
+        else:
+            pass
+
 
 """
 EXAMPLES:

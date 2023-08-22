@@ -6,39 +6,48 @@ Created on Fri Jun 16 16:22:49 2023
 @author: delta
 """
 
-#read the input file
+# read the input file
 
 import sys
-from resources.scrapping import read_txt_to_dict
-from resources.io import find_full_path
 
-#filename=sys.argv[1]
-#file_input='simlengin.txt'
+from ..resources.io import find_full_path
+from ..resources.scrapping import read_txt_to_dict
 
-MACROS=['Simlengin.txt','DATA_PROJECT','FILES','LISTFILES','FEATURES','TARGET','STRATEGIES','PARAMS']
+# filename=sys.argv[1]
+# file_input='simlengin.txt'
+
+MACROS = [
+    "Simlengin.txt",
+    "DATA_PROJECT",
+    "FILES",
+    "LISTFILES",
+    "FEATURES",
+    "TARGET",
+    "STRATEGIES",
+    "PARAMS",
+]
 
 
 class Init:
+    def __init__(self, file_input, score=None, NEWMACROS=None):
+        self.file_input = find_full_path(file_input)
+        self.score = score
+        self.NEWMACROS = NEWMACROS
 
-     def __init__(self,file_input,score=None,NEWMACROS=None):
-           self.file_input=find_full_path(file_input)
-           self.score=score
-           self.NEWMACROS=NEWMACROS
-           
+    def get_macros(self):
+        return read_txt_to_dict(self.file_input, MACROS)
 
-     def get_macros(self):     
-         return read_txt_to_dict(self.file_input,MACROS)
+    def update_macros(self, MACROS, NEWMACROS):
+        self.NEWMACROS = NEWMACROS
+        # to update parameters from the input_file given by Simleng
+        # you have to open a file for writting
+        return read_txt_to_dict(self.file_input, MACROS + self.NEWMACROS)
 
-     def update_macros(self,MACROS,NEWMACROS):
-         self.NEWMACROS=NEWMACROS
-         # to update parameters from the input_file given by Simleng
-         # you have to open a file for writting
-         return read_txt_to_dict(self.file_input,MACROS+self.NEWMACROS)
 
-#MACROSIN = Init(file_input,score).get_macros()
-#print(dict(MACROSIN.items()))
-     
-#if __name__ =='__main__':
+# MACROSIN = Init(file_input,score).get_macros()
+# print(dict(MACROSIN.items()))
+
+# if __name__ =='__main__':
 #     #MACROSIN = Init.get_macros(sys.argv[1])
 #     MACROSIN = Init.get_macros(filename)
 #     print(dict(MACROSIN.items()))

@@ -6,10 +6,10 @@ Created on Sat Jul 22 11:07:28 2023
 @author: delta
 """
 
-from packaging.version import version,page
-from ..resources.package import requirements,all_names_import,all_names_class
+from packaging.version import version, page
+from ..resources.package import requirements, all_names_import, all_names_class
 
-__all__=[
+__all__ = [
     """
     "Best_features_filter",
     "Best_features_wrap",
@@ -58,14 +58,15 @@ __all__=[
     "Table_results",
     "nincrease",
     "pw",
-"""]
+"""
+]
 
-__version__=get_versions()["Version"]
+__version__ = get_versions()["Version"]
 
-#def get_versions():
-    
-__all__import=[
- """   
+# def get_versions():
+
+__all__import = [
+    """   
  from sklearn.feature_selection import VarianceThreshold as skVT
  from sklearn.mixture import GaussianMixture
  from statsmodels.distributions import genpoisson_p
@@ -224,10 +225,11 @@ __all__import=[
  from ..resources.manipulation_data import data_add_constant
  from sklearn.linear_model import ModifiedHuber, MultiTaskElasticNet, MultiTaskElasticNetCV, MultiTaskLasso, MultiTaskLassoCV
  from ..supervised import GenLogitclass
-"""   ]
+"""
+]
 
-__all__names__=[
-"""    
+__all__names__ = [
+    """    
 neighbors
 statsmodels
 naive_bayes
@@ -314,4 +316,5 @@ IPython
 collections
 multiclass
 discriminant_analysis
-"""]
+"""
+]

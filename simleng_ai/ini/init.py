@@ -9,8 +9,9 @@ Created on Fri Jun 16 16:22:49 2023
 # read the input file
 
 import sys
-from ..resources.scrapping import read_txt_to_dict
+
 from ..resources.io import find_full_path
+from ..resources.scrapping import read_txt_to_dict
 
 # filename=sys.argv[1]
 # file_input='simlengin.txt'
