@@ -12,6 +12,7 @@ from ..data_manager.feature_eng import (
 )
 from ..resources.sets import data_list_unpack_dict
 from ..resources.manipulation_data import data_add_constant, find_subsets_predictors
+
 from ..data_manager.quality import Data_Visualisation, Data_Analytics
 from ..supervised.simulation_statsmodels import Statsmodels_linear_filter
 from ..supervised.metrics_classifier_statsmodels import MetricBinaryClassifier
@@ -27,7 +28,7 @@ from collections import OrderedDict, defaultdict
 
 class Features_selection(Data_Generation):
     def __init__(self, *args):
-        self.idoc = -1
+        self.idoc=-1    
         self.data_train = args[0]
         self.data_test = args[1]
         self.data_dummy_train = args[2]
@@ -35,6 +36,9 @@ class Features_selection(Data_Generation):
         self.proc = args[4]
         self.params = defaultdict()
         self.params = args[5]
+
+        self.idoc =args[6]
+                
         self.GenLogit_shape = self.params["GenLogit_shape"]
         self.index_columns_base = self.params["columns_search"]
         self.min_shuffle_size = int(self.params["min_shuffle_size"])
@@ -53,7 +57,7 @@ class Features_selection(Data_Generation):
         return process()
 
     def simulation_full_features(self):
-        if self.idoc == 0:
+        if self.idoc == 1:
             """To create header of Report..."""
             pass
         """Working will full data to proof."""
@@ -72,22 +76,22 @@ class Features_selection(Data_Generation):
         U_train_exog = data_add_constant(U_train)
         U_test_exog = data_add_constant(U_test)
 
-        Data_Visualisation().data_head_tail(df)
+        Data_Visualisation(self.idoc).data_head_tail(df)
 
-        Data_Visualisation().data_feature_show(df)
+        Data_Visualisation(self.idoc).data_feature_show(df)
 
-        Data_Visualisation().data_features_show(df)
+        Data_Visualisation(self.idoc).data_features_show(df)
 
         Data_Analytics().data_describe(df)
 
-        Data_Visualisation().data_features_draw_hist(U_train, 10)
+        Data_Visualisation(self.idoc).data_features_draw_hist(U_train, 10)
 
-        Correlation(U_train, df.columns, 0.9).correlation_training()
+        Correlation(U_train, df.columns, 0.9,self.idoc).correlation_training()
 
-        Correlation(U_train, U_train.columns, 0.9).correlation_level()
+        Correlation(U_train, U_train.columns, 0.9,self.idoc).correlation_level()
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
-
+        
         names = ["GLM", "Logit", "GenLogit", "Probit"]
         exog = U_train_exog
         endog = V_train
@@ -136,8 +140,7 @@ class Features_selection(Data_Generation):
             " ",
             " ",
             "square",
-            0,
-        )
+            self.idoc)
 
         Table_results(
             6, confusion_matrix, ".2f", "fancy_grid", "Confusion Matrix ", 60
@@ -160,7 +163,7 @@ class Features_selection(Data_Generation):
             columns_train,
             Title,
             "",
-        ).fpn_estimated()
+            self.idoc).fpn_estimated()
 
         # Draw_binary_classification_results(FPR,TPR,to_model_names).\
         # fpn_estimated(V_test,y_estimated_table)
@@ -182,7 +185,7 @@ class Features_selection(Data_Generation):
             columns_train,
             Title,
             "",
-        ).roc_curve()
+            self.idoc).roc_curve()
 
     def simulation_features_selection_z_score(self):
         """Working with diferents criterie of features selection."""
@@ -372,7 +375,7 @@ class Features_selection(Data_Generation):
             columns,
             Title,
             "",
-        ).draw_regions_binary_classification()
+            self.idoc).draw_regions_binary_classification()
 
         print("INCREASING ADDING FEATURES AFTER Z-SCORE ANALYSIS")
 
@@ -391,7 +394,7 @@ class Features_selection(Data_Generation):
             y_estimated_table,
             pararesims_table,
             duals_table,
-        ) = Best_features_wrap().add_feature_selection(
+        ) = Best_features_wrap(self.idoc).add_feature_selection(
             names,
             cols_data,
             columns_two_copy,
@@ -429,7 +432,7 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-        ).draw_mis_classification()
+            self.idoc).draw_mis_classification()
 
         kind = "Prediction"
         Title = "Binary Classification using statsmodels" " (Prediction Case)"
@@ -448,7 +451,7 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-        ).draw_mis_classification()
+            self.idoc).draw_mis_classification()
 
     def simulation_K_fold_cross_validation(self):
         print("K_fold CROSS-VALIDATION PROCESS WITH FITTING AND PREDICT")
@@ -503,7 +506,7 @@ class Features_selection(Data_Generation):
         ).print_table()
 
         # Columns_two contain the best predictors
-        columns_two, columns_Index = Best_features_wrap().z_score(z_score_table, 1.96)
+        columns_two, columns_Index = Best_features_wrap(self.idoc).z_score(z_score_table, 1.96)
 
         # Draw_binary_classification_results of Best Predictors
         # based on Z-score
@@ -533,7 +536,7 @@ class Features_selection(Data_Generation):
             N_features,
             data_fold,
             Iperformance,
-        ) = Best_features_wrap().cross_validation_binary_classification(
+        ) = Best_features_wrap(self.idoc).cross_validation_binary_classification(
             names,
             cols_data,
             columns_two_two,
@@ -558,7 +561,7 @@ class Features_selection(Data_Generation):
         #        print(Iperformance[ii].keys(),Iperformance[ii].values())
         # print(input("STOP"))
 
-        Best_features_wrap().draw_K_fold_numerical_results(
+        Best_features_wrap(self.idoc).draw_K_fold_numerical_results(
             K_fold, N_cols_base, N_features, data_fold, Iperformance
         )
 
@@ -575,7 +578,7 @@ class Features_selection(Data_Generation):
             y_estimated_table,
             params_table,
             residuals_table,
-        ) = Best_features_wrap().K_fold_numerical_results(
+        ) = Best_features_wrap(self.idoc).K_fold_numerical_results(
             K_fold, N_cols_base, N_features, data_fold, Iperformance, 90
         )
 
@@ -604,7 +607,7 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-        ).draw_mis_classification()
+       self.idoc).draw_mis_classification()
 
         kind = "Prediction"
         Title = (
@@ -627,7 +630,7 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-        ).draw_mis_classification()
+            self.idoc).draw_mis_classification()
 
     def simulation_pca(self):
         """Working to explore a spectral mehthod"""

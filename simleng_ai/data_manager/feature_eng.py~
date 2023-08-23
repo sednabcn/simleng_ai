@@ -47,20 +47,18 @@ class Correlation(Data_Engineering):
         plt.style.use("ggplot")
         c = Corrplot(self.x)
         c.plot(cmap=("Orange", "white", "green"))
-        image_to_report(self.idoc,'corr1','png')
-        
         c.plot(method="circle")
         plt.suptitle("Pair-Correlation Matrix on Training Data")
+
         # image_to_report
-        image_to_report(self.idoc,'corr2','png')
+        image_to_report(self.idoc,'corr1',png)
         #plt.show()
         # figure2
         print(dfcorr)
         # plotting correlation heatmap
         dataplot = sns.heatmap(dfcorr, cmap="YlGnBu", annot=True)
         #return (plt.sow(),)
-       
-        image_to_report(self.idoc,'corr3','png')
+        return image_to_report(self.idoc,'corr2',png)
     
     def correlation_level(self):
         """Identify significative correlations"""
@@ -192,7 +190,7 @@ class PCA:
         plt.title("Major PCA Factor vs Minor PCA Factor")
         plt.axis("equal")
         #return plt.show()
-        return image_to_report(self.idoc,'pca_factor','png')
+        return image_to_report(self.idoc,'pca_factor',png)
     
     def pca_show_table(self):
         "Table of eigvalues and eigvectors in reverse order."
@@ -248,7 +246,7 @@ class PCA:
         plt.xlabel("Observed variables")
         plt.title("Visualization of PCA by components")
         #return plt.show()
-        return image_to_report(self.idoc,'pca_components','png')
+        return image_to_report(self.idoc,'pca_components',png)
             
     def pca_transformation(self):
         """To apply PCA transformation to Training Data."""
@@ -334,7 +332,7 @@ class SVD:
         plt.tight_layout()
         #plt.show()
         # Principal components analysis (PCA
-        return image_to_report(self.idoc,'svd','png')
+        return image_to_report(self.idoc,'svd',png)
 
 class Best_features_filter:
     """To apply criteria to extract features's subsample."""
@@ -511,7 +509,7 @@ class Best_features_wrap:
         y_train = pd.DataFrame(endog)
         NN = len(x_train)
 
-        cols_base_base = cols_base_validation.copy()    
+        cols_base_base = cols_base_validation.copy()
         cols_index_base = cols_index.copy()
 
         N_features = len(cols_data) - len(cols_base_validation)

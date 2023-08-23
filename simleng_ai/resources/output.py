@@ -1,4 +1,4 @@
-# ==["table_from_dict","table","color_text"]
+# ==["table_from_dict","table","color_text","image_to_report"]
 
 
 def table_from_dict(x, headers, floatfmt, style, title, width):
@@ -51,3 +51,14 @@ def table(x, floatfmt, style, title, width):
         ),
         print("\n\n"),
     )
+def image_to_report(idoc,imname,format):
+    """Putting images in the report"""
+    import matplotlib.pyplot as plt
+
+    
+    if idoc>=1:
+        return plt.savefig(imname+'.'+str(format))
+    elif idoc==0 or idoc==None:
+        return plt.show()
+    else:
+        pass
