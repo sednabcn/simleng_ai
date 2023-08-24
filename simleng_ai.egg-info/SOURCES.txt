@@ -25,7 +25,6 @@ simleng_ai/bin/api.py
 simleng_ai/data_manager/__init__.py
 simleng_ai/data_manager/cross_validation_tests.py
 simleng_ai/data_manager/feature_eng.py
-simleng_ai/data_manager/feature_eng.py~
 simleng_ai/data_manager/generation.py
 simleng_ai/data_manager/mds.py
 simleng_ai/data_manager/quality.py
@@ -44,7 +43,6 @@ simleng_ai/input_file/simlengin2308.txt
 simleng_ai/input_file/simlengin4.txt
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
-simleng_ai/output/graphics.py~
 simleng_ai/output/picture.py
 simleng_ai/output/report.py
 simleng_ai/output/table.py
