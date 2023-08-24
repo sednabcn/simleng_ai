@@ -10,28 +10,29 @@ class Data_Engineering:
     import statsmodels.discrete.discrete_model as smd
     from statsmodels.multivariate.pca import PCA as smPCA
     from sklearn.decomposition import PCA as skPCA
-    from ..resources.output import table
     import matplotlib.pyplot as plt
     from pyensae.graphhelper import corrplot
-    from ..resources.output import table
+    from ..resources.output import table, image_to_report
     from ..output.graphics import Drawing2d
 
     def __init__(self):
         pass
-
+    
+    
 
 class Correlation(Data_Engineering):
     """Compute correlation of data and inform about its strength."""
 
-    def __init__(self, data, columns, treshold=0.9):
+    def __init__(self, data, columns, treshold=0.9,idoc=None):
         self.x = data
         self.columns_subset = columns  # selection of columns
         self.corr_treshold = treshold
+        self.idoc=idoc
 
     def correlation_training(self):
         """Investigation of training data correlation."""
         import pandas as pd
-        from ..resources.output import table
+        from ..resources.output import table, image_to_report
         from pyensae.graphhelper import Corrplot
         import matplotlib.pyplot as plt
         import seaborn as sns
@@ -46,21 +47,28 @@ class Correlation(Data_Engineering):
         plt.style.use("ggplot")
         c = Corrplot(self.x)
         c.plot(cmap=("Orange", "white", "green"))
+        image_to_report(self.idoc,'corr1','png')
+        
         c.plot(method="circle")
         plt.suptitle("Pair-Correlation Matrix on Training Data")
-        plt.show()
+        # image_to_report
+        image_to_report(self.idoc,'corr2','png')
+        #plt.show()
         # figure2
         print(dfcorr)
         # plotting correlation heatmap
         dataplot = sns.heatmap(dfcorr, cmap="YlGnBu", annot=True)
-        return (plt.show(),)
-
+        #return (plt.sow(),)
+       
+        image_to_report(self.idoc,'corr3','png')
+    
     def correlation_level(self):
         """Identify significative correlations"""
         import numpy as np
         import pandas as pd
 
         self.x = pd.DataFrame(self.x)
+        
         print(
             "\n", "Treshold value , correlation=%.2F" % (self.corr_treshold), sep="\n"
         )
@@ -95,9 +103,10 @@ class Correlation(Data_Engineering):
 class PCA:
     """PCA Analysis."""
 
-    def __init__(self, x, n_components):
+    def __init__(self, x, n_components,idoc=None):
         self.x = x
         self.ncomp = n_components
+        self.idoc=idoc
 
     def pca(self):
         import numpy as np
@@ -142,6 +151,7 @@ class PCA:
         import matplotlib.pyplot as plt
         import numpy as np
         from ..output.graphics import Drawing2d
+        from ..resources.output import image_to_report
 
         major_factor, minor_factor, _, _, _, explained_variance_, _ = PCA(
             self.x, self.ncomp
@@ -181,8 +191,9 @@ class PCA:
         plt.ylabel("PCA factor(minor axis]")
         plt.title("Major PCA Factor vs Minor PCA Factor")
         plt.axis("equal")
-        return plt.show()
-
+        #return plt.show()
+        return image_to_report(self.idoc,'pca_factor','png')
+    
     def pca_show_table(self):
         "Table of eigvalues and eigvectors in reverse order."
 
@@ -213,6 +224,7 @@ class PCA:
     def pca_draw_by_components(self):
         """Visualization PCA by components."""
         import matplotlib.pyplot as plt
+        from ..resources.output import image_to_report
 
         # colors for grahics with matplolib and plotly
         from matplotlib import colors as mcolors
@@ -235,8 +247,9 @@ class PCA:
         plt.ylabel("Cumulative explained variance")
         plt.xlabel("Observed variables")
         plt.title("Visualization of PCA by components")
-        return plt.show()
-
+        #return plt.show()
+        return image_to_report(self.idoc,'pca_components','png')
+            
     def pca_transformation(self):
         """To apply PCA transformation to Training Data."""
         import pandas as pd
@@ -249,15 +262,16 @@ class PCA:
 
 
 class SVD:
-    def __init__(self):
-        pass
+    def __init__(self,idoc=None):
+        self.idoc=idoc
 
-    def svd():
+    def svd(self):
         # This procedure was taken from...
         import numpy as np
         import scipy
         import matplotlib.pyplot as plt
-
+        from ..resources.output import image_to_report
+        
         np.random.seed(42)
         # dataset
         n_samples = 100
@@ -318,9 +332,9 @@ class SVD:
         plt.xlabel("experience")
         plt.ylabel("salary")
         plt.tight_layout()
-        plt.show()
+        #plt.show()
         # Principal components analysis (PCA
-
+        return image_to_report(self.idoc,'svd','png')
 
 class Best_features_filter:
     """To apply criteria to extract features's subsample."""
@@ -330,10 +344,11 @@ class Best_features_filter:
     """
     from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-    def __init__(self, x, columns_subset, vif_treshold):
+    def __init__(self, x, columns_subset, vif_treshold,idoc=None):
         self.x = x
         self.columns_subset = columns_subset
         self.vif_treshold = vif_treshold
+        self.idoc=idoc
 
     def variance_influence_factors(self):
         "Analysis of variance influence factors or colinearity"
@@ -429,9 +444,10 @@ class Best_features_filter:
 
 
 class Best_features_wrap:
-    def __init__(self):
+    def __init__(self,idoc):
         self.parameters = None
-
+        self.idoc=idoc
+        
     def z_score(self, z_score_table, z_score_treshold):
         """Z_score criteria"""
         "CHECKING"
@@ -495,7 +511,7 @@ class Best_features_wrap:
         y_train = pd.DataFrame(endog)
         NN = len(x_train)
 
-        cols_base_base = cols_base_validation.copy()
+        cols_base_base = cols_base_validation.copy()    
         cols_index_base = cols_index.copy()
 
         N_features = len(cols_data) - len(cols_base_validation)
@@ -855,7 +871,8 @@ class Best_features_wrap:
         import pandas as pd
         from ..output.table import Table_results
         from ..output.graphics import Draw_numerical_results
-
+        from ..resources.output import image_to_report
+        
         # Get the Best performance
         # Checking the number of columns_base :2 for thr future could change
         ACC_data = pd.DataFrame(
@@ -909,7 +926,8 @@ class Best_features_wrap:
             True,
             "ACC[ K_Fold , Number of Features]",
             "square",
-        )
+            self.idoc)
+
 
         Table_results(
             11,
@@ -934,7 +952,8 @@ class Best_features_wrap:
             True,
             "PPV [K_Fold, Number of Features]",
             "square",
-        )
+            self.idoc)
+        
 
     def K_fold_full_prediction_results(
         self, K_fold, N_features, data_fold, Iperformance, Iperfor0, x, y, mis_K_classif
@@ -945,7 +964,8 @@ class Best_features_wrap:
         from ..supervised import Statsmodels_linear_filter
         from ..output.table import Table_results
         from ..output.graphics import Draw_binary_classification_results
-
+        from ..resources.output import image_to_report
+        
         N_Idata = K_fold * N_features
         # Get the Best performance
         Idata = pd.DataFrame(index=range(N_Idata), columns=["ACC", "PPV"])
@@ -1036,7 +1056,7 @@ class Best_features_wrap:
                 columns_base,
                 Title,
                 kind,
-            ).draw_mis_classification()
+                self.idoc).draw_mis_classification()
 
     def K_fold_numerical_results(
         self, K_fold, N_cols_data, N_features, data_fold, Iperformance, Iperfor0

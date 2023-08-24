@@ -26,7 +26,7 @@ CLASSIFICATION         2     SUPERV   stats       ---     0.2
 
 STRATEGIES
 STRATEGY              METHOD                     REPORT
-Features_selection  full_features               False
+Features_selection    full_features               True
 # Features_selection  features_selection_z_score  False
 # Features_selection  K_fold_cross_validation     False
 # Features_selection  pca                         False

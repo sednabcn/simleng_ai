@@ -8,6 +8,11 @@
 # Here script to update the db: datasets
 # Here script to make a cycle till got the score with multi-task
 import warnings
+import distutils
+import timeit
+import numpy as np
+from datetime import datetime,timedelta
+from distutils.util import strtobool
 from .ini.init import Init
 from .data_manager.generation import Data_Generation
 from .simula.strategies_features_selection import Features_selection
@@ -26,7 +31,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-# file_input = "simlengin4.txt"
+file_input = "simlengin2308.txt"
 
 
 class Simleng:
@@ -36,7 +41,7 @@ class Simleng:
         self.gen = Data_Generation(file_input, score)
         # self.game=Simleng_strategies()
         self.eng = Data_Engineering()
-        self.vis = Data_Visualisation()
+        #self.vis = Data_Visualisation()
         self.anal = Data_Analytics()
         self.qual = Data_Quality()
         self.strategies = {}
@@ -44,6 +49,7 @@ class Simleng:
         # self.strategies = {}
         self.strategies_client = {}
 
+        # generation of entry data and process
         (
             _,
             self.dataset,
@@ -54,9 +60,18 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
-
+        
+        # flag to make report 
+        self.idoc=int(strtobool(self.strategies_client["REPORT"]))
+        self.vis = Data_Visualisation(self.idoc)
     def simulation_strategies(self):
         """strategies management in Simleng"""
+
+        # printing to start running
+        dt_starting=datetime.now().strftime("%d/%m/%y %H:%M:%S")
+        print("Simleng start running on",dt_starting)
+
+        
         self.strategies["Features_selection"] = [
             "full_features",
             "features_selection_z_score",
@@ -72,7 +87,11 @@ class Simleng:
             "synthetic",
             "unique_rep",
         ]
-        self.strategies["Training"] = ["base", "full", "pre-trained"]
+        self.strategies["Training"] =[
+            "base",
+            "full",
+            "pre-trained"
+        ]
         self.strategies["Stochastic"] = [
             "boostrap",
             "combined",
@@ -90,6 +109,7 @@ class Simleng:
         ]
 
         print(self.strategies_client["STRATEGY"])
+
         try:
             if (
                 self.strategies_client["METHOD"]
@@ -101,8 +121,10 @@ class Simleng:
         except:
             print("Checking the input_file: Simlengin.txt")
 
+         
         return self.strategies_master()
-
+    
+    # mastering a type of strategies
     def strategies_features_master(self):
         # Here is taken the class with the same name to the startegy
         from .simula.strategies_features_selection import Features_selection
@@ -117,6 +139,7 @@ class Simleng:
                 self.data_dummy_test,
                 self.strategies_client["METHOD"],
                 self.params,
+                self.idoc,
             ]
             return Features_selection(*pepe).strategies_features_selection_master()
 
@@ -179,11 +202,16 @@ class Simleng:
             pass
 
         else:
-            pass
-
+            pass        
+        
     def strategies_master(self):
         import numpy as np
 
+        # starting running time of Simleng
+        t0=timeit.default_timer()
+
+        # parameters to characteize the strategy
+        
         mlmethod = str(self.target["METHOD"])
         strategy = str(self.strategies_client["STRATEGY"])
         proc = str(self.strategies_client["METHOD"])
@@ -195,9 +223,15 @@ class Simleng:
             nclass = str(self.target["NCLASS"])
             score = self.target["SCORE"]
 
-        doc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
+        #moved to Simleng entry point    
+        #idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
 
-        return self.switch(mlmethod, goal, nclass, strategy)
+        self.switch(mlmethod, goal, nclass, strategy)
+
+        elapsed=(timeit.default_timer() -t0)
+        x,y,z=str(timedelta(seconds=elapsed)).split(':')
+        
+        return print("Simleng runs in {}H:{}M:{}S".format(x,y,z))
 
 
 # MACROSIN=Simleng(file_input,score=0.90).ini.get_macros()
@@ -205,4 +239,4 @@ class Simleng:
 # print(dict(MACROSIN.items()))
 
 # Simleng(file_input,score=0.90).simulation_strategies()
-# Simleng(file_input, score=0.90).simulation_strategies()
+Simleng(file_input, score=0.90).simulation_strategies()
