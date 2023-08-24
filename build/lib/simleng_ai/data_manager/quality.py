@@ -34,8 +34,8 @@ class Data_Visualisation(Data_Generation):
     # colors for grahics with matplolib and plotly
     colors = [ic for ic in mcolors.BASE_COLORS.values() if ic != (1, 1, 1)]
 
-    def __init__(self,idoc):
-        self.idoc=idoc
+    def __init__(self, idoc):
+        self.idoc = idoc
 
     def data_head_tail(self, data):
         "Head_tail of DataFrame data"
@@ -49,32 +49,42 @@ class Data_Visualisation(Data_Generation):
 
     def data_feature_show(self, data):
         from ..resources.output import image_to_report
+
         sns.countplot(x="type", data=data, palette="hls")
         plt.title("Binary Categorical Variable(Yes/No)")
-        #return plt.show()
-        return image_to_report(self.idoc,'binaryclass','png')
-    
+        # return plt.show()
+        if self.idoc >= 1:
+            print("Fig:binaryclass")
+        return image_to_report(self.idoc, "binaryclass", "png")
+
     def data_features_show(self, data):
         """check the xlabel"""
         from ..resources.output import image_to_report
+
         sns.countplot(x="age", hue="type", data=data[::5], orient="h", palette="Set1")
         plt.title("Behaviour of the Diabetes with the age")
-        return image_to_report(self.idoc,'countplot','png')
-        #return plt.show()
-        
+        if self.idoc >= 1:
+            print("Fig:Behaviour of the Diabetes with the age")
+        return image_to_report(self.idoc, "countplot", "png")
+        # return plt.show()
+
     def data_features_draw_scatter(self, data):
         """Scatter Plot of data."""
         import seaborn as sns
         from ..resources.output import image_to_report
+
         sns.set(style="ticks", palette=colors[:7])
         sns.pairplot(data)
         plt.title("Scatter Plot of data")
-        #return plt.show()
-        return image_to_report(self.idoc,'scatter','png')
-        
+        # return plt.show()
+        if self.idoc >= 1:
+            print("Fig:data_feature_scatter")
+        return image_to_report(self.idoc, "scatter", "png")
+
     def data_features_draw_hist(self, data, n_bins):
         """Visualization of statistical distributions."""
         from ..resources.output import image_to_report
+
         np.random.seed(1)
 
         n_bins = 10
@@ -106,9 +116,10 @@ class Data_Visualisation(Data_Generation):
 
         plt.suptitle("Pima Datasets [type~npreg+glu+bp+skin+bmi+ped+age]")
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
-        return image_to_report(self.idoc,'mult_dist','png')
-        
-        
+        if self.idoc >= 1:
+            print("Fig:data_feature_show_multiple_distributions")
+        return image_to_report(self.idoc, "mult_dist", "png")
+
     def draw_multivariate_normal_pdf(self):
         """plot multivariate normal distribution known mean and covariance"""
         import numpy as np
@@ -116,7 +127,6 @@ class Data_Visualisation(Data_Generation):
         import matplotlib.pyplot as plt
         from ..resources.output import image_to_report
 
-        
         # mean and covariance
         mu = np.array([0, 0])
         sigma = np.array([[1, -0.5], [-0.5, 1]])
@@ -127,7 +137,7 @@ class Data_Visualisation(Data_Generation):
         # Do it with scipy
         norm_scpy = multivariate_normal(mu, sigma).pdf(np.stack((x, y), axis=2))
         assert np.allclose(norm, norm_scpy)
-        
+
         # Plot
         fig = plt.figure(figsize=(10, 7))
         ax = fig.gca(projection="3d")
@@ -149,8 +159,11 @@ class Data_Visualisation(Data_Generation):
         ax.set_zlabel("p(x)")
         plt.title("Bivariate Normal/Gaussian distribution")
         fig.colorbar(surf, shrink=0.5, aspect=7, cmap=plt.cm.coolwarm)
-        #plt.show()
-        return image_to_report(self.idoc,'multivariate','png')
+        # plt.show()
+        if self.idoc >= 1:
+            print("Fig:Multivariate Normal Distribution")
+        return image_to_report(self.idoc, "multivariate", "png")
+
 
 class Data_Output:
     pass

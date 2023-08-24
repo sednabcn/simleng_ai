@@ -1,4 +1,4 @@
-Simleng start running on 24/08/23 17:10:02
+Simleng start running on 24/08/23 18:11:28
 Features_selection
 full_features
 
@@ -27,6 +27,8 @@ full_features
 
 
 
+Fig:binaryclass
+Fig:Behaviour of the Diabetes with the age
 
 
             Descriptive Statsistics of Pima Data            
@@ -53,6 +55,7 @@ mean     3.801  120.448   68.523   20.656   80.300   31.890    0.481   33.197   
 
 
 
+Fig:data_feature_show_multiple_distributions
 
 
             Correlation Matrix on Training Data             
@@ -78,6 +81,8 @@ mean     3.801  120.448   68.523   20.656   80.300   31.890    0.481   33.197   
 
 
 
+Fig:corrplot
+Fig:corr2
           npreg       glu        bp  ...       bmi       ped       age
 npreg  1.000000  0.129136  0.155407  ...  0.010837 -0.041543  0.554559
 glu    0.129136  1.000000  0.161056  ...  0.217107  0.152196  0.278759
@@ -89,6 +94,8 @@ ped   -0.041543  0.152196  0.017023  ...  0.134778  1.000000  0.024847
 age    0.554559  0.278759  0.263742  ...  0.059847  0.024847  1.000000
 
 [8 rows x 8 columns]
+Fig:corr3
+Fig:Correlation matrices
 
 
 Treshold value , correlation=0.90
@@ -1711,6 +1718,7 @@ Optimization terminated successfully.
 
 
 
+Fig:Residuals of solvers on Training Data
 
 
                      Confusion Matrix                       
@@ -1728,8 +1736,10 @@ Optimization terminated successfully.
 
 
 
-Simleng runs in 0H:00M:33.087552S
-Simleng start running on 24/08/23 17:11:04
+Fig:Binary Classification using statsmodels
+Fig:ROC_CURVE
+Simleng runs in 0H:00M:19.154522S
+Simleng start running on 24/08/23 18:11:48
 Features_selection
 full_features
 
@@ -1758,6 +1768,8 @@ full_features
 
 
 
+Fig:binaryclass
+Fig:Behaviour of the Diabetes with the age
 
 
             Descriptive Statsistics of Pima Data            
@@ -1784,6 +1796,7 @@ mean     3.801  120.448   68.523   20.656   80.300   31.890    0.481   33.197   
 
 
 
+Fig:data_feature_show_multiple_distributions
 
 
             Correlation Matrix on Training Data             
@@ -1809,6 +1822,8 @@ mean     3.801  120.448   68.523   20.656   80.300   31.890    0.481   33.197   
 
 
 
+Fig:corrplot
+Fig:corr2
           npreg       glu        bp  ...       bmi       ped       age
 npreg  1.000000  0.129136  0.155407  ...  0.010837 -0.041543  0.554559
 glu    0.129136  1.000000  0.161056  ...  0.217107  0.152196  0.278759
@@ -1820,6 +1835,8 @@ ped   -0.041543  0.152196  0.017023  ...  0.134778  1.000000  0.024847
 age    0.554559  0.278759  0.263742  ...  0.059847  0.024847  1.000000
 
 [8 rows x 8 columns]
+Fig:corr3
+Fig:Correlation matrices
 
 
 Treshold value , correlation=0.90
@@ -3442,6 +3459,7 @@ Optimization terminated successfully.
 
 
 
+Fig:Residuals of solvers on Training Data
 
 
                      Confusion Matrix                       
@@ -3459,4 +3477,6 @@ Optimization terminated successfully.
 
 
 
-Simleng runs in 0H:00M:40.081139S
+Fig:Binary Classification using statsmodels
+Fig:ROC_CURVE
+Simleng runs in 0H:00M:09.789262S

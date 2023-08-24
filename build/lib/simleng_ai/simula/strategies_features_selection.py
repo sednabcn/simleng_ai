@@ -28,7 +28,7 @@ from collections import OrderedDict, defaultdict
 
 class Features_selection(Data_Generation):
     def __init__(self, *args):
-        self.idoc=-1    
+        self.idoc = -1
         self.data_train = args[0]
         self.data_test = args[1]
         self.data_dummy_train = args[2]
@@ -37,8 +37,8 @@ class Features_selection(Data_Generation):
         self.params = defaultdict()
         self.params = args[5]
 
-        self.idoc =args[6]
-                
+        self.idoc = args[6]
+
         self.GenLogit_shape = self.params["GenLogit_shape"]
         self.index_columns_base = self.params["columns_search"]
         self.min_shuffle_size = int(self.params["min_shuffle_size"])
@@ -86,12 +86,13 @@ class Features_selection(Data_Generation):
 
         Data_Visualisation(self.idoc).data_features_draw_hist(U_train, 10)
 
-        Correlation(U_train, df.columns, 0.9,self.idoc).correlation_training()
-
-        Correlation(U_train, U_train.columns, 0.9,self.idoc).correlation_level()
+        Correlation(U_train, df.columns, 0.9, self.idoc).correlation_training()
+        if self.idoc >= 1:
+            print("Fig:Correlation matrices")
+        Correlation(U_train, U_train.columns, 0.9, self.idoc).correlation_level()
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
-        
+
         names = ["GLM", "Logit", "GenLogit", "Probit"]
         exog = U_train_exog
         endog = V_train
@@ -130,6 +131,9 @@ class Features_selection(Data_Generation):
             0, params_table, ".3f", "fancy_grid", "Models Parameters", 60
         ).print_table()
 
+        if self.idoc >= 1:
+            print("Fig:Residuals of solvers on Training Data")
+
         Draw_numerical_results.frame_from_dict(
             residuals_table.index,
             residuals_table,
@@ -140,12 +144,15 @@ class Features_selection(Data_Generation):
             " ",
             " ",
             "square",
-            self.idoc)
+            self.idoc,
+        )
 
         Table_results(
             6, confusion_matrix, ".2f", "fancy_grid", "Confusion Matrix ", 60
         ).print_table()
 
+        if self.idoc >= 1:
+            print("Fig:Binary Classification using statsmodels")
         # FPR,TPR,model_names,params,x_test,y_test,y_predict,columns
         Title = "Binary Classification using Statsmodels"
         Draw_binary_classification_results(
@@ -163,11 +170,13 @@ class Features_selection(Data_Generation):
             columns_train,
             Title,
             "",
-            self.idoc).fpn_estimated()
+            self.idoc,
+        ).fpn_estimated()
 
         # Draw_binary_classification_results(FPR,TPR,to_model_names).\
         # fpn_estimated(V_test,y_estimated_table)
-
+        if self.idoc >= 1:
+            print("Fig:ROC_CURVE")
         to_model_names.append("AUC=0.5")
         Title = " ROC_CURVE "
         Draw_binary_classification_results(
@@ -185,7 +194,8 @@ class Features_selection(Data_Generation):
             columns_train,
             Title,
             "",
-            self.idoc).roc_curve()
+            self.idoc,
+        ).roc_curve()
 
     def simulation_features_selection_z_score(self):
         """Working with diferents criterie of features selection."""
@@ -347,7 +357,8 @@ class Features_selection(Data_Generation):
             "Confusion Matrix :" + columns_Index_plus[1] + "," + columns_Index_plus[2],
             40,
         ).print_table()
-
+        if self.idoc >= 1:
+            print("Fig:Draw binary_classification_results of Best Predictors")
         # Draw_binary_classification_results of Best Predictors
         # based on p_values
         x = U_test_exog[columns_two]
@@ -375,7 +386,8 @@ class Features_selection(Data_Generation):
             columns,
             Title,
             "",
-            self.idoc).draw_regions_binary_classification()
+            self.idoc,
+        ).draw_regions_binary_classification()
 
         print("INCREASING ADDING FEATURES AFTER Z-SCORE ANALYSIS")
 
@@ -416,7 +428,8 @@ class Features_selection(Data_Generation):
         params = params_table.T
         kind = "Validation"
         Title = "Binary Classification using statsmodels" " (Validation Case)"
-
+        if self.idoc >= 1:
+            print("Fig:Draw binary Classification using Statsmodels(Validation Case)")
         Draw_binary_classification_results(
             FPR,
             TPR,
@@ -432,8 +445,10 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-            self.idoc).draw_mis_classification()
-
+            self.idoc,
+        ).draw_mis_classification()
+        if self.idoc >= 1:
+            print("Fig:Binary Classification(Prediction case)")
         kind = "Prediction"
         Title = "Binary Classification using statsmodels" " (Prediction Case)"
         Draw_binary_classification_results(
@@ -451,7 +466,8 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-            self.idoc).draw_mis_classification()
+            self.idoc,
+        ).draw_mis_classification()
 
     def simulation_K_fold_cross_validation(self):
         print("K_fold CROSS-VALIDATION PROCESS WITH FITTING AND PREDICT")
@@ -506,7 +522,9 @@ class Features_selection(Data_Generation):
         ).print_table()
 
         # Columns_two contain the best predictors
-        columns_two, columns_Index = Best_features_wrap(self.idoc).z_score(z_score_table, 1.96)
+        columns_two, columns_Index = Best_features_wrap(self.idoc).z_score(
+            z_score_table, 1.96
+        )
 
         # Draw_binary_classification_results of Best Predictors
         # based on Z-score
@@ -591,7 +609,8 @@ class Features_selection(Data_Generation):
             "K_fold Cross-Validation in Binary Classification using statsmodels"
             " (Validation Case)"
         )
-
+        if self.idoc >= 1:
+            print("Fig:Binary classification with K-fold validation")
         Draw_binary_classification_results(
             "",
             "",
@@ -607,14 +626,16 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-       self.idoc).draw_mis_classification()
+            self.idoc,
+        ).draw_mis_classification()
 
         kind = "Prediction"
         Title = (
             "K_fold Cross-Validation in Binary Classification using statsmodels"
             " (Prediction Case)"
         )
-
+        if self.idoc >= 1:
+            print("Fig:Binary Missclassification case")
         Draw_binary_classification_results(
             "",
             "",
@@ -630,7 +651,8 @@ class Features_selection(Data_Generation):
             columns_base,
             Title,
             kind,
-            self.idoc).draw_mis_classification()
+            self.idoc,
+        ).draw_mis_classification()
 
     def simulation_pca(self):
         """Working to explore a spectral mehthod"""

@@ -5,6 +5,13 @@ from distutils.dir_util import copy_tree
 
 
 class MyDB(object):
+    """
+    db-new database
+    store-place to store one
+    kind:-structured(table),-non-structured
+    path=db_client:path of the new database
+    
+    """
     def __init__(self, db, store, kind=None, path=None):
         self.db = db
         self.db_client = path
@@ -26,7 +33,7 @@ class MyDB(object):
         else:
             pass
 
-
+    
 """
 EXAMPLE
 

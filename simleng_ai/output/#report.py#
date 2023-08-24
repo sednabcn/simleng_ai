@@ -40,6 +40,7 @@ if isinstance(data_source,dict):
     source =data_source["DATASOURCE"]
     
 MyDB(dataset, "output_results", kind=source).datasets_store()    
+
 input_to_table = pd.DataFrame.from_dict(MACROSIN)
 Table_results(0, input_to_table, ".3f", "fancy_grid", title_text, 60).print_table()
 
