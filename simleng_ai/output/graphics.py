@@ -83,7 +83,7 @@ class Draw_numerical_results:
             mode,
         )
 
-    def frame_from_dict_(y, xlabel, ylabel, Title, mapping, grid, text, boxstyle,mode):
+    def frame_from_dict_(y, xlabel, ylabel, Title, mapping, grid, text, boxstyle, mode):
         """From dict with orient='index'"""
         import numpy as np
         import pandas as pd
@@ -121,7 +121,8 @@ class Draw_numerical_results:
             grid,
             text,
             boxstyle,
-            mode)
+            mode,
+        )
 
 
 class Drawing2d:
@@ -143,7 +144,7 @@ class Drawing2d:
         grid,
         text,
         boxstyle,
-        mode=None,    
+        mode=None,
     ):
         """Draw matrix vs matrix."""
         """
@@ -162,7 +163,7 @@ class Drawing2d:
         import matplotlib.pyplot as plt
         from matplotlib import colors as mcolors
         from ..resources.output import image_to_report
-        
+
         text = text
         # Check the parameter grid
         grid = grid
@@ -305,9 +306,9 @@ class Drawing2d:
         #             {'color': 'k', 'fontsize':10, 'ha': 'left', 'va': 'center',\
         #              'bbox': dict(boxstyle=str(boxstyle), fc="w", ec="k", pad=0.3)})
 
-        #return plt.show()
-        return image_to_report(mode,Title[:3]+'_'+str(random.randint(0,3)),'png')
-    
+        # return plt.show()
+        return image_to_report(mode, Title[:3] + "_" + str(random.randint(0, 3)), "png")
+
     def draw_vector(v0, v1, x0, y0, ax=None):
         """Modification to Python Data Science Handbook
         origin by Jake VanderPlas; Jupyter notebooks"""
@@ -344,7 +345,7 @@ class Draw_binary_classification_results:
         columns,
         Title,
         kind,
-        idoc
+        idoc,
     ):
         self.fpr = FPR
         self.tpr = TPR
@@ -360,8 +361,8 @@ class Draw_binary_classification_results:
         self.columns = columns
         self.Title = Title
         self.kind = kind
-        self.idoc= idoc
-        
+        self.idoc = idoc
+
     def roc_curve(self):
         X = self.fpr.T
         Y = self.tpr.T
@@ -371,7 +372,20 @@ class Draw_binary_classification_results:
         Labels = self.model_names_selected
         Linestyle = ["-", "-.", "--", ":", "--"]
         return Drawing2d.plot_matrix_matrix(
-            X, Y, Title, xlabel, ylabel, Labels, Linestyle, 0, "equal", "", "", "",self.idoc)
+            X,
+            Y,
+            Title,
+            xlabel,
+            ylabel,
+            Labels,
+            Linestyle,
+            0,
+            "equal",
+            "",
+            "",
+            "",
+            self.idoc,
+        )
 
     def fpn_estimated(self):
         """Draw prediction results from binary classification..."""
@@ -399,7 +413,20 @@ class Draw_binary_classification_results:
         ylabel = "y_truth - y_estimated"
         Linestyle = ["-", "-.", "--", ":", "--"]
         return Drawing2d.plot_matrix_matrix(
-            X, Y, Title, xlabel, ylabel, Labels, Linestyle, 2, "equal", "", "", "", self.idoc)
+            X,
+            Y,
+            Title,
+            xlabel,
+            ylabel,
+            Labels,
+            Linestyle,
+            2,
+            "equal",
+            "",
+            "",
+            "",
+            self.idoc,
+        )
 
     def draw_regions_binary_classification(self):
         """Draw regions of binary classification."""
@@ -420,7 +447,6 @@ class Draw_binary_classification_results:
         print(self.idoc)
         print(input("STOP"))
 
-        
         model_names = self.model_names_selected
 
         self.x_test = pd.DataFrame(self.x_test)
@@ -506,10 +532,9 @@ class Draw_binary_classification_results:
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
         plt.suptitle(Title)
-        #return plt.show()
-        return image_to_report(self.idoc,'binaryclass','png')
+        # return plt.show()
+        return image_to_report(self.idoc, "binaryclass", "png")
 
-                               
     def draw_mis_classification(self):
         """Draw regions of binary classification."""
         """
@@ -524,8 +549,8 @@ class Draw_binary_classification_results:
         import pandas as pd
         import numpy as np
         import matplotlib.pyplot as plt
-        from ..resources.output import image_to_report 
-        
+        from ..resources.output import image_to_report
+
         model_names = self.model_names_selected
 
         if self.kind == "Validation":
@@ -626,6 +651,5 @@ class Draw_binary_classification_results:
                 fig.tight_layout(rect=[0, 0.03, 1, 0.95])
 
         plt.suptitle(Title)
-        #return plt.show()
-        return image_to_report(self.idoc,'missclass','png')
-    
+        # return plt.show()
+        return image_to_report(self.idoc, "missclass", "png")

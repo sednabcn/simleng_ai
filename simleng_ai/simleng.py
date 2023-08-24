@@ -11,7 +11,7 @@ import warnings
 import distutils
 import timeit
 import numpy as np
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from distutils.util import strtobool
 from .ini.init import Init
 from .data_manager.generation import Data_Generation
@@ -41,7 +41,7 @@ class Simleng:
         self.gen = Data_Generation(file_input, score)
         # self.game=Simleng_strategies()
         self.eng = Data_Engineering()
-        #self.vis = Data_Visualisation()
+        # self.vis = Data_Visualisation()
         self.anal = Data_Analytics()
         self.qual = Data_Quality()
         self.strategies = {}
@@ -60,18 +60,18 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
-        
-        # flag to make report 
-        self.idoc=int(strtobool(self.strategies_client["REPORT"]))
+
+        # flag to make report
+        self.idoc = int(strtobool(self.strategies_client["REPORT"]))
         self.vis = Data_Visualisation(self.idoc)
+
     def simulation_strategies(self):
         """strategies management in Simleng"""
 
         # printing to start running
-        dt_starting=datetime.now().strftime("%d/%m/%y %H:%M:%S")
-        print("Simleng start running on",dt_starting)
+        dt_starting = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+        print("Simleng start running on", dt_starting)
 
-        
         self.strategies["Features_selection"] = [
             "full_features",
             "features_selection_z_score",
@@ -87,11 +87,7 @@ class Simleng:
             "synthetic",
             "unique_rep",
         ]
-        self.strategies["Training"] =[
-            "base",
-            "full",
-            "pre-trained"
-        ]
+        self.strategies["Training"] = ["base", "full", "pre-trained"]
         self.strategies["Stochastic"] = [
             "boostrap",
             "combined",
@@ -121,9 +117,8 @@ class Simleng:
         except:
             print("Checking the input_file: Simlengin.txt")
 
-         
         return self.strategies_master()
-    
+
     # mastering a type of strategies
     def strategies_features_master(self):
         # Here is taken the class with the same name to the startegy
@@ -202,16 +197,16 @@ class Simleng:
             pass
 
         else:
-            pass        
-        
+            pass
+
     def strategies_master(self):
         import numpy as np
 
         # starting running time of Simleng
-        t0=timeit.default_timer()
+        t0 = timeit.default_timer()
 
         # parameters to characteize the strategy
-        
+
         mlmethod = str(self.target["METHOD"])
         strategy = str(self.strategies_client["STRATEGY"])
         proc = str(self.strategies_client["METHOD"])
@@ -223,15 +218,15 @@ class Simleng:
             nclass = str(self.target["NCLASS"])
             score = self.target["SCORE"]
 
-        #moved to Simleng entry point    
-        #idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
+        # moved to Simleng entry point
+        # idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
 
         self.switch(mlmethod, goal, nclass, strategy)
 
-        elapsed=(timeit.default_timer() -t0)
-        x,y,z=str(timedelta(seconds=elapsed)).split(':')
-        
-        return print("Simleng runs in {}H:{}M:{}S".format(x,y,z))
+        elapsed = timeit.default_timer() - t0
+        x, y, z = str(timedelta(seconds=elapsed)).split(":")
+
+        return print("Simleng runs in {}H:{}M:{}S".format(x, y, z))
 
 
 # MACROSIN=Simleng(file_input,score=0.90).ini.get_macros()

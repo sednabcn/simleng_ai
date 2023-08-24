@@ -30,7 +30,6 @@ setup(
     python_requires=">=3.8",
     keywords="simleng data_analisys setuptools development",
     # manifest_in=["./input_file/simleng.txt","./datasets/*"],
- 
     install_requires=[
         "biokit >=0.5.0",
         "colormap>=1.0.4",

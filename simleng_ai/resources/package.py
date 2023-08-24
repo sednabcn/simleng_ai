@@ -73,16 +73,17 @@ def all_names_class(list_txt, PATTERNS=None):
     all_classes.sort()
     return all_classes
 
-def cleanup_pack(package,PATHDIR=None,PATTERNS=None):
+
+def cleanup_pack(package, PATHDIR=None, PATTERNS=None):
     import os
     import re
     from ..resources.io import find_full_path
-    pattern=re.compile(r"(^#)|(~$)")
-    path = find_full_path(package,PATHDIR)
+
+    pattern = re.compile(r"(^#)|(~$)")
+    path = find_full_path(package, PATHDIR)
     packlist = []
     for root, dirs, files in os.walk(path):
-        
-        packlist_ = [ name for name in files if re.findall(pattern,name)]
+        packlist_ = [name for name in files if re.findall(pattern, name)]
 
         if len(packlist_) > 0:
             packlist.extend(packlist_)
@@ -90,10 +91,12 @@ def cleanup_pack(package,PATHDIR=None,PATTERNS=None):
     print(packlist)
     for myfile in packlist:
         if os.path.isfile(myfile):
-            #print
-            os.remove(find_full_path(myfile,PATHDIR))
+            # print
+            os.remove(find_full_path(myfile, PATHDIR))
         else:
             # If it fails, inform the user.
             print("Error: %s file not found" % myfile)
             packlist.remove(myfile)
-    return print(len(packlist) ,'files has been removed from',package,'\n'),print(packlist)
+    return print(len(packlist), "files has been removed from", package, "\n"), print(
+        packlist
+    )
