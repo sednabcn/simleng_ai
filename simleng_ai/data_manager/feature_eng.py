@@ -47,11 +47,13 @@ class Correlation(Data_Engineering):
         plt.style.use("ggplot")
         c = Corrplot(self.x)
         c.plot(cmap=("Orange", "white", "green"))
+        if self.idoc>=1: print("Fig:corrplot")
         image_to_report(self.idoc,'corr1','png')
         
         c.plot(method="circle")
         plt.suptitle("Pair-Correlation Matrix on Training Data")
         # image_to_report
+        if self.idoc>=1: print("Fig:corr2")
         image_to_report(self.idoc,'corr2','png')
         #plt.show()
         # figure2
@@ -59,7 +61,7 @@ class Correlation(Data_Engineering):
         # plotting correlation heatmap
         dataplot = sns.heatmap(dfcorr, cmap="YlGnBu", annot=True)
         #return (plt.sow(),)
-       
+        if self.idoc>=1: print("Fig:corr3")
         image_to_report(self.idoc,'corr3','png')
     
     def correlation_level(self):
@@ -192,6 +194,7 @@ class PCA:
         plt.title("Major PCA Factor vs Minor PCA Factor")
         plt.axis("equal")
         #return plt.show()
+        if self.idoc>=1: print("Fig:PCA_factor")
         return image_to_report(self.idoc,'pca_factor','png')
     
     def pca_show_table(self):
@@ -248,6 +251,7 @@ class PCA:
         plt.xlabel("Observed variables")
         plt.title("Visualization of PCA by components")
         #return plt.show()
+        if self.idoc>=1: print("Fig:pca_components")
         return image_to_report(self.idoc,'pca_components','png')
             
     def pca_transformation(self):
@@ -333,7 +337,8 @@ class SVD:
         plt.ylabel("salary")
         plt.tight_layout()
         #plt.show()
-        # Principal components analysis (PCA
+        # Principal components analysis (PCA)
+        if self.idoc>=1: print("Fig:svd")
         return image_to_report(self.idoc,'svd','png')
 
 class Best_features_filter:
@@ -915,7 +920,7 @@ class Best_features_wrap:
         ).print_table()
 
         Title = "K_Fold vs Features : Cross-Validation to Binary Classification"
-
+        if self.idoc>=1: print("Fig:ACC[K_Fold, Number of Features]") 
         # Text is not garantized inside the box draw..Why???
         Draw_numerical_results.frame_from_dict_(
             ACC_data,
@@ -942,7 +947,7 @@ class Best_features_wrap:
         ).print_table()
 
         Title = "K_Fold vs Features : Cross-Validation to Binary Classification"
-
+        if self.idoc>=1: print("Fig:PPV[K_Fold, Number of Features]")
         Draw_numerical_results.frame_from_dict_(
             PPV_data,
             "Folds",
@@ -1040,7 +1045,7 @@ class Best_features_wrap:
             Title = "Prediction in Binary Classification using statsmodels"
 
             params = params_table.T
-
+            if self.idoc>=1: print("Fig:Prediction")
             Draw_binary_classification_results(
                 FPR,
                 TPR,

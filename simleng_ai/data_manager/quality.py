@@ -52,6 +52,7 @@ class Data_Visualisation(Data_Generation):
         sns.countplot(x="type", data=data, palette="hls")
         plt.title("Binary Categorical Variable(Yes/No)")
         #return plt.show()
+        if self.idoc>=1: print("Fig:binaryclass")
         return image_to_report(self.idoc,'binaryclass','png')
     
     def data_features_show(self, data):
@@ -59,6 +60,7 @@ class Data_Visualisation(Data_Generation):
         from ..resources.output import image_to_report
         sns.countplot(x="age", hue="type", data=data[::5], orient="h", palette="Set1")
         plt.title("Behaviour of the Diabetes with the age")
+        if self.idoc>=1: print("Fig:Behaviour of the Diabetes with the age")
         return image_to_report(self.idoc,'countplot','png')
         #return plt.show()
         
@@ -70,6 +72,7 @@ class Data_Visualisation(Data_Generation):
         sns.pairplot(data)
         plt.title("Scatter Plot of data")
         #return plt.show()
+        if self.idoc>=1: print("Fig:data_feature_scatter")
         return image_to_report(self.idoc,'scatter','png')
         
     def data_features_draw_hist(self, data, n_bins):
@@ -106,6 +109,7 @@ class Data_Visualisation(Data_Generation):
 
         plt.suptitle("Pima Datasets [type~npreg+glu+bp+skin+bmi+ped+age]")
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+        if self.idoc>=1: print("Fig:data_feature_show_multiple_distributions")
         return image_to_report(self.idoc,'mult_dist','png')
         
         
@@ -150,6 +154,7 @@ class Data_Visualisation(Data_Generation):
         plt.title("Bivariate Normal/Gaussian distribution")
         fig.colorbar(surf, shrink=0.5, aspect=7, cmap=plt.cm.coolwarm)
         #plt.show()
+        if self.idoc>=1: print("Fig:Multivariate Normal Distribution")
         return image_to_report(self.idoc,'multivariate','png')
 
 class Data_Output:

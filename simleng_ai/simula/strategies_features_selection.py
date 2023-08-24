@@ -77,17 +77,17 @@ class Features_selection(Data_Generation):
         U_test_exog = data_add_constant(U_test)
 
         Data_Visualisation(self.idoc).data_head_tail(df)
-
+        
         Data_Visualisation(self.idoc).data_feature_show(df)
-
+        
         Data_Visualisation(self.idoc).data_features_show(df)
 
         Data_Analytics().data_describe(df)
 
         Data_Visualisation(self.idoc).data_features_draw_hist(U_train, 10)
-
+        
         Correlation(U_train, df.columns, 0.9,self.idoc).correlation_training()
-
+        if self.idoc>=1: print("Fig:Correlation matrices")
         Correlation(U_train, U_train.columns, 0.9,self.idoc).correlation_level()
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
@@ -129,6 +129,8 @@ class Features_selection(Data_Generation):
         Table_results(
             0, params_table, ".3f", "fancy_grid", "Models Parameters", 60
         ).print_table()
+        
+        if self.idoc>=1: print("Fig:Residuals of solvers on Training Data")
 
         Draw_numerical_results.frame_from_dict(
             residuals_table.index,
@@ -141,11 +143,12 @@ class Features_selection(Data_Generation):
             " ",
             "square",
             self.idoc)
-
+        
         Table_results(
             6, confusion_matrix, ".2f", "fancy_grid", "Confusion Matrix ", 60
         ).print_table()
 
+        if self.idoc>=1: print("Fig:Binary Classification using statsmodels")
         # FPR,TPR,model_names,params,x_test,y_test,y_predict,columns
         Title = "Binary Classification using Statsmodels"
         Draw_binary_classification_results(
@@ -167,7 +170,7 @@ class Features_selection(Data_Generation):
 
         # Draw_binary_classification_results(FPR,TPR,to_model_names).\
         # fpn_estimated(V_test,y_estimated_table)
-
+        if self.idoc>=1: print("Fig:ROC_CURVE")
         to_model_names.append("AUC=0.5")
         Title = " ROC_CURVE "
         Draw_binary_classification_results(
@@ -347,7 +350,7 @@ class Features_selection(Data_Generation):
             "Confusion Matrix :" + columns_Index_plus[1] + "," + columns_Index_plus[2],
             40,
         ).print_table()
-
+        if self.idoc>=1: print("Fig:Draw binary_classification_results of Best Predictors")
         # Draw_binary_classification_results of Best Predictors
         # based on p_values
         x = U_test_exog[columns_two]
@@ -416,7 +419,7 @@ class Features_selection(Data_Generation):
         params = params_table.T
         kind = "Validation"
         Title = "Binary Classification using statsmodels" " (Validation Case)"
-
+        if self.idoc>=1: print("Fig:Draw binary Classification using Statsmodels(Validation Case)")
         Draw_binary_classification_results(
             FPR,
             TPR,
@@ -433,7 +436,7 @@ class Features_selection(Data_Generation):
             Title,
             kind,
             self.idoc).draw_mis_classification()
-
+        if self.idoc>=1: print("Fig:Binary Classification(Prediction case)")
         kind = "Prediction"
         Title = "Binary Classification using statsmodels" " (Prediction Case)"
         Draw_binary_classification_results(
@@ -591,7 +594,7 @@ class Features_selection(Data_Generation):
             "K_fold Cross-Validation in Binary Classification using statsmodels"
             " (Validation Case)"
         )
-
+        if self.idoc>=1: print("Fig:Binary classification with K-fold validation")
         Draw_binary_classification_results(
             "",
             "",
@@ -614,7 +617,7 @@ class Features_selection(Data_Generation):
             "K_fold Cross-Validation in Binary Classification using statsmodels"
             " (Prediction Case)"
         )
-
+        if self.idoc>=1: print("Fig:Binary Missclassification case")
         Draw_binary_classification_results(
             "",
             "",

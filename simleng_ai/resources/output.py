@@ -54,7 +54,6 @@ def table(x, floatfmt, style, title, width):
 def image_to_report(idoc,imname,format):
     """Putting images in the report"""
     import matplotlib.pyplot as plt
-
     
     if idoc>=1:
         return plt.savefig(imname+'.'+str(format))

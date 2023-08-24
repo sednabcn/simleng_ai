@@ -306,7 +306,7 @@ class Drawing2d:
         #              'bbox': dict(boxstyle=str(boxstyle), fc="w", ec="k", pad=0.3)})
 
         #return plt.show()
-        return image_to_report(mode,Title[:3]+'_'+str(random.randint(0,30)),'png')
+        return image_to_report(mode,Title[:3]+'_'+str(random.randint(0,3)),'png')
     
     def draw_vector(v0, v1, x0, y0, ax=None):
         """Modification to Python Data Science Handbook

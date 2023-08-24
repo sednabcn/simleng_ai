@@ -1,4 +1,4 @@
-# =["build_package_list","requirements","all_names_import",all_names_class"]
+# =["build_package_list","requirements","all_names_import",all_names_class","cleanup_pack"]
 
 
 def build_package_list(package):
@@ -72,3 +72,28 @@ def all_names_class(list_txt, PATTERNS=None):
     all_classes = list(set(__all__))
     all_classes.sort()
     return all_classes
+
+def cleanup_pack(package,PATHDIR=None,PATTERNS=None):
+    import os
+    import re
+    from ..resources.io import find_full_path
+    pattern=re.compile(r"(^#)|(~$)")
+    path = find_full_path(package,PATHDIR)
+    packlist = []
+    for root, dirs, files in os.walk(path):
+        
+        packlist_ = [ name for name in files if re.findall(pattern,name)]
+
+        if len(packlist_) > 0:
+            packlist.extend(packlist_)
+    packlist = list(set(packlist))
+    print(packlist)
+    for myfile in packlist:
+        if os.path.isfile(myfile):
+            #print
+            os.remove(find_full_path(myfile,PATHDIR))
+        else:
+            # If it fails, inform the user.
+            print("Error: %s file not found" % myfile)
+            packlist.remove(myfile)
+    return print(len(packlist) ,'files has been removed from',package,'\n'),print(packlist)
