@@ -1,3 +1,5 @@
+
+
 [build-system]
 requires=["setuptools>=42","versioneer[toml]","importlib.metadata"]							
 build-backend="setuptools.build_meta"
@@ -6,11 +8,11 @@ build-backend="setuptools.build_meta"
 [metadata]
 version = "attr: simleng.__version__"
 dynamic=["version","keywords","license"]
-
+scripts=["bin/api.py"]
 [project]
 name="simleng_ai"
 authors=[{name="Ph.D. Ruperto Pedro Bonet Chaple", email="ruperto.bonet@modelphysmat.com"}]
-version="0.0.1"
+version="0.1.0"
 description="A module to develop Data_Analysis starategies"
 readme="Readme.md"
 requires-python = ">=3.8"
@@ -31,5 +33,6 @@ where = ["."]  # list of default folders that contain the packages (["."])
 include = ["*"] #package names should match the glob patterns (["*"] by default)
 exclude = ["*.~","#*",".#*"]  #exclude packages matching these glob patterns (empty by default)
 namespaces =false  # to disable scanning PEP 420 namespaces (true by default)
+
 
 
