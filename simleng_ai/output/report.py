@@ -14,10 +14,10 @@ python report.py input_file output_file
 import os
 import sys
 import pandas as pd
-from simleng_ai.ini.init import Init
-from simleng_ai.output.table import Table_results
-from simleng_ai.resources.output import images_to_output_results 
-from simleng_ai.resources.io import input_to_dict_table
+from ..ini.init import Init
+from ..output.table import Table_results
+from ..resources.output import images_to_output_results 
+from ..resources.io import input_to_dict_table
 from tabulate import tabulate
 
 # args to script
