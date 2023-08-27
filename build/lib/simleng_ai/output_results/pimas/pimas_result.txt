@@ -1,4 +1,4 @@
-Simleng start running on 24/08/23 18:11:28
+Simleng start running on 26/08/23 23:41:52
 Features_selection
 full_features
 
@@ -1738,8 +1738,8 @@ Fig:Residuals of solvers on Training Data
 
 Fig:Binary Classification using statsmodels
 Fig:ROC_CURVE
-Simleng runs in 0H:00M:19.154522S
-Simleng start running on 24/08/23 18:11:48
+Simleng runs in 0H:00M:11.446017S
+Simleng start running on 26/08/23 23:42:04
 Features_selection
 full_features
 
@@ -3479,4 +3479,4 @@ Fig:Residuals of solvers on Training Data
 
 Fig:Binary Classification using statsmodels
 Fig:ROC_CURVE
-Simleng runs in 0H:00M:09.789262S
+Simleng runs in 0H:00M:10.046557S

@@ -38,9 +38,7 @@ simleng_ai/datasets/pimas/pimas-indias-diabetes-bak.csv
 simleng_ai/ini/__init__.py
 simleng_ai/ini/init.py
 simleng_ai/input_file/simlengin.txt
-simleng_ai/input_file/simlengin2308.txt
-simleng_ai/input_file/simlengin4.txt
-simleng_ai/output/#report.py#
+simleng_ai/input_file/simlengin2708.txt
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
 simleng_ai/output/picture.py

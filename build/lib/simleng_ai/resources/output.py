@@ -52,13 +52,15 @@ def table(x, floatfmt, style, title, width):
         print("\n\n"),
     )
 
-
+ 
 def image_to_report(idoc, imname, imformat):
     """Putting images in the report"""
     import matplotlib.pyplot as plt
 
+
     if idoc >= 1:
-        return plt.savefig(imname + "." + str(imformat))
+        file_fig=imname+'.'+imformat
+        return plt.savefig(file_fig)
     elif idoc == 0 or idoc == None:
         return plt.show()
     else:

@@ -66,5 +66,7 @@ Python 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> from init import Init
 /home/agagora/Downloads/simleng_ai/input_file/simlengin.txt
+
 {'Simlengin.txt': [], 'DATA_PROJECT': [{'DATASET': 'pimas'}, {'TYPE': 'numeric'}, {'STRUCT': 'table'}, {'SYNTHETIC': 'False'}, {'DATASOURCE': 'table'}, {'IMBALANCE': 'False'}, {'DUMMY': 'True'}], 'FILES': [{'NUMBER': '1'}, {'FORMAT': 'csv'}, {'reader': 'pandas'}, {'mode': 'read'}, {'index_col': '0'}, {'header': 'None'}, {'sep': '\\n'}], 'LISTFILES': [{'filename': 'pima-indians-diabetes.csv'}], 'TARGET': [{'GOAL': 'CLASSI'}, {'NCLASS': '2'}, {'METHOD': 'SUPERV'}, {'SOLVER': 'stats'}, {'SCORE': '---'}, {'SPLITDATA': '0.25'}]}
+
 """
