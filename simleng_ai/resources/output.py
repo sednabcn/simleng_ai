@@ -52,30 +52,14 @@ def table(x, floatfmt, style, title, width):
         print("\n\n"),
     )
 
-
+ 
 def image_to_report(idoc, imname, imformat):
     """Putting images in the report"""
     import matplotlib.pyplot as plt
 
 
     if idoc >= 1:
-        from io import BytesIO
-        import base64
-
-        # Convert plot to a string representation
-        
-        plot_buffer = BytesIO()
-        #plt.savefig(plot_buffer, format="png")
-        #plt.close()
-        plot_buffer.seek(0)
-        encoded_plot = base64.b64encode(plot_buffer.read()).decode("utf-8")
-        file_fig=imname + "." + str(imformat)
-        # Save text and encoded plot to the same output file
-        with open(file_fig+".txt", "w") as file:
-            #file.write(text_output + "\n\n")
-            #file.write("Encoded Plot:\n")
-            file.write(encoded_plot)
-            file.close()
+        file_fig=imname+'.'+imformat
         return plt.savefig(file_fig)
     elif idoc == 0 or idoc == None:
         return plt.show()

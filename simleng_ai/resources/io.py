@@ -1,4 +1,4 @@
-# ==["file_reader","file_writer","find_full_path"]
+# ==["file_reader","file_writer","find_full_path","input_to_dict_table"]
 
 
 def file_reader(file, type_file, *pars):
@@ -118,3 +118,21 @@ def find_full_path(name, path=None):
         return full_path
     else:
         return new_path
+
+def input_to_dict_table(dict0,idoc):
+    """convert input template to dataframe.from_dict"""
+    import pandas as pd
+    from tabulate import tabulate
+ 
+    dict1={}
+    for i in dict0.keys():
+        dict1[i]={}
+        for j in dict0[i]:
+            dict1[i].update(j)
+    
+    df=pd.DataFrame.from_dict({(i,j):dict1[i][j] for i in dict1.keys() for j in dict1[i].keys()},orient='index')
+        
+    if idoc>=1:
+        return tabulate(df,tablefmt='html')
+    else:
+        return print(tabulate(df,tablefmt='grid')),df
