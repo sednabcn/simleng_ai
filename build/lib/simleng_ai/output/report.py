@@ -60,7 +60,7 @@ if isinstance(data_goal,dict):
     goal = data_goal["GOAL"]
 
 # show MICROSIN TABLE    
-_,input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=0)
+_,input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=1)
 
 Table_results(0, input_to_table, ".3f", "fancy_grid", title_text, 60).print_table()
 

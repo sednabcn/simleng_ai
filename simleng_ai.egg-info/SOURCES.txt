@@ -44,8 +44,14 @@ simleng_ai/output/graphics.py
 simleng_ai/output/picture.py
 simleng_ai/output/report.py
 simleng_ai/output/table.py
+simleng_ai/output_results/pimas/Bin_0.png
 simleng_ai/output_results/pimas/Bin_21.png
+simleng_ai/output_results/pimas/Bin_3.png
+simleng_ai/output_results/pimas/Log_1.png
+simleng_ai/output_results/pimas/Log_2.png
 simleng_ai/output_results/pimas/Log_6.png
+simleng_ai/output_results/pimas/Roc_1.png
+simleng_ai/output_results/pimas/Roc_2.png
 simleng_ai/output_results/pimas/Roc_5.png
 simleng_ai/output_results/pimas/binaryclass.png
 simleng_ai/output_results/pimas/corr1.png

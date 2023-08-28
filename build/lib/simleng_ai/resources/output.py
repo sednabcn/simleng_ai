@@ -74,15 +74,15 @@ def images_to_output_results(dataset,workdirpath,store,imformat,top_level_path=N
     imformat:str or list of str images formats
     """
     import os
-    from ..resources.io import find_full_path
+    #from simleng_ai.resources.io import find_full_path
     import shutil
     
     # check whether imformat is str or list
     if isinstance(imformat,str):
-         size=1
+         #size=1
          imf=[imformat]
-    elif isiinstance(imformat,list):
-        size=len(imformat)
+    elif isinstance(imformat,list):
+        #size=len(imformat)
         imf=imformat.copy()
     else:
         pass
@@ -92,18 +92,20 @@ def images_to_output_results(dataset,workdirpath,store,imformat,top_level_path=N
         path_store=find_full_path(store)
     else:
         path_store=find_full_path(store,top_level_path)
-    
+    path_store=os.path.join(path_store,store)
+
     # check if dataset dir exist in store    
-    if dataset not in store:
-        path_dataset_in_store=os.path.join(dataset,path_store)
+    if dataset not in os.listdir(path_store):
+        path_dataset_in_store=os.path.join(path_store,dataset)
         os.mkdir(path_dataset_in_store)
     else:
-        pass
+        path_dataset_in_store=os.path.join(path_store,dataset)
     # copy files from a dir to another
     # check whether the files endswith(imformat) are in workdir
     listimages=[files for files in os.listdir(workdirpath) for fm in imf if files.endswith(fm)]
     # shutil.copy(src,dst)
     for files in listimages:
-        path_file=os.path.join(files,workdirpath)
-        shutil.copy(path_file,path_dataset_in_store)
+        path_file=os.path.join(workdirpath,files)
+        shutil.copy2(path_file,path_dataset_in_store)
+        os.remove(path_file)
     return [f for f in os.listdir(path_dataset_in_store) for fm in imf if f.endswith(fm)]
