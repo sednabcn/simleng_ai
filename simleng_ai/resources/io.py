@@ -106,7 +106,10 @@ def find_full_path(name, path=None):
     for root, dirs, files in os.walk(path):
         if name in files or name in root:
             rt.append(root)
-
+        elif name in dirs:
+            rt.append(root)
+        else:
+            pass
     if len(rt) > 0:
         rt.sort(key=len)
         new_path = rt[0]
@@ -119,7 +122,7 @@ def find_full_path(name, path=None):
     else:
         return new_path
 
-def input_to_dict_table(dict0,idoc):
+def input_to_dict_table(dict0):
     """convert input template to dataframe.from_dict"""
     import pandas as pd
     from tabulate import tabulate
@@ -131,8 +134,9 @@ def input_to_dict_table(dict0,idoc):
             dict1[i].update(j)
     
     df=pd.DataFrame.from_dict({(i,j):dict1[i][j] for i in dict1.keys() for j in dict1[i].keys()},orient='index')
-        
+            
     if idoc>=1:
-        return tabulate(df,tablefmt='html')
+        tabulate(df,tablefmt='html')
     else:
-        return print(tabulate(df,tablefmt='grid')),df
+        print(tabulate(df,tablefmt='grid'))
+    return df

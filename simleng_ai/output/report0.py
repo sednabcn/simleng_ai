@@ -14,11 +14,13 @@ python report.py input_file output_file
 import os
 import sys
 import pandas as pd
-from ..ini.init import Init
-from ..output.table import Table_results
-from ..resources.output import images_to_output_results 
-from ..resources.io import input_to_dict_table
+from simleng_ai.ini.init import Init
+from simleng_ai.output.table import Table_results
+from simleng_ai.resources.output import images_to_output_results 
+from simleng_ai.resources.io import input_to_dict_table
 from tabulate import tabulate
+
+top_level_path='/home/agaora/Downloads/Aug27-1623'
 
 # args to script
 #input_entry = sys.argv[1]
@@ -26,6 +28,7 @@ from tabulate import tabulate
 #input_entry= '/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/input_file/simlengin2708.txt'
 input_entry='simlengin2708.txt'
 output_entry='/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/output/pimas/pimas_result.txt'
+top_level_path='/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai'
 # input basic information 
 #WORKDIR = input("Enter the workdir (exec simleng_ai) :")
 
@@ -60,12 +63,10 @@ if isinstance(data_goal,dict):
     goal = data_goal["GOAL"]
 
 # show MICROSIN TABLE    
-_,input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=1)
-
-Table_results(0, input_to_table, ".3f", "fancy_grid", title_text, 60).print_table()
+input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=0)
 
 # detect and moving figures from the WORKDIR to open_results_dir
-images_to_output_results(dataset,WORKDIR,'output_results','png',top_level_path=None)
+images_to_output_results(dataset,WORKDIR,'output_results','png',top_level_path=top_level_path)
 # get information from output_entry
 filename=str(page_title_text)+'_'+ str(dataset) + '.'+'txt'
 

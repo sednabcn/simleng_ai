@@ -14,11 +14,83 @@ python report.py input_file output_file
 import os
 import sys
 import pandas as pd
-from ..ini.init import Init
-from ..output.table import Table_results
-from ..resources.output import images_to_output_results 
-from ..resources.io import input_to_dict_table
+from simleng_ai.ini.init import Init
+from simleng_ai.output.table import Table_results
+#from simleng_ai.resources.output import images_to_output_results 
+from simleng_ai.resources.io import input_to_dict_table
 from tabulate import tabulate
+
+def find_full_path(name, path=None):
+    import os
+    from os.path import isfile, isdir
+
+    rt = []
+    if path == None:
+        path = os.path.expanduser("~")
+
+    for root, dirs, files in os.walk(path):
+        print(dirs)
+        if name in files or name in root:
+            rt.append(root)
+        elif name in dirs:
+            rt.append(root)
+    if len(rt) > 0:
+        rt.sort(key=len)
+        new_path = rt[0]
+        full_path = os.path.join(new_path, name)
+    else:
+        return print("%s path has not been found" % (name))
+
+    if isfile(full_path):
+        return full_path
+    else:
+        return new_path
+top_level_path='/home/agaora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai'
+find_full_path('output_results',top_level_path)
+print(input("PAUSE"))
+def images_to_output_results(dataset,workdirpath,store,imformat,top_level_path=None):
+    """movement images from workdir to store
+    dataset: name of dataset
+    workdirpath: location of images
+    store: place to keep the images("output_dir")
+    imformat:str or list of str images formats
+    """
+    import os
+    #from simleng_ai.resources.io import find_full_path
+    import shutil
+    
+    # check whether imformat is str or list
+    if isinstance(imformat,str):
+         size=1
+         imf=[imformat]
+    elif isiinstance(imformat,list):
+        size=len(imformat)
+        imf=imformat.copy()
+    else:
+        pass
+
+    # Level of working
+    if top_level_path==None:
+        path_store=find_full_path(store)
+    else:
+        path_store=find_full_path(store,top_level_path)
+    
+    # check if dataset dir exist in store    
+    if dataset not in store:
+        print(dataset,':',path_store)
+        print(input("PAUSE"))
+        path_dataset_in_store=os.path.join(dataset,path_store)
+        os.mkdir(path_dataset_in_store)
+    else:
+        pass
+    # copy files from a dir to another
+    # check whether the files endswith(imformat) are in workdir
+    listimages=[files for files in os.listdir(workdirpath) for fm in imf if files.endswith(fm)]
+    # shutil.copy(src,dst)
+    for files in listimages:
+        path_file=os.path.join(files,workdirpath)
+        shutil.copy(path_file,path_dataset_in_store)
+    return [f for f in os.listdir(path_dataset_in_store) for fm in imf if f.endswith(fm)]
 
 # args to script
 #input_entry = sys.argv[1]
@@ -26,6 +98,7 @@ from tabulate import tabulate
 #input_entry= '/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/input_file/simlengin2708.txt'
 input_entry='simlengin2708.txt'
 output_entry='/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/output/pimas/pimas_result.txt'
+top_level_path='/home/agaora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai'
 # input basic information 
 #WORKDIR = input("Enter the workdir (exec simleng_ai) :")
 
@@ -60,12 +133,10 @@ if isinstance(data_goal,dict):
     goal = data_goal["GOAL"]
 
 # show MICROSIN TABLE    
-_,input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=1)
-
-Table_results(0, input_to_table, ".3f", "fancy_grid", title_text, 60).print_table()
+input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=0)
 
 # detect and moving figures from the WORKDIR to open_results_dir
-images_to_output_results(dataset,WORKDIR,'output_results','png',top_level_path=None)
+images_to_output_results(dataset,WORKDIR,'output_results','png',top_level_path=top_level_path)
 # get information from output_entry
 filename=str(page_title_text)+'_'+ str(dataset) + '.'+'txt'
 
