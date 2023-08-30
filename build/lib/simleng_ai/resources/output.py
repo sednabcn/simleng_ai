@@ -74,7 +74,7 @@ def mv_files_to_dir_in_dir(dataset,workdirpath,store,imformat,top_level_path=Non
     imformat:str or list of str images formats
     """
     import os
-    #from simleng_ai.resources.io import find_full_path
+    from simleng_ai.resources.io import find_full_path
     import shutil
     
     # check whether imformat is str or list

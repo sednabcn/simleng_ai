@@ -14,34 +14,49 @@ python report.py input_file output_file
 import os
 import sys
 import pandas as pd
-from ..ini.init import Init
-from ..output.table import Table_results
-from ..resources.output import images_to_output_results 
-from ..resources.io import input_to_dict_table
+from simleng_ai.ini.init import Init
+from simleng_ai.output.table import Table_results
+from simleng_ai.resources.output import mv_files_to_dir_in_dir 
+from simleng_ai.resources.io import input_to_dict_table,find_full_path
 from tabulate import tabulate
 
+
+
 # args to script
-#input_entry = sys.argv[1]
-#output_entry = sys.argv[2]
-#input_entry= '/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/input_file/simlengin2708.txt'
-input_entry='simlengin2708.txt'
-output_entry='/home/agagora/Downloads/Aug27-1623/PROJECTOML/simleng_ai/simleng_ai/output/pimas/pimas_result.txt'
+input_entry = sys.argv[1]
+output_entry = sys.argv[2]
+input_entry_path=find_full_path(input_entry)
+output_entry_path=find_full_path(output_entry)
+
 # input basic information 
-#WORKDIR = input("Enter the workdir (exec simleng_ai) :")
 
-WORKDIR='/home/agagora'
+WORKDIR = os.getcwd()
 
-#page_title_text = input("Enter a Project title :")
+if os.path.isfile('header.txt'):
+    with open('header.txt','r') as hd:
+        lines=hd.readlines()
+        SOURCEDIR=lines[0]
+        page_title=lines[1]
+        report_title=lines[2]
+        goal_text=lines[3]
+        description_text=lines[4]
+        hd.close()
+        
+else:
+    with open ('header.txt','w') as wd:
+          SOURCEDIR=input("Enter a src dir:")
+          wd.write(SOURCEDIR)
+          page_title= input("Enter a Project title :")
+          wd.write(page_title)
+          report_title = input("Enter a Report title :")
+          wd.write(report_title)
+          goal_text=input("Enter a main goal of the project :")
+          wd.write(goal_text) 
+          description_text = input("Enter a short description of the Report :")
+          wd.write(description_text)
+          wd.close()
 
-page_title_text='Data Project'
-
-#title_text = input("Enter a Report title :")
-
-title_text='Pimas Report'
-
-#text = input("Enter a short description of the Report :")
-
-text="Classification"
+top_level_path=find_full_path(SOURCEDIR)
 
 # get information from input_entry
 MACROSIN={}
@@ -60,53 +75,97 @@ if isinstance(data_goal,dict):
     goal = data_goal["GOAL"]
 
 # show MICROSIN TABLE    
-_,input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=1)
+input_to_table = input_to_dict_table(dict(MACROSIN.items()),idoc=0)
 
-Table_results(0, input_to_table, ".3f", "fancy_grid", title_text, 60).print_table()
 
-# detect and moving figures from the WORKDIR to open_results_dir
-images_to_output_results(dataset,WORKDIR,'output_results','png',top_level_path=None)
+def image_to_html(pathtohtml,image):
+   """display image in html""" 
+   str='<img src="text"  alt=" ",style="width:100%">'
+   with open(pathtohtml,'w') as t:
+      t.write('<!DOCTYPE html>' + '\n')
+      t.write('<html>' +'\n')
+      t.write('<figure>' +'\n')
+      t.write(str.replace("text",image)+'\n')
+      t.write('</figure>' + '\n')
+      t.write('</hml>' + '\n')
+      t.close()
+
+def getmtime(x):
+    import os
+    return os.path.getmtime(x)
+
+
+def read_image_to_html(htmlfile):
+   with open(htmlfile,'r',encoding='utf-8') as f:
+        print(f.read())
+        f.close()
+
+png_files=[]
+for files in os.listdir(WORKDIR):
+    if files.endswith('png'):
+        png_files.append(files)
+
+png_sort_files=sorted(png_files,key=getmtime)
+
+for i in range(len(png_files)):
+    image=png_sort_files[i]
+    path_to_html=WORKDIR+'/'+dataset+'_'+ str(i) +'.html'      
+    image_to_html(path_to_html,image)
+    read_image_to_html(path_to_html)
+
+
+
+
 # get information from output_entry
-filename=str(page_title_text)+'_'+ str(dataset) + '.'+'txt'
-
+filename=str(page_title)+'_'+ str(dataset)
+file_txt=filename + '.'+'txt'
+file_html=filename+ '.'+'html'
+i=0
+str='<img src="text"  alt=" ",style="width:100%">'
 # create report page
-with open(output_entry,'r') as output: 
-     with open(filename,'w') as report:
+with open(output_entry_path,'r') as output:
+  with open(input_entry_path,'r') as input:
+     with open(file_txt,'w') as report:
+        # title of project
+        report.write(page_title +'\n\n')
         # title of report
-        report.write("Report:",page_title_text)
-        # title of text
-        report.write("Title of text:",title_text)
+        report.write(report_title +'\n\n')
         # goal
-        report.write("Goal:",goal)
+        report.write(goal_text + '\n\n')
         # text: description
-        report.write("Description:",text)
-
+        report.write(description_text + '\n\n')
+        # input_file
+        report.write("DATA INPUT FILE" + '\n\n')
+        
+        for line in input:
+            report.write(line)
+        report.write('\n\n\n')
         for line in output:
+            """
+            if line.startswith('Fig'):
+                 report.write("\n\n")
+                 report.write('<!DOCTYPE html>' + '\n')
+                 report.write('<html>' +'\n')
+                 report.write('<figure>' +'\n')
+                 report.write(str.replace("text",png_sort_files[i])+'\n')
+                 report.write('</figure>' + '\n')
+                 report.write('</hml>' + '\n')
+                 report.write("\n\n")
+                 i+=1
+            if "Fig" not in line:
+            """
             report.write(line)
         output.close()
+        input.close()
         report.close()
-            
-"""
-with open('TEST.txt', 'r') as firstfile,
-    open('RESULT.html', 'a') as secondfile:
-       # read content from first file
-       for line in firstfile:
-       # append content to second file
-           secondfile.write(line + '<br/>'
-"""                     
-                   
-print(tabulate(input_to_table, headers=input_to_table.keys(), tablefmt="html"))
+           
+#=========================================================================
+# Movement of files to ./ouput_results/dataset directory
 
 
-"""
-#=====================================================================
-html_text = '<html>\n<body>\n'
+# files
+# detect and moving figures from the WORKDIR to open_results_dir
+for formatt in ['png','txt','html']:
+    mv_files_to_dir_in_dir(dataset,WORKDIR,'output_results',formatt,top_level_path=top_level_path)
 
-for line in text.split('\n'):
-    html_text += f'<p>{line}</p>\n'
-
-html_text += '</body>\n</html>'
-
-with open('example.html', 'w') as file:
-    file.write(html_text)
-"""
+#====================================================================================
