@@ -122,7 +122,7 @@ def find_full_path(name, path=None):
     else:
         return new_path
 
-def input_to_dict_table(dict0):
+def input_to_dict_table(dict0,idoc=None):
     """convert input template to dataframe.from_dict"""
     import pandas as pd
     from tabulate import tabulate

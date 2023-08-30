@@ -1,4 +1,4 @@
-# ==["table_from_dict","table","color_text","image_to_report","images_to_output_results"]
+# ==["table_from_dict","table","color_text","image_to_report","mv_files_to_dir_in_dir"]
 
 
 def table_from_dict(x, headers, floatfmt, style, title, width):
@@ -66,7 +66,7 @@ def image_to_report(idoc, imname, imformat):
     else:
         pass
 
-def images_to_output_results(dataset,workdirpath,store,imformat,top_level_path=None):
+def mv_files_to_dir_in_dir(dataset,workdirpath,store,imformat,top_level_path=None):
     """movement images from workdir to store
     dataset: name of dataset
     workdirpath: location of images
