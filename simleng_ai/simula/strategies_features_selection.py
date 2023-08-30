@@ -87,8 +87,8 @@ class Features_selection(Data_Generation):
         Data_Visualisation(self.idoc).data_features_draw_hist(U_train, 10)
 
         Correlation(U_train, df.columns, 0.9, self.idoc).correlation_training()
-        if self.idoc >= 1:
-            print("Fig:Correlation matrices")
+        #if self.idoc >= 1:
+        #    print("Fig:Correlation matrices")
         Correlation(U_train, U_train.columns, 0.9, self.idoc).correlation_level()
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
