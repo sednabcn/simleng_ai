@@ -56,7 +56,8 @@ else:
           wd.write(description_text)
           wd.close()
 
-top_level_path=find_full_path(SOURCEDIR)
+source_dir_path=find_full_path(SOURCEDIR)
+top_level_path=source_dir_path+'/'+ SOURCEDIR
 
 # get information from input_entry
 MACROSIN={}
@@ -161,7 +162,6 @@ with open(output_entry_path,'r') as output:
            
 #=========================================================================
 # Movement of files to ./ouput_results/dataset directory
-
 
 # files
 # detect and moving figures from the WORKDIR to open_results_dir
