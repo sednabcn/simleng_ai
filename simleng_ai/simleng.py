@@ -135,7 +135,7 @@ class Simleng:
         # Here is taken the class with the same name to the startegy
         from .simula.strategies_features_selection import Features_selection
 
-        if self.action["strategy"]="Features_selection":
+        if self.action["strategy"]=="Features_selection":
                 pepe = [
                     self.data_train,
                     self.data_test,

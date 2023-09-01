@@ -145,7 +145,7 @@ def checking_input_list(item,list0):
     """Checking an item is a member of a list"""
     if item not in list0:
         list0.append(item)
-        print("Checking the input_file, please"
+        print("Checking the input_file, please")
     else:
         pass
         
