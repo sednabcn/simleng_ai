@@ -18,6 +18,7 @@ from .data_manager.generation import Data_Generation
 from .simula.strategies_features_selection import Features_selection
 from .data_manager.feature_eng import Data_Engineering
 from .data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality
+from .resources.io import checking_input_list
 
 # setting ignore as a parameter and further adding category
 warnings.simplefilter(action="ignore", category=(FutureWarning, UserWarning))
@@ -136,14 +137,14 @@ class Simleng:
         from .simula.strategies_features_selection import Features_selection
 
         if self.action["strategy"]=="Features_selection":
-                pepe = [
-                    self.data_train,
-                    self.data_test,
-                    self.data_dummy_train,
-                    self.data_dummy_test,
-                    self.action["method"],
-                    self.params,
-                    self.action["idoc"],
+            pepe = [
+                self.data_train,
+                self.data_test,
+                self.data_dummy_train,
+                self.data_dummy_test,
+                self.action["method"],
+                self.params,
+                self.action["idoc"],
             ]
             return Features_selection(*pepe).strategies_features_selection_master()
 
@@ -228,20 +229,20 @@ class Simleng:
         # moved to Simleng entry point
         # idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
         if isinstance(self.strategies_client["STRATEGY"],list):
-            for strategy_i,proc_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.idoc)
+            for strategy_i,proc_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.idoc):
                   strategy = str(strategy_i)
-                  self.action.update{"strategy":strategy}
+                  self.action.update({"strategy":strategy})
                   proc = str(proc_i)
-                  self.action.update{"method":proc}
-                  self.action.update{"idoc":idoc_i}
+                  self.action.update({"method":proc})
+                  self.action.update({"idoc":idoc_i})
                   self.switch(mlmethod, goal, nclass, strategy)
                   self.action={}
         else:
                   strategy = str(self.strategies_client["STRATEGY"])
-                  self.action.update{"strategy":strategy}
+                  self.action.update({"strategy":strategy})
                   proc = str(self.strategies_client["METHOD"])
-                  self.action.update{"method":proc}
-                  self.action.update{"idoc":self.idoc}
+                  self.action.update({"method":proc})
+                  self.action.update({"idoc":self.idoc})
                   self.switch(mlmethod, goal, nclass, strategy)
                   self.action={}
 
