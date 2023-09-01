@@ -162,6 +162,7 @@ class Data_Generation(DATA, Init):
         dataset = self.dataset["DATASET"]
         source = self.dataset["DATASOURCE"]
 
+        # Future Checking  what happen in the case of a list of datasets #
         MyDB(dataset, "datasets", kind=source).datasets_store()
 
         # columns_data_to selected
@@ -198,6 +199,7 @@ class Data_Generation(DATA, Init):
         self.data_test = {}
         self.data_test["test"] = [self.X_test.columns, self.X_test, self.y_test, de]
         # =====================END COMPATIBILITY==============================
+        # splitting training dataset for training and validation
         if not (imbalance):
             stratify = None
         else:
@@ -231,7 +233,7 @@ class Data_Generation(DATA, Init):
             self.y_train_val,
             self.y_test_val,
         )
-
+    # Future Checking [END] what happen in the case of a list of datasets #
     def data_generation_binary_classification(self):
         """Generation of dummy variables to Binary Classification Task
         for a balanced dataset

@@ -1,4 +1,4 @@
-# ==["file_reader","file_writer","find_full_path","input_to_dict_table"]
+# ==["file_reader","file_writer","find_full_path","input_to_dict_table","checking_input_list"]
 
 
 def file_reader(file, type_file, *pars):
@@ -140,3 +140,13 @@ def input_to_dict_table(dict0,idoc=None):
     else:
         print(tabulate(df,tablefmt='grid'))
     return df
+
+def checking_input_list(item,list0):
+    """Checking an item is a member of a list"""
+    if item not in list0:
+        list0.append(item)
+        print("Checking the input_file, please"
+    else:
+        pass
+        
+        
