@@ -28,7 +28,6 @@ simleng_ai/data_manager/feature_eng.py
 simleng_ai/data_manager/generation.py
 simleng_ai/data_manager/mds.py
 simleng_ai/data_manager/quality.py
-simleng_ai/data_manager/__pycache__/quality.cpython-311.pyc.~dc5e6daa0e9d9ff4b48b3a2249968a8165674e83~
 simleng_ai/datasets/__init__.py
 simleng_ai/datasets/pimas/columns.txt
 simleng_ai/datasets/pimas/pima-indians-diabetes.csv
@@ -88,10 +87,7 @@ simleng_ai/resources/scrapping.py
 simleng_ai/resources/sets.py
 simleng_ai/resources/sys.py
 simleng_ai/simula/__init__.py
-simleng_ai/simula/simulation_analysis.py
 simleng_ai/simula/strategies_features_selection.py
-simleng_ai/strategies/Features_selection.py
-simleng_ai/strategies/__init__.py
 simleng_ai/supervised/GenLogitclass.py
 simleng_ai/supervised/GenLogitmodels.py
 simleng_ai/supervised/__init__.py
