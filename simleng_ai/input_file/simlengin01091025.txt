@@ -26,12 +26,12 @@ CLASSIFICATION         2     SUPERV   stats       ---     0.2
 
 STRATEGIES
 STRATEGY              METHOD                     REPORT
-Features_selection    full_features               True
-Features_selection    features_selection_z_score  True
-Features_selection    K_fold_cross_validation     True
-Features_selection    pca                         True
-Features_selection    additional_test             True
-Features_selection    discriminant_methods        True
+Features_selection    full_features               False
+# Features_selection    features_selection_z_score  True
+# Features_selection    K_fold_cross_validation     True
+# Features_selection    pca                         True
+# Features_selection    additional_test             True
+# Features_selection    discriminant_methods        True
 
 PARAMS          
 GenLogit_shape   columns_search   min_shuffle_size  subset_search  shuffle_mode  filter_cond  K_fold
