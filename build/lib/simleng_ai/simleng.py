@@ -18,7 +18,6 @@ from .data_manager.generation import Data_Generation
 from .simula.strategies_features_selection import Features_selection
 from .data_manager.feature_eng import Data_Engineering
 from .data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality
-from .resources.io import checking_input_list
 
 # setting ignore as a parameter and further adding category
 warnings.simplefilter(action="ignore", category=(FutureWarning, UserWarning))
@@ -32,7 +31,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-#file_input = "simlengin2308.txt"
+file_input = "simlengin_p.txt"
 
 
 class Simleng:
@@ -49,7 +48,7 @@ class Simleng:
         self.params = {}
         # self.strategies = {}
         self.strategies_client = {}
-        self.action={}
+
         # generation of entry data and process
         (
             _,
@@ -61,6 +60,10 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
+
+        # flag to make report
+        self.idoc = int(strtobool(self.strategies_client["REPORT"]))
+        self.vis = Data_Visualisation(self.idoc)
 
     def simulation_strategies(self):
         """strategies management in Simleng"""
@@ -101,54 +104,41 @@ class Simleng:
             "metrics",
         ]
 
-        # Checking strategies pipeline
-        if isinstance(self.strategies_client["STRATEGY"],list):
-            self.idoc=[]
-            self.vis=[]
-            for strategy_i,method_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.strategies_client["REPORT"]):
-                print(strategy_i,':',method_i)
-                checking_input_list(method_i,self.strategies[strategy_i])
-                self.idoc.append(int(strtobool(idoc_i)))
-                self.vis.append(Data_Visualisation(idoc_i))
-        else:
-            print(self.strategies_client["STRATEGY"])
+        print(self.strategies_client["STRATEGY"])
 
-            try:
-                if (
-                        self.strategies_client["METHOD"]
-                        not in self.strategies[self.strategies_client["STRATEGY"]]
-                ):
-                    strategies[self.strategies_client["STRATEGY"]].append(
-                        self.strategies_client["METHOD"]
-                    )
-            except:
-                print("Checking the input_file: Simlengin.txt")
-              
-            # flag to make report
-            self.idoc = int(strtobool(self.strategies_client["REPORT"]))
-            self.vis = Data_Visualisation(self.idoc)
+        try:
+            if (
+                self.strategies_client["METHOD"]
+                not in self.strategies[self.strategies_client["STRATEGY"]]
+            ):
+                strategies[self.strategies_client["STRATEGY"]].append(
+                    self.strategies_client["METHOD"]
+                )
+        except:
+            print("Checking the input_file: Simlengin.txt")
 
         return self.strategies_master()
 
-   
     # mastering a type of strategies
     def strategies_features_master(self):
         # Here is taken the class with the same name to the startegy
         from .simula.strategies_features_selection import Features_selection
 
-        if self.action["strategy"]=="Features_selection":
+        # from .resources.sys import get_class_for_name
+
+        if self.strategies_client["STRATEGY"] == "Features_selection":
             pepe = [
                 self.data_train,
                 self.data_test,
                 self.data_dummy_train,
                 self.data_dummy_test,
-                self.action["method"],
+                self.strategies_client["METHOD"],
                 self.params,
-                self.action["idoc"],
+                self.idoc,
             ]
             return Features_selection(*pepe).strategies_features_selection_master()
 
-        elif self.action["strategy"] == "Features_extraction":
+        elif self.strategies_client["STRATEGY"] == "Features_extraction":
             pass
 
     def switch(self, mlmethod, goal, nclass, strategy):
@@ -218,6 +208,8 @@ class Simleng:
         # parameters to characteize the strategy
 
         mlmethod = str(self.target["METHOD"])
+        strategy = str(self.strategies_client["STRATEGY"])
+        proc = str(self.strategies_client["METHOD"])
         kind = str(self.dataset["TYPE"])
         struct = str(self.dataset["STRUCT"])
         goal = str(self.target["GOAL"])
@@ -228,23 +220,8 @@ class Simleng:
 
         # moved to Simleng entry point
         # idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
-        if isinstance(self.strategies_client["STRATEGY"],list):
-            for strategy_i,proc_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.idoc):
-                  strategy = str(strategy_i)
-                  self.action.update({"strategy":strategy})
-                  proc = str(proc_i)
-                  self.action.update({"method":proc})
-                  self.action.update({"idoc":idoc_i})
-                  self.switch(mlmethod, goal, nclass, strategy)
-                  self.action={}
-        else:
-                  strategy = str(self.strategies_client["STRATEGY"])
-                  self.action.update({"strategy":strategy})
-                  proc = str(self.strategies_client["METHOD"])
-                  self.action.update({"method":proc})
-                  self.action.update({"idoc":self.idoc})
-                  self.switch(mlmethod, goal, nclass, strategy)
-                  self.action={}
+
+        self.switch(mlmethod, goal, nclass, strategy)
 
         elapsed = timeit.default_timer() - t0
         x, y, z = str(timedelta(seconds=elapsed)).split(":")
@@ -256,5 +233,5 @@ class Simleng:
 
 # print(dict(MACROSIN.items()))
 
-# Simleng(file_input,score=0.90).simulation_strategies()
+Simleng(file_input,score=0.90).simulation_strategies()
 #Simleng(file_input, score=0.90).simulation_strategies()
