@@ -22,7 +22,6 @@ simleng_ai.egg-info/top_level.txt
 simleng_ai/abstract/__init__.py
 simleng_ai/abstract/data_abstract.py
 simleng_ai/bin/api.py
-simleng_ai/data_manager/#quality.py#
 simleng_ai/data_manager/__init__.py
 simleng_ai/data_manager/cross_validation_tests.py
 simleng_ai/data_manager/feature_eng.py
@@ -30,12 +29,8 @@ simleng_ai/data_manager/generation.py
 simleng_ai/data_manager/mds.py
 simleng_ai/data_manager/quality.py
 simleng_ai/datasets/__init__.py
-simleng_ai/datasets/pimas/#pima.py#
 simleng_ai/datasets/pimas/columns.txt
 simleng_ai/datasets/pimas/pima-indians-diabetes.csv
-simleng_ai/datasets/pimas/pima-indians-diabetes0.csv
-simleng_ai/datasets/pimas/pima-indians-diabetes1.csv
-simleng_ai/datasets/pimas/pimas-indias-diabetes-bak.csv
 simleng_ai/ini/__init__.py
 simleng_ai/ini/init.py
 simleng_ai/input_file/simlengin.txt

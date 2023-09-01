@@ -154,8 +154,10 @@ class Data_Generation(DATA, Init):
         train_size = 1.0 - test_size
 
         self.full_path = find_full_path(name)
-
+        print(self.full_path)
         self.data = file_reader(self.full_path, type_file, *pars)
+        print(self.data.head())
+        print(input("PAUSE"))
 
         # update datasets_store
 
