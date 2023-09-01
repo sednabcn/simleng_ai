@@ -41,6 +41,7 @@ simleng_ai/ini/init.py
 simleng_ai/input_file/simlengin.txt
 simleng_ai/input_file/simlengin01091025.txt
 simleng_ai/input_file/simlengin01091025.txt~
+simleng_ai/input_file/simlengin_p.txt
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
 simleng_ai/output/picture.py
