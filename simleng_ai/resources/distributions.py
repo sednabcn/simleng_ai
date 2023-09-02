@@ -61,7 +61,9 @@ class Multivariate_pdf:
 
 # checking for input this parameter at simglenin.txt WRONG
 def get_shape_GenLogit():
-    c = input("Shape parameter GenLogit: ")
+    #c = print(input("Shape parameter GenLogit: "))
+    #c=0.25
+    #print("HERE",input("PAUSE"))
     return float(c)
 
 

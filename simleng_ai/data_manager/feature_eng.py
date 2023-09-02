@@ -111,7 +111,7 @@ class PCA:
         self.x = x
         self.ncomp = n_components
         self.idoc = idoc
-
+        
     def pca(self):
         import numpy as np
         from statsmodels.multivariate.pca import PCA as smPCA
@@ -455,9 +455,10 @@ class Best_features_filter:
 
 
 class Best_features_wrap:
-    def __init__(self, idoc):
+    def __init__(self, idoc,shape):
         self.parameters = None
         self.idoc = idoc
+        self.GenLogit_shape =shape
 
     def z_score(self, z_score_table, z_score_treshold):
         """Z_score criteria"""
@@ -604,7 +605,7 @@ class Best_features_wrap:
             Iperfor,model_name_selected,columns_base,y_predicted_table,\
             y_estimated_table,params_table,residuals_table
             """
-            Iperformance[ii] = Best_features_wrap().add_feature_selection(
+            Iperformance[ii] = Best_features_wrap(self.idoc,self.GenLogit_shape).add_feature_selection(
                 names,
                 cols_data,
                 cols_base_base,

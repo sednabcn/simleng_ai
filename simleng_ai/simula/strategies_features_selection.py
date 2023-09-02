@@ -53,6 +53,7 @@ class Features_selection(Data_Generation):
         # print(self.data_dummy_train.values())
 
         method_name = "simulation_" + str(self.proc)
+        print(method_name)
         process = getattr(self, method_name, "Invalid Method selected")
         return process()
 
@@ -195,6 +196,7 @@ class Features_selection(Data_Generation):
             Title,
             "",
             self.idoc,
+            self.GenLogit_shape,
         ).roc_curve()
 
     def simulation_features_selection_z_score(self):
@@ -387,6 +389,7 @@ class Features_selection(Data_Generation):
             Title,
             "",
             self.idoc,
+            self.GenLogit_shape,
         ).draw_regions_binary_classification()
 
         print("INCREASING ADDING FEATURES AFTER Z-SCORE ANALYSIS")
@@ -404,9 +407,9 @@ class Features_selection(Data_Generation):
             columns_base,
             y_calibrated_table,
             y_estimated_table,
-            pararesims_table,
+            params_table,
             duals_table,
-        ) = Best_features_wrap(self.idoc).add_feature_selection(
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).add_feature_selection(
             names,
             cols_data,
             columns_two_copy,
@@ -426,6 +429,7 @@ class Features_selection(Data_Generation):
 
         # Show mis-classification for the INCREASED BEST FEATURES SELECTION
         params = params_table.T
+       
         kind = "Validation"
         Title = "Binary Classification using statsmodels" " (Validation Case)"
         if self.idoc >= 1:
@@ -446,6 +450,7 @@ class Features_selection(Data_Generation):
             Title,
             kind,
             self.idoc,
+            self.GenLogit_shape,
         ).draw_mis_classification()
         if self.idoc >= 1:
             print("Fig:Binary Classification(Prediction case)")
@@ -467,6 +472,7 @@ class Features_selection(Data_Generation):
             Title,
             kind,
             self.idoc,
+            self.GenLogit_shape,
         ).draw_mis_classification()
 
     def simulation_K_fold_cross_validation(self):
@@ -522,7 +528,7 @@ class Features_selection(Data_Generation):
         ).print_table()
 
         # Columns_two contain the best predictors
-        columns_two, columns_Index = Best_features_wrap(self.idoc).z_score(
+        columns_two, columns_Index = Best_features_wrap(self.idoc,self.GenLogit_shape).z_score(
             z_score_table, 1.96
         )
 
@@ -554,7 +560,7 @@ class Features_selection(Data_Generation):
             N_features,
             data_fold,
             Iperformance,
-        ) = Best_features_wrap(self.idoc).cross_validation_binary_classification(
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).cross_validation_binary_classification(
             names,
             cols_data,
             columns_two_two,
@@ -579,7 +585,7 @@ class Features_selection(Data_Generation):
         #        print(Iperformance[ii].keys(),Iperformance[ii].values())
         # print(input("STOP"))
 
-        Best_features_wrap(self.idoc).draw_K_fold_numerical_results(
+        Best_features_wrap(self.idoc,self.GenLogit_shape).draw_K_fold_numerical_results(
             K_fold, N_cols_base, N_features, data_fold, Iperformance
         )
 
@@ -596,7 +602,7 @@ class Features_selection(Data_Generation):
             y_estimated_table,
             params_table,
             residuals_table,
-        ) = Best_features_wrap(self.idoc).K_fold_numerical_results(
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).K_fold_numerical_results(
             K_fold, N_cols_base, N_features, data_fold, Iperformance, 90
         )
 
@@ -627,6 +633,7 @@ class Features_selection(Data_Generation):
             Title,
             kind,
             self.idoc,
+            self.GenLogit_shape,
         ).draw_mis_classification()
 
         kind = "Prediction"
@@ -652,6 +659,7 @@ class Features_selection(Data_Generation):
             Title,
             kind,
             self.idoc,
+            self.GenLogit_shape,
         ).draw_mis_classification()
 
     def simulation_pca(self):
@@ -668,10 +676,10 @@ class Features_selection(Data_Generation):
 
         n, m = U_train.shape
 
-        PCA(U_train, n_components=m).pca()
-        PCA(U_train, n_components=m).pca_draw_major_minor_factors(U_train)
-        PCA(U_train, n_components=m).pca_show_table()
-        PCA(U_train, n_components=m).pca_draw_by_components()
+        PCA(U_train,m,self.idoc).pca()
+        PCA(U_train,m,self.idoc).pca_draw_major_minor_factors(U_train)
+        PCA(U_train,m,self.idoc).pca_show_table()
+        PCA(U_train,m,self.idoc).pca_draw_by_components()
 
         # IT HAS BEEN DONE ONLY FOR ONE CASE:PIMAS--DELETE ONES
         # =========================================
@@ -706,8 +714,8 @@ class Features_selection(Data_Generation):
             U_train_reduced = U_train[columns_base]
             U_test_reduced = U_test[columns_base]
 
-            U_train_pca = PCA(U_train_reduced, n_components=N_base).pca_transformation()
-            U_test_pca = PCA(U_test_reduced, n_components=N_base).pca_transformation()
+            U_train_pca = PCA(U_train_reduced,N_base,self.idoc).pca_transformation()
+            U_test_pca = PCA(U_test_reduced,N_base,self.idoc).pca_transformation()
             U_train_pca_exog = data_add_constant(U_train_pca)
             U_test_pca_exog = data_add_constant(U_test_pca)
 
