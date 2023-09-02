@@ -307,7 +307,7 @@ class Drawing2d:
         #              'bbox': dict(boxstyle=str(boxstyle), fc="w", ec="k", pad=0.3)})
 
         # return plt.show()
-        return image_to_report(mode, Title[:3] + "_" + str(random.randint(0, 3)), "png")
+        return image_to_report(mode, Title[:3] + "_" + str(random.randint(0, 30)), "png")
 
     def draw_vector(v0, v1, x0, y0, ax=None):
         """Modification to Python Data Science Handbook
@@ -346,6 +346,8 @@ class Draw_binary_classification_results:
         Title,
         kind,
         idoc,
+        shape=None,    
+            
     ):
         self.fpr = FPR
         self.tpr = TPR
@@ -362,7 +364,8 @@ class Draw_binary_classification_results:
         self.Title = Title
         self.kind = kind
         self.idoc = idoc
-
+        self.GenLogit_shape=shape
+        
     def roc_curve(self):
         X = self.fpr.T
         Y = self.tpr.T
@@ -444,8 +447,8 @@ class Draw_binary_classification_results:
         import pandas as pd
         import matplotlib.pyplot as plt
 
-        print(self.idoc)
-        print(input("STOP"))
+        #print(self.idoc)
+        #print(input("STOP"))
 
         model_names = self.model_names_selected
 
@@ -478,8 +481,9 @@ class Draw_binary_classification_results:
                 treshold.append(0.0)
             elif name == "GenLogit":
                 # checking for input this parameter at simglenin.txt
-                c = get_shape_GenLogit()
-                treshold.append(0.5**c)
+                #c = get_shape_GenLogit()
+                c = self.GenLogit_shape
+                treshold.append(0.5**float(c))
 
             else:
                 treshold.append(0.5)
@@ -550,7 +554,9 @@ class Draw_binary_classification_results:
         import numpy as np
         import matplotlib.pyplot as plt
         from ..resources.output import image_to_report
-
+        from ..resources.distributions import get_shape_GenLogit
+        
+        
         model_names = self.model_names_selected
 
         if self.kind == "Validation":
@@ -567,15 +573,25 @@ class Draw_binary_classification_results:
             x_graph_est = np.linspace(0, NN - 1, NN).astype(float)
         else:
             print("Error on kind selection")
-
+        treshold=[]
         z_list = []
         for name in model_names:
-            if name == "Logit" or "Probit":
-                sname = "smd." + str(name)
+            if name == "Logit":
+                sname= "smd.Logit"
+
+            elif name=="Probit":
+                sname="smd.Probit"
+                treshold.append(0.0)
+            elif name =="GenLogit":
+                 sname="GenLogit"
+                 #c = get_shape_GenLogit()
+                 c=self.GenLogit_shape
+                 treshold.append(0.5**float(c))
             else:
-                sname = str(name)
+                treshold.append(0.5)
 
             if self.kind == "Validation":
+                
                 z_ordinates_ii = np.abs(self.residuals[sname])
 
                 # z_predict_ii=y_predict_val[sname]

@@ -1,1 +1,5 @@
-*.log *.pyc distdist
+*.log
+*.pyc
+dist 
+lib
+output_results

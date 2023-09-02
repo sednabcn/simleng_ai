@@ -7,7 +7,7 @@ Created on Thu Aug 24 16:10:40 2023
 
 This programm creates a Report of Simleng Project
 ===================================================
-python report.py input_file output_file
+python report.py input_file output_file SOURCEDIR
 ===================================================
 """
 
@@ -21,13 +21,14 @@ from simleng_ai.resources.io import input_to_dict_table,find_full_path
 from tabulate import tabulate
 
 
-
+# ALERT: IT IS NECCESARY A CONTROL HERE
 # args to script
 input_entry = sys.argv[1]
 output_entry = sys.argv[2]
 input_entry_path=find_full_path(input_entry)
 output_entry_path=find_full_path(output_entry)
-
+source_dir_path=sys.argv[3]
+SOURCEDIR=source_dir_path.split('/')[-1]
 # input basic information 
 
 WORKDIR = os.getcwd()
@@ -35,7 +36,7 @@ WORKDIR = os.getcwd()
 if os.path.isfile('header.txt'):
     with open('header.txt','r') as hd:
         lines=hd.readlines()
-        SOURCEDIR=lines[0]
+        SOURCEDIR=str(lines[0])
         page_title=lines[1]
         report_title=lines[2]
         goal_text=lines[3]
@@ -44,20 +45,26 @@ if os.path.isfile('header.txt'):
         
 else:
     with open ('header.txt','w') as wd:
-          SOURCEDIR=input("Enter a src dir:")
+          #SOURCEDIR=input("Enter a src dir:")
           wd.write(SOURCEDIR)
+          wd.write('\n')
           page_title= input("Enter a Project title :")
           wd.write(page_title)
+          wd.write('\n')
           report_title = input("Enter a Report title :")
           wd.write(report_title)
+          wd.write('\n')
           goal_text=input("Enter a main goal of the project :")
-          wd.write(goal_text) 
+          wd.write(goal_text)
+          wd.write('\n')
           description_text = input("Enter a short description of the Report :")
           wd.write(description_text)
+          wd.write('\n')
           wd.close()
 
-source_dir_path=find_full_path(SOURCEDIR)
-top_level_path=source_dir_path+'/'+ SOURCEDIR
+#source_dir_path=find_full_path(SOURCEDIR)
+
+top_level_path=source_dir_path
 
 # get information from input_entry
 MACROSIN={}
@@ -118,7 +125,7 @@ for i in range(len(png_files)):
 
 
 # get information from output_entry
-filename=str(page_title)+'_'+ str(dataset)
+filename=page_title +'_'+ str(dataset)
 file_txt=filename + '.'+'txt'
 file_html=filename+ '.'+'html'
 i=0
@@ -128,16 +135,20 @@ with open(output_entry_path,'r') as output:
   with open(input_entry_path,'r') as input:
      with open(file_txt,'w') as report:
         # title of project
-        report.write(page_title +'\n\n')
+        report.write(page_title)
+        report.write('\n\n\n')
         # title of report
-        report.write(report_title +'\n\n')
+        report.write(report_title)
+        report.write('\n\n\n')
         # goal
-        report.write(goal_text + '\n\n')
+        report.write(goal_text)
+        report.write('\n\n\n')
         # text: description
-        report.write(description_text + '\n\n')
+        report.write(description_text)
+        report.write('\n\n\n')
         # input_file
-        report.write("DATA INPUT FILE" + '\n\n')
-        
+        report.write("DATA INPUT FILE")
+        report.write('\n\n\n')
         for line in input:
             report.write(line)
         report.write('\n\n\n')

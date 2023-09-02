@@ -39,8 +39,13 @@ class GenLogit(BinaryModel):
         self.endog = endog
         self.exog = exog
         self.c = float(shape)
-
-        data = pd.DataFrame(self.exog).join(self.endog)
+        
+         
+        df1 = pd.DataFrame(self.exog)
+        #print(df1.index,df1.shape)
+        df2= pd.DataFrame(self.endog)
+        #print(df2.index,df2.shape)
+        data=pd.concat([df1,df2],axis=1)
         self.data = du.process_pandas(data, endog_idx=0)
 
         if self.exog is not None:

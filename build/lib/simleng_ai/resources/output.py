@@ -92,11 +92,12 @@ def mv_files_to_dir_in_dir(dataset,workdirpath,store,imformat,top_level_path=Non
         path_store=find_full_path(store)
     else:
         path_store=find_full_path(store,top_level_path)
-    path_store=os.path.join(path_store,store)
+    #path_store=os.path.join(path_store,store)
 
     # check if dataset dir exist in store    
     if dataset not in os.listdir(path_store):
         path_dataset_in_store=os.path.join(path_store,dataset)
+        #print(path_dataset_in_store)
         os.mkdir(path_dataset_in_store)
     else:
         path_dataset_in_store=os.path.join(path_store,dataset)
@@ -105,7 +106,10 @@ def mv_files_to_dir_in_dir(dataset,workdirpath,store,imformat,top_level_path=Non
     listimages=[files for files in os.listdir(workdirpath) for fm in imf if files.endswith(fm)]
     # shutil.copy(src,dst)
     for files in listimages:
+        #print(files)
         path_file=os.path.join(workdirpath,files)
+        #print(path_file)
+        #print(path_dataset_in_store)
         shutil.copy2(path_file,path_dataset_in_store)
         os.remove(path_file)
     return [f for f in os.listdir(path_dataset_in_store) for fm in imf if f.endswith(fm)]

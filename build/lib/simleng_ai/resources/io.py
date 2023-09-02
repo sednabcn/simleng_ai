@@ -97,19 +97,31 @@ def file_writer(file, type_file, *pars):
 
 def find_full_path(name, path=None):
     import os
+    import re
     from os.path import isfile, isdir
-
-    rt = []
+    #Becarefull not getting well directories location
+    rt=[]
     if path == None:
         path = os.path.expanduser("~")
 
-    for root, dirs, files in os.walk(path):
-        if name in files or name in root:
+    if re.match(r'\w+\.\w+',name):
+       
+       for root, dirs, files in os.walk(path):
+        if name in root or name in files:
             rt.append(root)
         elif name in dirs:
-            rt.append(root)
+             rt.append(root)
         else:
             pass
+    else:
+        for root,dirs,files in os.walk(path):
+            if str(name) in os.listdir(root):
+                rt.append(os.path.join(root,name))
+            elif str(name) in dirs:
+                rt.append(os.path.join(root,dirs,dir))
+            else:
+                pass
+    
     if len(rt) > 0:
         rt.sort(key=len)
         new_path = rt[0]
@@ -117,7 +129,7 @@ def find_full_path(name, path=None):
     else:
         return print("%s path has not been found" % (name))
 
-    if isfile(full_path):
+    if isfile(full_path) or isdir(full_path):
         return full_path
     else:
         return new_path
