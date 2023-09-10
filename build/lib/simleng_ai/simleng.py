@@ -32,7 +32,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-#file_input = "simlengin_p.txt"
+file_input = "simlengin08091019.txt"
 
 
 class Simleng:
@@ -61,6 +61,7 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
+       
 
     def simulation_strategies(self):
         """strategies management in Simleng"""
@@ -102,12 +103,33 @@ class Simleng:
         ]
 
         # Checking strategies pipeline
+
+        
         if isinstance(self.strategies_client["STRATEGY"],list):
+
+            # modification to include the "LIBRARY" column in STRATEGY MACRO
+            try:
+                if "LIBRARY" not in self.strategies_client.keys():
+                    self.strategies_client.update({"LIBRARY":[]})
+                    self.strategies_client["LIBRARY"]=[]
+                    for nn in range(len(self.strategies_client["STRATEGY"])):
+                       self.strategies_client["LIBRARY"].append(self.target["SOLVER"])    
+                else:
+                    for nn in range(len(self.strategies_client["STRATEGY"])):
+                       if  self.strategies_client["LIBRARY"]=="__": 
+                           self.strategies_client["LIBRARY"][nn]=self.target["SOLVER"]
+                    
+            except:
+                print("Checking the input_file: Simlengin.txt")
+              
             self.idoc=[]
             self.vis=[]
-            for strategy_i,method_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.strategies_client["REPORT"]):
+            self.lib=[]
+           
+            for strategy_i,method_i,lib_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.strategies_client["LIBRARY"],self.strategies_client["REPORT"]):
                 print(strategy_i,':',method_i)
                 checking_input_list(method_i,self.strategies[strategy_i])
+                self.lib.append(lib_i)
                 self.idoc.append(int(strtobool(idoc_i)))
                 self.vis.append(Data_Visualisation(idoc_i))
         else:
@@ -127,15 +149,16 @@ class Simleng:
             # flag to make report
             self.idoc = int(strtobool(self.strategies_client["REPORT"]))
             self.vis = Data_Visualisation(self.idoc)
-
+            self.lib = self.target["SOLVER"]
+            
         return self.strategies_master()
 
    
     # mastering a type of strategies
     def strategies_features_master(self):
         # Here is taken the class with the same name to the startegy
-        from .simula.strategies_features_selection import Features_selection
-
+        from .simula.strategies_features_selection import Features_selection 
+        # REQUIRE IMPROVEMENT TAKING A SWITCH METHOD
         if self.action["strategy"]=="Features_selection":
             pepe = [
                 self.data_train,
@@ -144,10 +167,15 @@ class Simleng:
                 self.data_dummy_test,
                 self.action["method"],
                 self.params,
-                self.action["idoc"],
+                self.action["library"], # including library
+                self.action["idoc"],               
             ]
-            return Features_selection(*pepe).strategies_features_selection_master()
+            if  self.action["library"]=="stats":
+                
+                return Features_selection(*pepe).strategies_features_selection_master()
 
+            else:
+                pass # HERE FOR OTHER LIBRARY
         elif self.action["strategy"] == "Features_extraction":
             pass
 
@@ -222,6 +250,9 @@ class Simleng:
         struct = str(self.dataset["STRUCT"])
         goal = str(self.target["GOAL"])
 
+        # including features selection from other libraries
+        solver = str(self.target["SOLVER"])
+        
         if goal == "CLASSIFICATION":
             nclass = str(self.target["NCLASS"])
             score = self.target["SCORE"]
@@ -229,11 +260,13 @@ class Simleng:
         # moved to Simleng entry point
         # idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
         if isinstance(self.strategies_client["STRATEGY"],list):
-            for strategy_i,proc_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.idoc):
+            for strategy_i,proc_i,lib_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.lib,self.idoc):
                   strategy = str(strategy_i)
                   self.action.update({"strategy":strategy})
                   proc = str(proc_i)
                   self.action.update({"method":proc})
+                  lib =str(lib_i)
+                  self.action.update({"library":lib})
                   self.action.update({"idoc":idoc_i})
                   self.switch(mlmethod, goal, nclass, strategy)
                   self.action={}
@@ -242,6 +275,8 @@ class Simleng:
                   self.action.update({"strategy":strategy})
                   proc = str(self.strategies_client["METHOD"])
                   self.action.update({"method":proc})
+                  lib = str(self.target["SOLVER"])
+                  self.action.update({"library":lib})
                   self.action.update({"idoc":self.idoc})
                   self.switch(mlmethod, goal, nclass, strategy)
                   self.action={}
@@ -252,9 +287,9 @@ class Simleng:
         return print("Simleng runs in {}H:{}M:{}S".format(x, y, z))
 
 
-# MACROSIN=Simleng(file_input,score=0.90).ini.get_macros()
+#MACROSIN=Simleng(file_input,score=0.90).ini.get_macros()
 
-# print(dict(MACROSIN.items()))
+#print(dict(MACROSIN.items()))
 
-#Simleng(file_input,score=0.90).simulation_strategies()
+Simleng(file_input,score=0.90).simulation_strategies()
 #Simleng(file_input, score=0.90).simulation_strategies()

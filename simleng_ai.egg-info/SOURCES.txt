@@ -33,7 +33,8 @@ simleng_ai/datasets/pimas/columns.txt
 simleng_ai/datasets/pimas/pima-indians-diabetes.csv
 simleng_ai/ini/__init__.py
 simleng_ai/ini/init.py
-simleng_ai/input_file/simlengin02091313.txt
+simleng_ai/input_file/simlengin08091019.txt
+simleng_ai/input_file/simlengin08091019.txt~
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
 simleng_ai/output/picture.py
@@ -41,8 +42,7 @@ simleng_ai/output/report.py
 simleng_ai/output/report.py~
 simleng_ai/output/table.py
 simleng_ai/output_results/pimas/Bin_29.png
-simleng_ai/output_results/pimas/Data_Project
-_pimas.txt
+simleng_ai/output_results/pimas/Data_Project _pimas.txt
 simleng_ai/output_results/pimas/K_F_19.png
 simleng_ai/output_results/pimas/K_F_30.png
 simleng_ai/output_results/pimas/Log_25.png
@@ -86,6 +86,10 @@ simleng_ai/resources/sets.py
 simleng_ai/resources/sys.py
 simleng_ai/simula/__init__.py
 simleng_ai/simula/strategies_features_selection.py
+simleng_ai/simula/strategies_features_selection_copy.py
+simleng_ai/simula/strategies_features_selection_copy.py~
+simleng_ai/simula/strategies_statsmodels.py
+simleng_ai/simula/strategies_statsmodels.py~
 simleng_ai/supervised/GenLogitclass.py
 simleng_ai/supervised/GenLogitmodels.py
 simleng_ai/supervised/__init__.py
