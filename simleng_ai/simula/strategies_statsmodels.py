@@ -38,7 +38,8 @@ class Features_selection_statsmodels(Data_Generation):
         self.params = args[5]
         self.lib= args[6]
         self.idoc = args[7]
-
+        self.dataset= args[8]
+        
         self.GenLogit_shape = self.params["GenLogit_shape"]
         self.index_columns_base = self.params["columns_search"]
         self.min_shuffle_size = int(self.params["min_shuffle_size"])
@@ -46,7 +47,8 @@ class Features_selection_statsmodels(Data_Generation):
         self.shuffle_mode = self.params["shuffle_mode"]
         self.filter_cond = self.params["filter_cond"]
         self.K_fold = int(self.params["K_fold"])
-
+        self.dataset_name=self.dataset["DATASET"]
+        
     def features_selection_statsmodels_master(self):
         print(self.proc)
         # print(self.data_train.values())
@@ -76,15 +78,15 @@ class Features_selection_statsmodels(Data_Generation):
         U_train_exog = data_add_constant(U_train)
         U_test_exog = data_add_constant(U_test)
 
-        Data_Visualisation(self.idoc).data_head_tail(df)
+        Data_Visualisation(self.idoc,self.dataset_name).data_head_tail(df)
 
-        Data_Visualisation(self.idoc).data_feature_show(df)
+        Data_Visualisation(self.idoc,self.dataset_name).data_feature_show(df)
 
-        Data_Visualisation(self.idoc).data_features_show(df)
+        Data_Visualisation(self.idoc,self.dataset_name).data_features_show(df)
 
-        Data_Analytics().data_describe(df)
+        Data_Analytics(self.dataset_name).data_describe(df)
 
-        Data_Visualisation(self.idoc).data_features_draw_hist(U_train, 10)
+        Data_Visualisation(self.idoc,self.dataset_name).data_features_draw_hist(U_train, 10)
 
         Correlation(U_train, df.columns, 0.9, self.idoc).correlation_training()
         #if self.idoc >= 1:
@@ -369,8 +371,8 @@ class Features_selection_statsmodels(Data_Generation):
         columns_two_copy = columns_two.copy()
 
         Title = (
-            "Binary Classification Regions (Yes/No) using statsmodels"
-            "over glu-ped plane"
+            "Binary Classification Regions using statsmodels",
+            "over " + "(" + columns_two[0] + "," + columns_two[1] + ")"  +" plane"
         )
         Draw_binary_classification_results(
             FPR,

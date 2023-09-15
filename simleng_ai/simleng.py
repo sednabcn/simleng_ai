@@ -32,7 +32,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-file_input = "simlengin08091019.txt"
+file_input ='simlengin15091216.txt'
 
 
 class Simleng:
@@ -43,7 +43,7 @@ class Simleng:
         # self.game=Simleng_strategies()
         self.eng = Data_Engineering()
         # self.vis = Data_Visualisation()
-        self.anal = Data_Analytics()
+     
         self.qual = Data_Quality()
         self.strategies = {}
         self.params = {}
@@ -53,7 +53,7 @@ class Simleng:
         # generation of entry data and process
         (
             _,
-            self.dataset,
+            self.dataset, # no list yet
             _,
             _,
             self.features,
@@ -61,8 +61,11 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
-       
 
+        self.dataset_name=self.dataset["DATASET"]
+        
+        self.anal = Data_Analytics(self.dataset_name)
+       
     def simulation_strategies(self):
         """strategies management in Simleng"""
 
@@ -131,7 +134,7 @@ class Simleng:
                 checking_input_list(method_i,self.strategies[strategy_i])
                 self.lib.append(lib_i)
                 self.idoc.append(int(strtobool(idoc_i)))
-                self.vis.append(Data_Visualisation(idoc_i))
+                self.vis.append(Data_Visualisation(idoc_i,self.dataset_name))
         else:
             print(self.strategies_client["STRATEGY"])
 
@@ -148,7 +151,7 @@ class Simleng:
               
             # flag to make report
             self.idoc = int(strtobool(self.strategies_client["REPORT"]))
-            self.vis = Data_Visualisation(self.idoc)
+            self.vis = Data_Visualisation(self.idoc,self.dataset_name)
             self.lib = self.target["SOLVER"]
             
         return self.strategies_master()
@@ -168,8 +171,9 @@ class Simleng:
                 self.action["method"],
                 self.params,
                 self.action["library"], # including library
-                self.action["idoc"],               
-            ]
+                self.action["idoc"],
+                self.dataset,
+            ]   
             if  self.action["library"]=="stats":
                 
                 return Features_selection(*pepe).strategies_features_selection_master()

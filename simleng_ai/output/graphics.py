@@ -521,8 +521,11 @@ class Draw_binary_classification_results:
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 
         for ax, df, name in zip(axes.flatten(), z_list, model_names):
+            binary=df.groupby(df.columns[-1])
+            b_=list(binary.apply(list).keys())
+
             for color, dfe, nlabel in zip(
-                ["Darkblue", "red"], df.groupby(df.columns[-1]), ["No", "Yes"]
+                ["Darkblue", "red"],binary , [str(b_[0]), str(b_[1])]
             ):
                 # x=df.loc[Index,df.columns[0]]
                 x = dfe[1][df.columns[0]]

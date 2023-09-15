@@ -2,6 +2,6 @@ include README.md
 include LICENSE
 include requirements.txt
 graft simleng_ai
-recursive-exclude * *.py[co] backup
+recursive-exclude * *.py[co] backup datasets_
 include versioneer.py
 include is_number/_version.py

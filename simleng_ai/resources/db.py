@@ -20,6 +20,12 @@ class MyDB(object):
         if path == None:
             self.db_client = find_full_path(self.db)
 
+        #print(self.db)
+        #print(store)
+        #print(self.db_store)
+        #print(self.db_client)
+        #print(input("PAUSE"))
+        
     def datasets_store(self):
         _, dirs_store, files_store = list(os.walk(self.db_store))[0]
         _, dirs_client, files_client = list(os.walk(self.db_client))[0]

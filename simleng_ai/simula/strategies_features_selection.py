@@ -39,6 +39,7 @@ class Features_selection(Data_Generation):
         self.params = args[5]
         self.lib= args[6]
         self.idoc = args[7]
+        self.dataset=args[8]
 
         self.GenLogit_shape = self.params["GenLogit_shape"]
         self.index_columns_base = self.params["columns_search"]
@@ -47,7 +48,8 @@ class Features_selection(Data_Generation):
         self.shuffle_mode = self.params["shuffle_mode"]
         self.filter_cond = self.params["filter_cond"]
         self.K_fold = int(self.params["K_fold"])
-
+        self.dataset_name=self.dataset["DATASET"]
+        
     def strategies_features_selection_master(self):
         print(self.proc)
               
@@ -59,7 +61,8 @@ class Features_selection(Data_Generation):
                 self.proc,
                 self.params,
                 self.lib, # including library
-                self.idoc,               
+                self.idoc,
+                self.dataset,
             ]
 
         
