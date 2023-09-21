@@ -19,6 +19,13 @@ simleng_ai.egg-info/dependency_links.txt
 simleng_ai.egg-info/not-zip-safe
 simleng_ai.egg-info/requires.txt
 simleng_ai.egg-info/top_level.txt
+simleng_ai/_datasets_/__init__.py
+simleng_ai/_datasets_/banknote/banknote authentication - UCI Machine Learning Repository.pdf
+simleng_ai/_datasets_/banknote/banknote+authentication.zip
+simleng_ai/_datasets_/banknote/banknote.csv
+simleng_ai/_datasets_/banknote/iris.csv
+simleng_ai/_datasets_/pimas/columns.txt
+simleng_ai/_datasets_/pimas/pima-indians-diabetes.csv
 simleng_ai/abstract/__init__.py
 simleng_ai/abstract/data_abstract.py
 simleng_ai/bin/api.py
@@ -28,18 +35,13 @@ simleng_ai/data_manager/feature_eng.py
 simleng_ai/data_manager/generation.py
 simleng_ai/data_manager/mds.py
 simleng_ai/data_manager/quality.py
-simleng_ai/datasets/__init__.py
-simleng_ai/datasets/pimas/columns.txt
-simleng_ai/datasets/pimas/pima-indians-diabetes.csv
 simleng_ai/ini/__init__.py
 simleng_ai/ini/init.py
-simleng_ai/input_file/simlengin08091019.txt
-simleng_ai/input_file/simlengin08091019.txt~
+simleng_ai/input_file/simlengin15091216.txt
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
 simleng_ai/output/picture.py
 simleng_ai/output/report.py
-simleng_ai/output/report.py~
 simleng_ai/output/table.py
 simleng_ai/output_results/pimas/Bin_29.png
 simleng_ai/output_results/pimas/Data_Project _pimas.txt
@@ -87,9 +89,7 @@ simleng_ai/resources/sys.py
 simleng_ai/simula/__init__.py
 simleng_ai/simula/strategies_features_selection.py
 simleng_ai/simula/strategies_features_selection_copy.py
-simleng_ai/simula/strategies_features_selection_copy.py~
 simleng_ai/simula/strategies_statsmodels.py
-simleng_ai/simula/strategies_statsmodels.py~
 simleng_ai/supervised/GenLogitclass.py
 simleng_ai/supervised/GenLogitmodels.py
 simleng_ai/supervised/__init__.py

@@ -10,7 +10,8 @@ from ..data_manager.feature_eng import Data_Engineering
 
 
 class Data_Analytics(Data_Generation):
-    def __init__(self):
+    def __init__(self,dataset_name=None):
+        self.dataset_name=dataset_name
         pass
 
     def data_describe(self, data):
@@ -19,9 +20,10 @@ class Data_Analytics(Data_Generation):
 
         data_described = data.describe()
         """Grouped Data by the type[yes/no] showing mean values"""
-        data_mean = data.groupby("type").mean()
+        data_mean = data.groupby(data.columns[-1]).mean()
+        title="Descriptive Statsistics of " + self.dataset_name +" Data"
         return table(
-            data_described, ".3f", "simple", "Descriptive Statsistics of Pima Data", 60
+            data_described, ".3f", "simple",title,60
         ), table(data_mean, ".3f", "simple", " Data Mean ", 60)
 
 
@@ -34,24 +36,31 @@ class Data_Visualisation(Data_Generation):
     # colors for grahics with matplolib and plotly
     colors = [ic for ic in mcolors.BASE_COLORS.values() if ic != (1, 1, 1)]
 
-    def __init__(self, idoc):
+    def __init__(self, idoc,dataset_name,title=None):
         self.idoc = idoc
-
+        self.dataset_name = dataset_name
+        self.title=str(title)
+        
     def data_head_tail(self, data):
         "Head_tail of DataFrame data"
         from ..resources.output import table
 
         head = data.head()
         tail = data.tail()
-        return table(head, ".2f", "simple", "Data Head Pima Dataset", 60), table(
-            tail, ".2f", "simple", "Data Tail Pima Dataset", 60
+    
+        
+        title_t="Data Head of " + self.dataset_name + " Dataset"
+        title_h="Data Tail of " + self.dataset_name +" Dataset"
+        return table(head, ".2f", "simple", title_h, 60), table(
+            tail, ".2f", "simple", title_t, 60
         )
 
     def data_feature_show(self, data):
         from ..resources.output import image_to_report
-
-        sns.countplot(x="type", data=data, palette="hls")
-        plt.title("Binary Categorical Variable(Yes/No)")
+        
+        
+        sns.countplot(x=data.columns[-1], data=data, palette="hls")
+        plt.title("Binary Categorical Variable")
         # return plt.show()
         if self.idoc >= 1:
             print("Fig:binaryclass")
@@ -60,11 +69,11 @@ class Data_Visualisation(Data_Generation):
     def data_features_show(self, data):
         """check the xlabel"""
         from ..resources.output import image_to_report
-
-        sns.countplot(x="age", hue="type", data=data[::5], orient="h", palette="Set1")
-        plt.title("Behaviour of the Diabetes with the age")
+        nn=1
+        sns.countplot(x=data.columns[nn], hue=data.columns[-1], data=data[::5], orient="h", palette="Set1")
+        plt.title("Behaviour of the " + self.dataset_name + " with the "+ data.columns[nn])
         if self.idoc >= 1:
-            print("Fig:Behaviour of the Diabetes with the age")
+            print("Fig:Behaviour of the "+self.dataset_name + "with the "+ data.columns[nn] )
         return image_to_report(self.idoc, "countplot", "png")
         # return plt.show()
 
@@ -91,14 +100,20 @@ class Data_Visualisation(Data_Generation):
         df = data
         dfs = df.describe()
         columns = df.columns
-        fig, axs = plt.subplots(nrows=4, ncols=2)
+        ncols=2
+        nrows,_=np.divmod(len(columns),ncols)
+        fig, axs = plt.subplots(nrows=nrows, ncols=ncols)
 
+        naxs=nrows*ncols
+        
         colors = [ic for ic in mcolors.CSS4_COLORS.values() if ic != (1, 1, 1)]
 
-        ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7 = axs.flatten()
+        #ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7 = axs.flatten()
 
-        ax = np.array([ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7])
+        #ax = np.array([ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7])
 
+        ax = np.array([ axi for axi in axs.flatten()])
+        
         for ii in range(len(columns)):
             data = df.iloc[:, ii]
             count, mean, std, min, Q25, Q50, Q75, max = dfs.iloc[:, ii]
@@ -114,7 +129,7 @@ class Data_Visualisation(Data_Generation):
         for ax in axs.flat[len(ax) - 1 :]:
             ax.axis("off")
 
-        plt.suptitle("Pima Datasets [type~npreg+glu+bp+skin+bmi+ped+age]")
+        plt.suptitle(self.dataset_name + " Dataset shows multivariate distributions")
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
         if self.idoc >= 1:
             print("Fig:data_feature_show_multiple_distributions")

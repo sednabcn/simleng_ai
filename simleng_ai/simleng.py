@@ -15,10 +15,14 @@ from datetime import datetime, timedelta
 from distutils.util import strtobool
 from .ini.init import Init
 from .data_manager.generation import Data_Generation
-from .simula.strategies_features_selection import Features_selection
 from .data_manager.feature_eng import Data_Engineering
 from .data_manager.quality import Data_Visualisation, Data_Analytics, Data_Quality
+
 from .resources.io import checking_input_list
+from .resources.design import macro_strategies,update_macros_strategies_client
+
+from .featureseng.strategies_features_selection import Features_selection
+from .simula.strategies_classification import Classification
 
 # setting ignore as a parameter and further adding category
 warnings.simplefilter(action="ignore", category=(FutureWarning, UserWarning))
@@ -32,7 +36,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     warning_function()  # now warnings will be suppressed
 
-file_input ='simlengin15091216.txt'
+file_input ='simlengin21090917.txt'
 
 
 class Simleng:
@@ -61,133 +65,71 @@ class Simleng:
             self.strategies_client,
             self.params,
         ) = self.gen.get_input_info()
-
+      
         self.dataset_name=self.dataset["DATASET"]
         
         self.anal = Data_Analytics(self.dataset_name)
-       
+
+            
     def simulation_strategies(self):
         """strategies management in Simleng"""
-
+        __strategies__=["Features_selection","Classification","Data","Training",\
+                        "Stochastic","Solver"]
         # printing to start running
         dt_starting = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+
         print("Simleng start running on", dt_starting)
-
-        self.strategies["Features_selection"] = [
-            "full_features",
-            "features_selection_z_score",
-            "K_fold_cross_validation",
-            "pca",
-            "additional_test",
-            "discriminant_methods",
-        ]
-        self.strategies["Data"] = [
-            "split",
-            "balance",
-            "augment",
-            "synthetic",
-            "unique_rep",
-        ]
-        self.strategies["Training"] = ["base", "full", "pre-trained"]
-        self.strategies["Stochastic"] = [
-            "boostrap",
-            "combined",
-            "matrices",
-            "operational",
-            "meshing",
-            "variational",
-            "app",
-        ]
-        self.strategies["Solver"] = [
-            "optimizer",
-            "parameters",
-            "convergence",
-            "metrics",
-        ]
-
-        # Checking strategies pipeline
+        
+        for key in __strategies__:
+            self.strategies[key]=[]
+        __strategies__,self.strategies=\
+            macro_strategies(__strategies__,**self.strategies)
 
         
-        if isinstance(self.strategies_client["STRATEGY"],list):
+        # Checking strategies pipeline
+        self.idoc,self.vis,self.lib=update_macros_strategies_client(self.dataset_name,self.strategies,"STRATEGY",self.strategies_client,"LIBRARY","stats")
+        
+        _,_,self.make_task=update_macros_strategies_client(self.dataset_name,\
+            self.strategies,"STRATEGY",self.strategies_client,"MAKETASK",True)
 
-            # modification to include the "LIBRARY" column in STRATEGY MACRO
-            try:
-                if "LIBRARY" not in self.strategies_client.keys():
-                    self.strategies_client.update({"LIBRARY":[]})
-                    self.strategies_client["LIBRARY"]=[]
-                    for nn in range(len(self.strategies_client["STRATEGY"])):
-                       self.strategies_client["LIBRARY"].append(self.target["SOLVER"])    
-                else:
-                    for nn in range(len(self.strategies_client["STRATEGY"])):
-                       if  self.strategies_client["LIBRARY"]=="__": 
-                           self.strategies_client["LIBRARY"][nn]=self.target["SOLVER"]
-                    
-            except:
-                print("Checking the input_file: Simlengin.txt")
-              
-            self.idoc=[]
-            self.vis=[]
-            self.lib=[]
-           
-            for strategy_i,method_i,lib_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.strategies_client["LIBRARY"],self.strategies_client["REPORT"]):
-                print(strategy_i,':',method_i)
-                checking_input_list(method_i,self.strategies[strategy_i])
-                self.lib.append(lib_i)
-                self.idoc.append(int(strtobool(idoc_i)))
-                self.vis.append(Data_Visualisation(idoc_i,self.dataset_name))
-        else:
-            print(self.strategies_client["STRATEGY"])
-
-            try:
-                if (
-                        self.strategies_client["METHOD"]
-                        not in self.strategies[self.strategies_client["STRATEGY"]]
-                ):
-                    strategies[self.strategies_client["STRATEGY"]].append(
-                        self.strategies_client["METHOD"]
-                    )
-            except:
-                print("Checking the input_file: Simlengin.txt")
-              
-            # flag to make report
-            self.idoc = int(strtobool(self.strategies_client["REPORT"]))
-            self.vis = Data_Visualisation(self.idoc,self.dataset_name)
-            self.lib = self.target["SOLVER"]
-            
+    
+        
         return self.strategies_master()
 
    
     # mastering a type of strategies
     def strategies_features_master(self):
         # Here is taken the class with the same name to the startegy
-        from .simula.strategies_features_selection import Features_selection 
+        #from .featureseng.strategies_features_selection import Features_selection 
         # REQUIRE IMPROVEMENT TAKING A SWITCH METHOD
-        if self.action["strategy"]=="Features_selection":
-            pepe = [
+        plist = [
+                self.dataset,
                 self.data_train,
                 self.data_test,
                 self.data_dummy_train,
                 self.data_dummy_test,
-                self.action["method"],
+                self.target,
                 self.params,
-                self.action["library"], # including library
-                self.action["idoc"],
-                self.dataset,
-            ]   
-            if  self.action["library"]=="stats":
-                
-                return Features_selection(*pepe).strategies_features_selection_master()
+                self.action,                                
+            ]
 
-            else:
-                pass # HERE FOR OTHER LIBRARY
-        elif self.action["strategy"] == "Features_extraction":
-            pass
+        if self.action["strategy"]=="Features_selection":
+            print(self.action["strategy"])
+            return Features_selection(*plist).\
+                             strategies_features_selection_master()    
 
-    def switch(self, mlmethod, goal, nclass, strategy):
+        elif self.action["strategy"] == "Classification":
+            print(self.action["strategy"])
+            return Classification(*plist).\
+                                strategies_classification_master()
+        else:
+             pass
+
+    def switch(self, mlmethod, goal, strategy):
         "Match function for python3.8"
         if mlmethod == "SUPERV":
             if goal == "CLASSIFICATION":
-                if nclass == "2":
+                
                     (
                         self.data_train,
                         self.data_test,
@@ -201,6 +143,7 @@ class Simleng:
                         _,
                         _,
                     ) = self.gen.data_generation_functions()
+                    
                     (
                         self.data_dummy_train,
                         self.data_dummy_test,
@@ -211,6 +154,10 @@ class Simleng:
 
                     elif strategy == "Features_extraction":
                         pass
+
+                    elif strategy =="Classification":
+                        return self.strategies_features_master()
+                    
                     elif strategy == "Data":
                         pass
                     elif strategy == "Training":
@@ -222,11 +169,6 @@ class Simleng:
                     else:
                         pass
 
-                elif nclass > 2:
-                    pass
-
-                else:
-                    pass
             elif goal == "REGRESSION":
                 pass
             elif goal == "DIMENSION REDUCTION":
@@ -253,18 +195,19 @@ class Simleng:
         kind = str(self.dataset["TYPE"])
         struct = str(self.dataset["STRUCT"])
         goal = str(self.target["GOAL"])
-
+        score = self.target["SCORE"]
+        
         # including features selection from other libraries
+
         solver = str(self.target["SOLVER"])
         
-        if goal == "CLASSIFICATION":
-            nclass = str(self.target["NCLASS"])
-            score = self.target["SCORE"]
-
-        # moved to Simleng entry point
-        # idoc = np.where(self.strategies_client["REPORT"] == True, 0, -1)
+        
         if isinstance(self.strategies_client["STRATEGY"],list):
-            for strategy_i,proc_i,lib_i,idoc_i in zip(self.strategies_client["STRATEGY"],self.strategies_client["METHOD"],self.lib,self.idoc):
+
+            for strategy_i,proc_i,lib_i,idoc_i,task_i in zip(self.strategies_client["STRATEGY"],\
+                                                      self.strategies_client["METHOD"],\
+                                                             self.lib,self.idoc,\
+                                                             self.make_task):
                   strategy = str(strategy_i)
                   self.action.update({"strategy":strategy})
                   proc = str(proc_i)
@@ -272,7 +215,9 @@ class Simleng:
                   lib =str(lib_i)
                   self.action.update({"library":lib})
                   self.action.update({"idoc":idoc_i})
-                  self.switch(mlmethod, goal, nclass, strategy)
+                  
+                  self.action.update({"make_task":task_i})
+                  self.switch(mlmethod, goal,strategy)
                   self.action={}
         else:
                   strategy = str(self.strategies_client["STRATEGY"])
@@ -282,7 +227,8 @@ class Simleng:
                   lib = str(self.target["SOLVER"])
                   self.action.update({"library":lib})
                   self.action.update({"idoc":self.idoc})
-                  self.switch(mlmethod, goal, nclass, strategy)
+                  self.action.update({"make_task":self.make_task})
+                  self.switch(mlmethod, goal,strategy)
                   self.action={}
 
         elapsed = timeit.default_timer() - t0

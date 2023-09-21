@@ -103,7 +103,7 @@ def find_full_path(name, path=None):
     rt=[]
     if path == None:
         path = os.path.expanduser("~")
-
+    
     if re.match(r'\w+\.\w+',name):
        
        for root, dirs, files in os.walk(path):
@@ -120,8 +120,12 @@ def find_full_path(name, path=None):
             elif str(name) in dirs:
                 rt.append(os.path.join(root,dirs,dir))
             else:
-                pass
-    
+                for items in files:
+                    if items.startswith(name):
+                        rt.append(root)
+                    else:
+                        pass
+            
     if len(rt) > 0:
         rt.sort(key=len)
         new_path = rt[0]

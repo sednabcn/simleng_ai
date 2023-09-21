@@ -614,7 +614,7 @@ class Sklearn_simula:
             )
             self.y = np.array(self.endog)
         else:
-            self.y_estimated_ = list(
+            self.y_estimated_ =  list(
                 map(lambda x: np.where(x < 0.5, 0, 1), self.y_estimated)
             )
             self.y = np.array(self.y)

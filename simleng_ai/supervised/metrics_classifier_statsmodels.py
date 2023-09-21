@@ -9,7 +9,7 @@ Created on Mon Sep 17 10:05:57 2018
 import numpy as np
 
 
-class MetricBinaryClassifier:
+class MetricsBinaryClassifier:
     """Confusion matrix in statsmodels"""
 
     def __init__(self):
@@ -22,7 +22,7 @@ class MetricBinaryClassifier:
                 n += 1
         return n
 
-    def metrics_binary(truth, predicted, misclassif):
+    def metrics_binary_classifier(truth, predicted, misclassif):
         if len(truth) != len(predicted):
             raise Exception(" Wrong sizes ... ")
         total = len(truth)

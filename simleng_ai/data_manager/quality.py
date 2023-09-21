@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib import colors as mcolors
 from biokit.viz import corrplot
 import seaborn as sns
@@ -8,6 +9,7 @@ from scipy import stats
 from ..data_manager.generation import Data_Generation
 from ..data_manager.feature_eng import Data_Engineering
 
+mpl.rcParams['figure.max_open_warning']=30
 
 class Data_Analytics(Data_Generation):
     def __init__(self,dataset_name=None):
@@ -19,7 +21,7 @@ class Data_Analytics(Data_Generation):
         from ..resources.output import table
 
         data_described = data.describe()
-        """Grouped Data by the type[yes/no] showing mean values"""
+        """Grouped Data by the showing mean values"""
         data_mean = data.groupby(data.columns[-1]).mean()
         title="Descriptive Statsistics of " + self.dataset_name +" Data"
         return table(
@@ -60,11 +62,11 @@ class Data_Visualisation(Data_Generation):
         
         
         sns.countplot(x=data.columns[-1], data=data, palette="hls")
-        plt.title("Binary Categorical Variable")
+        plt.title("Classification: Categorical Variables")
         # return plt.show()
         if self.idoc >= 1:
-            print("Fig:binaryclass")
-        return image_to_report(self.idoc, "binaryclass", "png")
+            print("Fig:multiclass")
+        return image_to_report(self.idoc, "multiclass", "png")
 
     def data_features_show(self, data):
         """check the xlabel"""

@@ -1,4 +1,4 @@
-# ==["find_subsets_predictors","data_add_constant",data_sorted", "data_dummy_binary_classification","data_0_1_exposure","data_add_exposure","boostrap_datasets","isdummy","isimbalance"]
+# ==["find_subsets_predictors","data_add_constant",data_sorted", "data_dummy_binary_classification","data_0_1_exposure","data_add_exposure","boostrap_datasets","isdummy","isimbalance","data_dummy_classification"]
 
 '''
 #def find_subsets_predictors(x,dict_index,shuffle_mode,filter_cond):
@@ -81,7 +81,10 @@ def isdummy(x):
     dummy = True
     xx = pd.DataFrame(x)
     ind = xx.values.max()
-    return np.where(ind > 1, not (dummy), dummy)
+    if isinstance(ind,str) or isinstance(ind,list):
+        return  not (dummy)
+    else:
+        return np.where(ind > 1, not (dummy), dummy)
 
 
 def isimbalance(x):
@@ -97,7 +100,7 @@ def isimbalance(x):
 def data_add_constant(x):
     import statsmodels.api as sm
 
-    exog = sm.add_constant(x, prepend=True)
+    exog = sm.add_constant(x, prepend=False)
     return exog
 
 
@@ -113,13 +116,27 @@ def data_sorted(x, magnitud, key, reverse):
 
 
 def data_dummy_binary_classification(y, key, L1, L2):
-    # Mapping 'type' (Yes/No) to (1/0)
+    # Mapping key to (1/0)
     import numpy as np
 
     f = lambda x: np.where(x == key, L1, L2)
     V = f(y).astype(int)
-    V.reshape(len(y), 1)
+    V.reshape(len(y),1)
     return V
+
+def data_dummy_classification(y,nclass):
+    # Mapping y to range(nclass)
+    import numpy as np
+    import pandas as pd
+    
+    l_class=list(set(np.array(y)))
+
+    if len(l_class)==nclass:
+        f=lambda x:l_class.index(x)
+        V=pd.DataFrame(list(map(f,y)),index=y.index) 
+        return V[0]
+    else:
+        pass
 
 
 def data_0_1_exposure(data):

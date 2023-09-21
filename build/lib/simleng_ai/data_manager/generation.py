@@ -147,7 +147,7 @@ class Data_Generation(DATA, Init):
 
         pars = [mode, index_col, header, sep]
 
-        name = self.listfiles["FILENAME"]
+        name = str(self.listfiles["FILENAME"]) # Becarefull when it will be a list
 
         test_size = float(self.target["SPLITDATA"])
 
@@ -155,6 +155,7 @@ class Data_Generation(DATA, Init):
 
         self.full_path = find_full_path(name)
         #print(self.full_path)
+        #print(input("PAUSE"))
         self.data = file_reader(self.full_path, type_file, *pars)
         #print(self.data.head())
         #print(input("PAUSE"))
@@ -165,7 +166,7 @@ class Data_Generation(DATA, Init):
         source = self.dataset["DATASOURCE"]
 
         # Future Checking  what happen in the case of a list of datasets #
-        MyDB(dataset, "datasets", kind=source).datasets_store()
+        MyDB(dataset, "_datasets_", kind=source).datasets_store()
 
         # columns_data_to selected
         last = col_data(self.data, -1)
