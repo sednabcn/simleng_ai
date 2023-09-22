@@ -32,6 +32,8 @@ SOURCEDIR=source_dir_path.split('/')[-1]
 # input basic information 
 
 WORKDIR = os.getcwd()
+if not output_entry_path:
+    output_entry_path=os.path.join(WORKDIR,output_entry)
 
 if os.path.isfile('header.txt'):
     with open('header.txt','r') as hd:
@@ -121,11 +123,8 @@ for i in range(len(png_files)):
     image_to_html(path_to_html,image)
     read_image_to_html(path_to_html)
 
-
-
-
 # get information from output_entry
-filename=page_title +'_'+ str(dataset)
+filename=str(page_title) +'_'+ str(dataset)
 file_txt=filename + '.'+'txt'
 file_html=filename+ '.'+'html'
 i=0

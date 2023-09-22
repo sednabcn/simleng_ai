@@ -351,7 +351,7 @@ class Draw_binary_classification_results:
     ):
         self.fpr = FPR
         self.tpr = TPR
-        self.model_names_selected = model_names
+        self.model_names_selected = list(self.fpr.keys()) 
         self.params = params
         self.x_train = exog
         self.y_train = endog

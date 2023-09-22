@@ -1,11 +1,13 @@
 import os
+import numpy as np
 from ..abstract.data_abstract import DATA
 from ..ini.init import Init
 from ..resources.sets import reduce_value_list_double_to_single_key
 from ..resources.io import find_full_path, file_reader
-from ..resources.manipulation_data import data_dummy_binary_classification
+from ..resources.manipulation_data import data_dummy_classification
 from ..resources.pandas import mapping_zero_one
 from ..resources.db import MyDB
+
 
 # file_input='simlengin.txt'
 
@@ -222,7 +224,7 @@ class Data_Generation(DATA, Init):
         )  # 0.25 x 0.8 = 0.2
 
         # print (self.X_train.columns)
-
+                
         return (
             self.data_train,
             self.data_test,
@@ -237,8 +239,8 @@ class Data_Generation(DATA, Init):
             self.y_test_val,
         )
     # Future Checking [END] what happen in the case of a list of datasets #
-    def data_generation_binary_classification(self):
-        """Generation of dummy variables to Binary Classification Task
+    def data_generation_classification(self):
+        """Generation of dummy variables to Classification Task
         for a balanced dataset
         """
         from ..resources.pandas import mapping_zero_one
@@ -247,18 +249,20 @@ class Data_Generation(DATA, Init):
         data_dummy_train = {}
         data_dummy_test = {}
 
+        nclass = int (self.target["NCLASS"])
+        
         # Dummy variables to categorical variable
-        if isdummy(self.y_train):
+        if isdummy(self.y_train) or self.dataset["UNDUMMY"]:
             V_train = self.y_train
             V_test = self.y_test
         else:
-            V_train = data_dummy_binary_classification(self.y_train, "No", 0, 1)
-            V_test = data_dummy_binary_classification(self.y_test, "No", 0, 1)
+            V_train = data_dummy_classification(self.y_train,nclass)
+            V_test = data_dummy_classification(self.y_test,nclass)
 
         # Mapping 'Training and Testing data to [0,1]".X->U
-        if isdummy(self.X_train):
-            U_train = X_train
-            U_test = X_test
+        if isdummy(self.X_train) or self.dataset["UNDUMMY"]:
+            U_train = self.X_train
+            U_test = self.X_test
         else:
             U_train = mapping_zero_one(self.X_train)
             U_test = mapping_zero_one(self.X_test)
@@ -273,12 +277,7 @@ class Data_Generation(DATA, Init):
         nclass = int(self.target["NCLASS"])
 
         if target == "CLASSIFICATION":
-            if nclass == 2:
-                return self.data_generation_binary_classification()
-            elif nclass > 2:
-                pass
-            else:
-                pass
+                return self.data_generation_classification()
         elif target == "REGRESSION":
             pass
 
