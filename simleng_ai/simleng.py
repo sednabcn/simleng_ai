@@ -236,10 +236,26 @@ class Simleng:
 
         return print("Simleng runs in {}H:{}M:{}S".format(x, y, z))
 
+try
+ff=Simleng(file_input,score=0.90).ini.get_macros()
+from collections import OrderedDict
+MACROSIN=OrderedDict()
+for ii, (key,value) in enumerate(ff):
+    MACROSIN.update({key,value})
+print(dict(MACROSIN.items()))
 
-#MACROSIN=Simleng(file_input,score=0.90).ini.get_macros()
-
-#print(dict(MACROSIN.items()))
-
-Simleng(file_input,score=0.90).simulation_strategies()
+#Simleng(file_input,score=0.90).simulation_strategies()
 #Simleng(file_input, score=0.90).simulation_strategies()
+"""
+┌──(agagora㉿kali)-[~]
+└─$ cd ./Downloads/Sep28-1500/PROJECTOML/simleng_ai
+                                                                                                               
+┌──(agagora㉿kali)-[~/Downloads/Sep28-1500/PROJECTOML/simleng_ai]
+└─$ python3.11
+Python 3.11.4 (main, Jun  7 2023, 10:13:09) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from simleng_ai import simleng
+{'Simlengin.txt': [], 'DATA_PROJECT': [{'DATASET': 'iris'}, {'TYPE': 'numeric'}, {'STRUCT': 'table'}, {'SYNTHETIC': 'False'}, {'DATASOURCE': 'table'}, {'IMBALANCE': 'True'}, {'UNDUMMY': 'TRUE'}], 'FILES': [{'NUMBER': '1'}, {'FORMAT': 'csv'}, {'READER': 'pandas'}, {'MODE': 'read'}, {'INDEX_COL': '0'}, {'HEADER': 'None'}, {'SEP': '\\n'}], 'PREPROCESS': [{'CATEGORICAL': []}, {'[1,2,3,4,5,6,7,8,9,10]': []}, {'mixture': []}], 'LISTFILES': [{'FILENAME': 'iris.csv'}], 'FEATURES': [{'TOTALNUMBER': '5'}, {'SAMPLESIZE': '151'}, {'CORRELATION(%)': '-'}, {'FEATUREONE': '-'}], 'TARGET': [{'GOAL': 'CLASSIFICATION'}, {'NCLASS': '3'}, {'METHOD': 'SUPERV'}, {'SOLVER': 'stats'}, {'SCORE': '---'}, {'SPLITDATA': '0.2'}, {'MLALGO': '---'}, {'REGPAR': '-1,-1'}, {'MISSCLASS': 'False'}], 'STRATEGIES': [{'STRATEGY': 'Classification'}, {'METHOD': 'full_features'}, {'REPORT': 'False'}, {'MAKETASK': 'False'}], 'PARAMS': [{'GenLogit_shape': '0.1'}, {'columns_search': '[0,1,2,3]'}, {'min_shuffle_size': '2'}, {'subset_search': '[1,3]'}, {'shuffle_mode': 'combinations'}, {'filter_cond': 'same'}, {'K_fold': '10'}]}
+>>> 
+"""
+

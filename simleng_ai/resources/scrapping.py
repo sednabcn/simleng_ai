@@ -38,7 +38,7 @@ def read_txt_to_dict_line(filename, PATTERNS, LIST_LINE_PAR):
     #     # command line param and is a file
     #   raise IndexError("There must be a filename specified.")
 
-    return output
+    return tuple(output.items())
 
 
 def read_txt_to_dict_key_multiple(filename, PATTERNS, key_MULTIPLE):
@@ -74,7 +74,7 @@ def read_txt_to_dict_key_multiple(filename, PATTERNS, key_MULTIPLE):
                     break
             else:
                 pass
-    return output
+    return tuple(output.items())
 
 
 def read_txt_to_dict(filename, PATTERNS):
@@ -101,7 +101,7 @@ def read_txt_to_dict(filename, PATTERNS):
             else:
                 output.update({key: list_to_list_of_dict(l122)})
         output[key] = list_to_list_of_dict(l122)
-    return output
+    return tuple(output.items())
 
 
 def read_txt_to_list_txt(filename, PATTERNS):

@@ -25,7 +25,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
-from ..featureseng.features_sel_statsmodels import Features_selection_statsmodels
+from ..featureseng.features_sel_statsmodels import Features_num_selection_statsmodels
 
 class Features_selection(Data_Generation):
     def __init__(self, *args):
@@ -55,9 +55,9 @@ class Features_selection(Data_Generation):
             ]
 
          self.lib = self.action["library"]
-        
+         # Becareful categorical variables
          if self.lib=="stats":
-            return Features_selection_statsmodels(*plist).features_selection_statsmodels_master()
+            return Features_num_selection_statsmodels(*plist).features_num_selection_statsmodels_master()
          elif self.lib=="sklearn":
             pass
          else:
