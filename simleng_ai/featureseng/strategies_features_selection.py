@@ -25,7 +25,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
-from ..featureseng.features_sel_statsmodels import Features_num_selection_statsmodels
+from ..featureseng.features_num_sel_statsmodels import Features_num_selection_statsmodels
 
 class Features_selection(Data_Generation):
     def __init__(self, *args):

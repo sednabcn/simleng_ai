@@ -236,13 +236,15 @@ class Simleng:
 
         return print("Simleng runs in {}H:{}M:{}S".format(x, y, z))
 
-try
-ff=Simleng(file_input,score=0.90).ini.get_macros()
-from collections import OrderedDict
-MACROSIN=OrderedDict()
-for ii, (key,value) in enumerate(ff):
-    MACROSIN.update({key,value})
-print(dict(MACROSIN.items()))
+try:
+    ff=Simleng(file_input,score=0.90).ini.get_macros()
+    from collections import OrderedDict
+    MACROSIN=OrderedDict()
+    for ii, (key,value) in enumerate(ff):
+        MACROSIN.update({key:value})
+    print(dict(MACROSIN.items()))
+except:
+    pass
 
 #Simleng(file_input,score=0.90).simulation_strategies()
 #Simleng(file_input, score=0.90).simulation_strategies()
