@@ -20,7 +20,7 @@ from sklearn.decomposition import PCA as skPCA
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-from ..supervised.metrics_classifier_statsmodels import MetricsBinaryClassifier as ac
+from ..supervised.metrics_classifier_statsmodels import MetricsBinaryClassifier as acb
 from ..supervised.metrics_classifier_sklearn import MetricsMultiClassifier as ac
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
@@ -237,7 +237,7 @@ class Statsmodels_simula:
 
             y_calibrated_ = inv_emb_nclass(self.y_calibrated,self.nclass-1,0.5)
             
-            msa = ac.metrics_binary_classifier(y_endog_, y_calibrated_, self.misclassif)
+            msa = acb.metrics_binary_classifier(y_endog_, y_calibrated_, self.misclassif)
             
         elif self.misclassif == False and self.nclass==2:
 
@@ -245,7 +245,7 @@ class Statsmodels_simula:
 
             y_estimated_ =  inv_emb_nclass(self.y_estimated,self.nclass-1,0.5)
 
-            msa = ac.metrics_binary_classifier(y_, y_estimated_, self.misclassif,average='macro')
+            msa = acb.metrics_binary_classifier(y_, y_estimated_, self.misclassif,average='macro')
 
         elif self.misclassif ==True and self.nclass>2:
 

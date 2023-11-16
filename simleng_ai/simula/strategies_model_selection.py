@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import re
+#===
 from ..data_manager.generation import Data_Generation
 from ..data_manager.feature_eng import (
     Data_Engineering,
@@ -19,6 +20,7 @@ from ..supervised.simulation_statsmodels import Statsmodels_linear_filter
 from ..output.table import Table_results
 from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
 
+#===
 from scipy import stats
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
@@ -26,11 +28,10 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
-from ..simula.binary_classification_statsmodels import Binary_classification_statsmodels
-
-from ..simula.multi_classification_statsmodels import Multi_classification_statsmodels
-
-class Classification(Data_Generation):
+from ..simula.features_num_sel_statsmodels import Features_num_selection_statsmodels
+ 
+# Make new one, PLEASE OCTOBER 14,2023
+class Model_selection(Data_Generation):
     def __init__(self, *args):
         self.idoc = -1
         self.dataset =args[0]
@@ -43,7 +44,7 @@ class Classification(Data_Generation):
         self.params = args[6]
         self.action = args[7]
                 
-    def strategies_classification_master(self):
+    def strategies_model_selection_master(self):
          #print(self.action["method"])
           
          plist = [
@@ -58,15 +59,10 @@ class Classification(Data_Generation):
             ]
 
          self.lib = self.action["library"]
-         self.nclass =int(self.target["NCLASS"])
-
-         if (self.lib=="stats" and self.nclass==2):
-                     return Binary_classification_statsmodels(*plist).\
-                         binary_classification_statsmodels_master()
-         elif (self.lib=="stats" and self.nclass>2):
-                     return Multi_classification_statsmodels(*plist).\
-                         multi_classification_statsmodels_master()
+         # Becareful categorical variables
+         if self.lib=="stats":
+            return Features_num_selection_statsmodels(*plist).features_num_selection_statsmodels_master()
+         elif self.lib=="sklearn":
+            pass
          else:
-             pass    
-         
-                 
+            pass

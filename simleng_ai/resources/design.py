@@ -13,6 +13,10 @@ def macro_strategies(macros,**kwargs):
                       "K_fold_cross_validation",
                       "with_pca",
                  ]
+              elif key=="Model_selection":
+                 # MODIFY OCTOBER 14,2023 
+                 dict0[key]= [
+                 ]   
               elif key=="Classification":
                  dict0[key]= [
                       "full_features",

@@ -23,7 +23,7 @@ from .resources.design import macro_strategies,update_macros_strategies_client
 
 from .featureseng.strategies_features_selection import Features_selection
 from .simula.strategies_classification import Classification
-
+from .simula.strategies_model_selection import Model_selection
 # setting ignore as a parameter and further adding category
 warnings.simplefilter(action="ignore", category=(FutureWarning, UserWarning))
 
@@ -73,7 +73,7 @@ class Simleng:
             
     def simulation_strategies(self):
         """strategies management in Simleng"""
-        __strategies__=["Features_selection","Classification","Data","Training",\
+        __strategies__=["Features_selection","Model_selection","Classification","Data","Training",\
                         "Stochastic","Solver"]
         # printing to start running
         dt_starting = datetime.now().strftime("%d/%m/%y %H:%M:%S")
@@ -156,6 +156,9 @@ class Simleng:
                         pass
 
                     elif strategy =="Classification":
+                        return self.strategies_features_master()
+
+                    elif strategy =="Model_selection":
                         return self.strategies_features_master()
                     
                     elif strategy == "Data":

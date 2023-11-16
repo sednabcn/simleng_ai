@@ -513,7 +513,7 @@ class Pipeline:
 
         print("Test r2:%.2f" % scores.mean())
 
-
+####RETHINK_TO_MUCH######
 class Sklearn_simula:
     """Simulation with statsmodels."""
 
