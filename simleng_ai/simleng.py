@@ -116,7 +116,12 @@ class Simleng:
         if self.action["strategy"]=="Features_selection":
             print(self.action["strategy"])
             return Features_selection(*plist).\
-                             strategies_features_selection_master()    
+                             strategies_features_selection_master()
+        
+        elif self.action["strategy"]=="Model_selection":
+            print(self.action["strategy"])
+            return Model_selection(*plist).\
+                 strategies_model_selection_master()
 
         elif self.action["strategy"] == "Classification":
             print(self.action["strategy"])

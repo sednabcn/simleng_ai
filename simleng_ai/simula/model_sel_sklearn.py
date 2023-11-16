@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import re
 from distutils.util import strtobool
-#===
 from ..data_manager.generation import Data_Generation
 from ..data_manager.feature_eng import (
     Data_Engineering,
@@ -20,9 +19,6 @@ from ..supervised.simulation_statsmodels import Statsmodels_linear_filter
 
 from ..output.table import Table_results
 from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
-
-#===
-
 from scipy import stats
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
@@ -31,7 +27,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 from collections import OrderedDict, defaultdict
 
 
-class Features_num_selection_statsmodels(Data_Generation):
+class Model_selection_sklearn(Data_Generation):
     def __init__(self, *args):
         self.idoc = -1
         self.dataset=args[0]
@@ -50,16 +46,8 @@ class Features_num_selection_statsmodels(Data_Generation):
                        self.idoc=self.action["idoc"]
                        self.make_task=strtobool(str(self.action["make_task"]))
                        self.nclass=int(self.target["NCLASS"])
-                       # MODIFICATION OCT 13,2023
-                       try:
-                           self.regpar=self.target["REGPAR"]
-                       except:
-                           self.regpar=[-1,-1]
-                       try:    
-                           self.missclass=self.target["MISSCLASS"]
-                       except:
-                           self.missclass=False
-                           
+                       self.regpar=self.target["REGPAR"]
+                       self.missclass=self.target["MISSCLASS"]
                        self.GenLogit_shape = self.params["GenLogit_shape"]
                        self.index_columns_base = self.params["columns_search"]
                        self.min_shuffle_size = int(self.params["min_shuffle_size"])
@@ -81,7 +69,7 @@ class Features_num_selection_statsmodels(Data_Generation):
         if isinstance(self.nclass,int):
             self.par.append(self.nclass)
         
-    def features_num_selection_statsmodels_master(self):
+    def model_selection_sklearn_master(self):
         print(self.proc)
         # print(self.data_train.values())
         # print(self.data_dummy_train.values())

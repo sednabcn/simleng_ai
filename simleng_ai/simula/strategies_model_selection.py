@@ -28,7 +28,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
-from ..simula.features_num_sel_statsmodels import Features_num_selection_statsmodels
+from ..simula.model_sel_sklearn import Model_selection_sklearn
  
 # Make new one, PLEASE OCTOBER 14,2023
 class Model_selection(Data_Generation):
@@ -61,7 +61,7 @@ class Model_selection(Data_Generation):
          self.lib = self.action["library"]
          # Becareful categorical variables
          if self.lib=="stats":
-            return Features_num_selection_statsmodels(*plist).features_num_selection_statsmodels_master()
+            return Model_selection_sklearn(*plist).model_selection_sklearn_master()
          elif self.lib=="sklearn":
             pass
          else:
