@@ -85,6 +85,7 @@ class Data_Generation(DATA, Init):
         return print(
             self.title,
             self.dataset,
+            self.preprocess,
             self.files,
             self.listfiles,
             self.features,
@@ -98,6 +99,7 @@ class Data_Generation(DATA, Init):
         return (
             self.title,
             self.dataset,
+            self.preprocess,
             self.files,
             self.listfiles,
             self.features,
@@ -117,7 +119,7 @@ class Data_Generation(DATA, Init):
     def get_update_parameters_to_read_files(self):
         pass
 
-    def data_generation_from_table(self):
+    def data_generation_from_num(self):
         """load data_from_file"""
         from sklearn.model_selection import train_test_split
         from ..resources.pandas import col_data
@@ -266,7 +268,50 @@ class Data_Generation(DATA, Init):
         data_dummy_test = {}
 
         nclass = int (self.target["NCLASS"])
+        ntarget = np.max(1,int(self.target["NTARGET"]))
+        categ= self.preprocess["KIND"]
+        #Dec25,2023        
+        if categ=="mixture":
+            self.X_train,
+            self.X_test,
+            self.y_train,
+            self.y_test,
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val= self.data_generation_from_mixture()
+            return (
+                self.X_train,
+                self.X_test,
+                self.y_train,
+                self.y_test,
+                self.X_train_val,
+                self.X_test_val,
+                self.y_train_val,
+                self.y_test_val)
+
+        elif categ=="categ":
+            self.X_train,
+            self.X_test,
+            self.y_train,
+            self.y_test,
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val= self.data_generation_from_categ()
+            return (
+                self.X_train,
+                self.X_test,
+                self.y_train,
+                self.y_test,
+                self.X_train_val,
+                self.X_test_val,
+                self.y_train_val,
+                self.y_test_val)
+        else:
+            pass
         
+        #         
         # Dummy variables to categorical variable
         if isdummy(self.y_train) or self.dataset["UNDUMMY"]:
             V_train = self.y_train
@@ -291,6 +336,7 @@ class Data_Generation(DATA, Init):
     def data_generation_target(self):
         target = self.target["GOAL"]
         nclass = int(self.target["NCLASS"])
+        ntarget = np.max(1,int(self.target["NTARGET"]))
 
         if target == "CLASSIFICATION":
                 return self.data_generation_classification()
@@ -299,14 +345,45 @@ class Data_Generation(DATA, Init):
 
         else:
             pass
+    def data_generation_from_categ(self):
+        pass
+    def data_generation_from_mixture(self):
+        from category_encoders import OrdinalEncoder
+        from sklearn.preprocessing import LabelEncoder, MinMaxScaler,Normalizer
+        # prepare inputs
+        oe=OrdinalEncoder()
+        pp=oe.fit(self.X_train)
+        X_train_enc = oe.transform(self.X_train)
+        X_test_enc = oe.transform(self.X_test)
+        pp=oe.fit(self.X_train_val)
+        X_train_enc_val = oe.transform(self.X_train_val)
+        X_test_enc_val = oe.transform(self.X_test_val)
 
+        # prepare target
+         le = LabelEncoder()
+         le.fit(self.y_train)
+         y_train_enc = le.transform(self.y_train)
+         y_test_enc = le.transform(self.y_test)
+         le.fit(self.y_train_val)
+         y_train_enc_val = le.transform(self.y_train_val)
+         y_test_enc_val = le.transform(self.y_test_val)
+         return self.X_train_enc,
+            self.X_test_enc,
+            self.y_train_enc,
+            self.y_test_enc,
+            self.X_train_enc_val,
+            self.X_test_enc_val,
+            self.y_train_enc_val,
+            self.y_test_enc_val
+         
+        pass
     def data_generation_functions(self):
         source = self.dataset["DATASOURCE"]
         type_file=self.dataset["TYPE"]
         if source == "table"and type_file=="numeric":
-            return self.data_generation_from_table()
+            return self.data_generation_from_num()
         elif source == "table"and type_file=="categ":
-            return self.data_generation_from_categorical()
+            return self.data_generation_from_categ()
         elif source == "table"and type_file=="mixture":
             return self.data_generation_from_mixture()
         elif source == "cloud":

@@ -1,0 +1,1156 @@
+import numpy as np
+import pandas as pd
+import re
+from distutils.util import strtobool
+from ..data_manager.generation import Data_Generation
+from ..data_manager.feature_eng import (
+    Data_Engineering,
+    Correlation,
+    PCA,
+    SVD,
+    Best_features_filter,
+    Best_features_wrap,
+)
+from ..resources.sets import data_list_unpack_dict
+from ..resources.manipulation_data import data_add_constant
+
+from ..data_manager.quality import Data_Visualisation, Data_Analytics
+from ..supervised.simulation_sklearn import Sklearn_linear_filter
+from ..supervised.metrics_classifier_statsmodels import MetricsBinaryClassifier
+from ..output.table import Table_results
+from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
+from scipy import stats
+#=============================Dec16,2023===========================================
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.naive_bayes import ComplementNB
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import ExtraTreeClassifier
+
+
+from sklearn.neural_network import MLPClassifier
+
+from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+from sklearn.svm import NuSVC
+from sklern.svm import SGDClassifier
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import RadiusNeighborsClassifier
+from sklearn.neighbors import NearestCentroid
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+
+
+
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import BaggingClassifier
+
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF 
+
+ 
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis 
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis 
+
+
+
+from sklearn.dummy import DummyClassifier
+
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.linear_model import PassiveAggressiveClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import RidgeClassifier
+from sklearn.linear_model import RidgeClassifierCV
+from sklearn.linear_model import SGDClassifier
+
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+#=======================================================================
+
+from collections import OrderedDict, defaultdict
+from ..resources.ml import find_subsets_predictors
+
+class Binary_classification_sklearn(Data_Generation):
+    def __init__(self, *args):
+        self.idoc = -1
+        self.dataset=args[0]
+        self.data_train = args[1]
+        self.data_test = args[2]
+        self.data_dummy_train = args[3]
+        self.data_dummy_test = args[4]
+        self.target =args[5]
+        self.params = defaultdict()
+        self.params = args[6]
+        self.action = args[7]
+
+
+        self.proc=self.action["method"]
+        self.lib=self.action["library"]
+        self.idoc=self.action["idoc"]
+        self.make_task=strtobool(str(self.action["make_task"]))
+        self.nclass=int(self.target["NCLASS"])
+        self.regpar=self.target["REGPAR"]
+        self.missclass=self.target["MISSCLASS"]
+        self.GenLogit_shape = self.params["GenLogit_shape"]
+        self.index_columns_base = self.params["columns_search"]
+        self.min_shuffle_size = int(self.params["min_shuffle_size"])
+        self.subset_search = self.params["subset_search"]
+        self.shuffle_mode = self.params["shuffle_mode"]
+        self.filter_cond = self.params["filter_cond"]
+        self.K_fold = int(self.params["K_fold"])
+        self.dataset_name=self.dataset["DATASET"]
+        self.ntarget= np.max(1,int(self.target["NTARGET"]))
+                
+        
+        self.par=[]
+        # PARAMETERS TO INCLUDE IN SUPERVISED METHODS
+        if  isinstance(self.GenLogit_shape,float) or isinstance(self.GenLogit_shape,int):    
+            self.par.append(self.GenLogit_shape)
+        elif isinstance(self.GenLogit_shape,str):
+            self.par.append(float(self.GenLogit_shape))
+        if isinstance(self.nclass,int):
+            self.par.append(self.nclass)
+        
+    def binary_classification_sklearn_master(self):
+        print(self.proc)
+        # print(self.data_train.values())
+        # print(self.data_dummy_train.values())
+        method_name =str(self.proc)
+        print(method_name)
+        process = getattr(self, method_name, "Invalid Method selected")
+        return process()
+
+    def best_classifiers(self):
+        if self.idoc == 1:
+            """To create header of Report..."""
+            pass
+
+        
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        # addition a constant to compute intercept to apply \
+        # statsmodels fitting
+
+        U_train_exog = data_add_constant(U_train)
+        U_test_exog = data_add_constant(U_test)
+        
+
+        names = [
+            "Logistic Regression",
+            "Nearest Neighbors",
+            "Linear SVM",
+            "RBF SVM",
+            "Gaussian Process",
+            "Decision Tree",
+            "Random Forest",
+            "Neural Net",
+            "AdaBoost",
+            "Naive Bayes",
+            "LDA",
+            "QDA",
+        ]
+
+        classifiers = [
+            LogisticRegression(random_state=16) 
+            KNeighborsClassifier(3),
+            SVC(kernel="linear", C=0.025, random_state=42),
+            SVC(gamma=2, C=1, random_state=42),
+            GaussianProcessClassifier(1.0 * RBF(1.0), random_state=42),
+            DecisionTreeClassifier(max_depth=5, random_state=42),
+            RandomForestClassifier(
+                max_depth=5, n_estimators=10, max_features=1, random_state=42
+            ),
+            MLPClassifier(alpha=1, max_iter=1000, random_state=42),
+            AdaBoostClassifier(random_state=42),
+            GaussianNB(),
+            LinearDiscriminantAnalysis(), 
+            QuadraticDiscriminantAnalysis(),
+        ]
+
+        keys=["par","ntarget","nclass","missclassif","par_reg","columns"]
+        kwargs={}
+        
+        (
+        to_model_names,
+        y_calibrated_table,
+        y_estimated_table,
+        y_estimated_proba_table,
+        score_table,
+        FPR,
+        TPR,
+        params_table,
+        confusion_matrix,
+        mis_endog_table
+        )=Sklearn_linear_filter(names, model_names,exog, endog, x, y, par_,kwargs).sklearn_linear_classification()
+
+
+        Table_results(
+            0, y_calibrated_table, ".3f", "fancy_grid", "Validation", 60
+        ).print_table()
+
+        Table_results(
+            0, y_estimated_table, ".3f", "fancy_grid", "Estimation", 60
+        ).print_table()
+
+        Table_results(
+            0, y_estimated_proba_table, ".3f", "fancy_grid", "Estimation", 60
+        ).print_table()
+
+        Table_results(
+            0, params_table, ".3f", "fancy_grid", "Models Parameters", 60
+        ).print_table()
+
+        
+        Table_results(
+            6, confusion_matrix, ".2f", "fancy_grid", "Confusion Matrix ", 60
+        ).print_table()
+
+        # Draw_binary_classification_results(FPR,TPR,to_model_names).\
+        # fpn_estimated(V_test,y_estimated_table)
+        if self.idoc >= 1:
+            print("Fig:ROC_CURVE")
+        to_model_names.append("AUC=0.5")
+        Title = " ROC_CURVE "
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            to_model_names,
+            params_table,
+            U_train_exog,
+            V_train,
+            U_test,
+            V_test,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_train,
+            Title,
+            "",
+            self.idoc,
+            self.GenLogit_shape,
+        ).roc_curve()
+    # ending HERE
+    #         
+    def binary_classification_full_features(self):
+        if self.idoc == 1:
+            """To create header of Report..."""
+            pass
+        """Working will full data to proof."""
+
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        # addition a constant to compute intercept to apply \
+        # statsmodels fitting
+
+        U_train_exog = data_add_constant(U_train)
+        U_test_exog = data_add_constant(U_test)
+        
+            
+        names = names
+        model_names=classifiers
+        exog = U_train
+        endog = V_train
+        x = U_test
+        y = V_test
+        par_ = self.par
+        family = " "
+        method = ""
+        par_reg = self.regpar
+        
+        if self.ntarget==1:
+            if self.nclass==2:
+                task = "BinaryClassification"
+            elif self.nclass>2:
+                task= "MultiClassification"
+        else:
+            pass
+
+        
+        mis_classif = ""
+        (
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            residuals_table,
+            fitted_values_table,
+            z_score_table,
+            FPR,
+            TPR,
+            confusion_matrix,
+            to_model_names,
+            ) = Sklearn_linear_filter(
+                names, model_names,exog, endog, x, y, par_, family, method, par_reg, task, mis_classif
+            ).statsmodels_linear_supervised()
+
+        Table_results(
+            0, y_calibrated_table, ".3f", "fancy_grid", "Validation", 60
+        ).print_table()
+
+        Table_results(
+            0, y_estimated_table, ".3f", "fancy_grid", "Estimation", 60
+        ).print_table()
+
+        Table_results(
+            0, params_table, ".3f", "fancy_grid", "Models Parameters", 60
+        ).print_table()
+
+        if self.idoc >= 1:
+            print("Fig:Residuals of solvers on Training Data")
+
+        Draw_numerical_results.frame_from_dict(
+            residuals_table.index,
+            residuals_table,
+            "samples",
+            "Residue Pearson",
+            "Residuals of solvers on Training Data",
+            "Log",
+            " ",
+            " ",
+            "square",
+            self.idoc,
+        )  
+
+        Table_results(
+            6, confusion_matrix, ".2f", "fancy_grid", "Confusion Matrix ", 60
+        ).print_table()
+                
+        if self.idoc >= 1:
+            print("Fig:Classification using statsmodels")
+        # FPR,TPR,model_names,params,x_test,y_test,y_predict,columns
+        Title = "Classification using Statsmodels"
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            to_model_names,
+            params_table,
+            U_train_exog,
+            V_train,
+            U_test,
+            V_test,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_train,
+            Title,
+            "",
+            self.idoc,
+        ).fpn_estimated()
+
+        # Draw_binary_classification_results(FPR,TPR,to_model_names).\
+        # fpn_estimated(V_test,y_estimated_table)
+        if self.idoc >= 1:
+            print("Fig:ROC_CURVE")
+        to_model_names.append("AUC=0.5")
+        Title = " ROC_CURVE "
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            to_model_names,
+            params_table,
+            U_train_exog,
+            V_train,
+            U_test,
+            V_test,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_train,
+            Title,
+            "",
+            self.idoc,
+            self.GenLogit_shape,
+        ).roc_curve()
+    # ending HERE
+    def binary_classification_features_z_score(self):
+        """Working with diferents criterie of features selection."""
+
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        # Addition a constant to compute intercept to apply \
+        #    regressoin models
+
+        U_train_exog = data_add_constant(U_train)
+        U_test_exog = data_add_constant(U_test)
+
+        # Get two predictors based on p_values using scipy.ks_2samp
+        z_score = {}
+        z_score_table = {}
+        columns = df.columns[:-1]
+
+        for ii in range(len(columns)):
+            for jj in range(len(columns)):
+                if ii < jj:
+                    columns_base = []
+                    columns_base.append(columns[ii])
+                    columns_base.append(columns[jj])
+                    exog = U_train_exog[columns_base]
+                    D_stats, p_value = stats.ks_2samp(
+                        exog[columns_base[0]], exog[columns_base[1]]
+                    )
+                    z_score[p_value] = columns_base
+
+        z_score_table_keys = sorted(z_score.keys(), reverse=False)
+        columns_two_table = []
+        for ii in z_score_table_keys:
+            z_score_table[ii] = z_score[ii]
+            columns_two_table.append(z_score[ii])
+        z_score_table = pd.DataFrame.from_dict(z_score_table).T
+        # Show the z_score of all predictors
+        Table_results(
+            5, z_score_table, ".3E", "fancy_grid", "p_values vs predictors", 15
+        ).print_table()
+
+        # Get the best two-predictors based on the p-values
+        names = ["GLM", "Logit", "GenLogit", "Probit"]
+        endog = V_train
+        y = V_test
+        par_ = self.par
+        family = "Binomial"
+        method = ""
+        par_reg =self.regpar
+
+        if self.nclass==2:
+           task = "BinaryClassification"
+        elif self.nclass>2:
+            task= "MultiClassification"
+        elif self.nclass==None:
+            task= "LinearRegression"
+        else:
+            pass
+        
+        #[1]columns_two_table
+        mis_classif = ""
+        ACC_TWO = []
+        NN = 0
+        for name in columns_two_table:
+            NN += 1
+            columns_base = ["const"]
+            columns_base.append(name[0])
+            columns_base.append(name[1])
+            exog = U_train_exog[columns_base]
+            x = U_test_exog[columns_base]
+
+            (
+                y_calibrated_table,
+                y_estimated_table,
+                params_table,
+                residuals_table,
+                fitted_values_table,
+                z_score_table,
+                FPR,
+                TPR,
+                confusion_matrix,
+                to_model_names,
+            ) = Statsmodels_linear_filter(
+                names,
+                exog,
+                endog,
+                x,
+                y,
+                par_,
+                family,
+                method,
+                par_reg,
+                task,
+                mis_classif,
+            ).statsmodels_linear_supervised()
+
+            Table_results(
+                5,
+                confusion_matrix,
+                ".2f",
+                "fancy_grid",
+                "Confusion Matrix :" + columns_base[1] + "," + columns_base[2],
+                40,
+            ).print_table()
+
+            ACC_TWO.append(
+                [columns_base[1], columns_base[2], confusion_matrix["ACC"].mean()]
+            )
+
+        ACC_TWO = pd.DataFrame(
+            ACC_TWO, index=range(NN), columns=["predictor_1", "predictor_2", "ACC MEAN"]
+        )
+        Table_results(
+            12, ACC_TWO, ".2f", "fancy_grid", "ACC MEAN for two predictors ", 30
+        ).print_table()
+
+        MAX_ACC_TWO = max(ACC_TWO["ACC MEAN"])
+        Index_ACC_TWO = np.where(ACC_TWO["ACC MEAN"] == MAX_ACC_TWO)
+
+        columns_two = []
+        for ii in Index_ACC_TWO[0]:
+            name1 = ACC_TWO.loc[ii, ACC_TWO.columns[0]]
+            name2 = ACC_TWO.loc[ii, ACC_TWO.columns[1]]
+            columns_two.append(name1)
+            columns_two.append(name2)
+
+        columns_Index = ["const"]
+        for name in columns_two:
+            columns_Index.append(str(name))
+
+        columns_Index_plus = pd.Index(columns_Index)
+
+        names = ["GLM", "Logit", "GenLogit", "Probit"]
+        endog = V_train
+        y = V_test
+        par_ = self.par
+        family = "Binomial"
+        method = ""
+        par_reg =self.regpar
+
+        if self.nclass==2:
+           task = "BinaryClassification"
+        elif self.nclass>2:
+            task= "MultiClassification"
+        elif self.nclass==None:
+            task= "LinearRegression"
+        else:
+            pass
+        
+        exog = U_train_exog[columns_Index_plus]
+        x = U_test_exog[columns_Index_plus]
+        mis_classif = ""
+        (
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            residuals_table,
+            fitted_values_table,
+            z_score_table,
+            FPR,
+            TPR,
+            confusion_matrix,
+            to_model_names,
+        ) = Statsmodels_linear_filter(
+            names, exog, endog, x, y, par_, family, method, par_reg, task, mis_classif
+        ).statsmodels_linear_supervised()
+
+        Table_results(
+            5,
+            confusion_matrix,
+            ".2f",
+            "fancy_grid",
+            "Confusion Matrix :" + columns_Index_plus[1] + "," + columns_Index_plus[2],
+            40,
+        ).print_table()
+        if self.idoc >= 1:
+            print("Fig:Draw binary classification_results of Best Predictors")
+        # Draw classification_results of Best Predictors
+        # based on p_values
+        x = U_test_exog[columns_two]
+
+        columns = columns_two.copy()
+        columns.append(df.columns[-1])
+        columns_two_copy = columns_two.copy()
+
+        Title = (
+            "Binary Classification Regions using statsmodels",
+            "over " + "(" + columns_two[0] + "," + columns_two[1] + ")"  +" plane"
+        )
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            to_model_names,
+            params_table,
+            U_train_exog,
+            V_train,
+            x,
+            y,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns,
+            Title,
+            "",
+            self.idoc,
+            self.GenLogit_shape,
+        ).draw_regions_binary_classifier_classification()
+
+        print("INCREASING ADDING FEATURES AFTER Z-SCORE ANALYSIS")
+
+        # Increase Features Method by add-features after Z-score selection
+        names = ["Logit", "GenLogit"]
+        method = ""
+        par_reg = self.regpar
+        cols_data = df.columns[:-1]
+        mis_classif = ""
+
+        (
+            Iperfor,
+            model_name_selected,
+            columns_base,
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            duals_table,
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).add_feature_selection(
+            names,
+            cols_data,
+            columns_two_copy,
+            columns_Index_plus,
+            U_train_exog,
+            U_test_exog,
+            V_train,
+            V_test,
+            "Binomial",
+            method,
+            par_reg,
+            "BinaryClassification",
+            90,
+            1,
+            mis_classif,
+        )
+
+        # Show mis-classification for the INCREASED BEST FEATURES SELECTION
+        params = params_table.T
+       
+        kind = "Validation"
+        Title = "Binary Classification using statsmodels" " (Validation Case)"
+        if self.idoc >= 1:
+            print("Fig:Draw binary Classification using Statsmodels(Validation Case)")
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            names,
+            params,
+            U_train_exog,
+            V_train,
+            U_test_exog,
+            V_test,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_base,
+            Title,
+            kind,
+            self.idoc,
+            self.GenLogit_shape,
+        ).draw_mis_classification()
+        if self.idoc >= 1:
+            print("Fig:Binary Classification(Prediction case)")
+        kind = "Prediction"
+        Title = "Binary Classification using statsmodels" " (Prediction Case)"
+        Draw_binary_classification_results(
+            FPR,
+            TPR,
+            names,
+            params,
+            U_train_exog,
+            V_train,
+            U_test_exog,
+            V_test,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_base,
+            Title,
+            kind,
+            self.idoc,
+            self.GenLogit_shape,
+        ).draw_mis_classification()
+
+    def binary_classification_K_fold_cross_validation(self):
+        print("K_fold CROSS-VALIDATION PROCESS WITH FITTING AND PREDICT")
+        """
+            | Best selection of features based on K_fold Cross-Validation
+            | K_fold Cross-Validation + Add-features with Best_Features Selection
+            | Fitting with K_Fold splitting
+            """
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        # Addition a constant to compute intercept to apply \
+        # regressoin models
+
+        U_train_exog = data_add_constant(U_train)
+        U_test_exog = data_add_constant(U_test)
+
+        # Fitting to wrap the best predictors
+        names = ["GLM", "Logit", "GenLogit", "Probit"]
+        exog = U_train_exog
+        endog = V_train
+        x = U_test_exog
+        y = V_test
+        par_ =self.par 
+        family = "Binomial"
+        method = ""
+        par_reg =self.regpar
+        task = "BinaryClassification"
+        mis_classif = ""
+        (
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            residuals_table,
+            fitted_values_table,
+            z_score_table,
+            FPR,
+            TPR,
+            confusion_matrix,
+            to_model_names,
+        ) = Statsmodels_linear_filter(
+            names, exog, endog, x, y, par_, family, method, par_reg, task, mis_classif
+        ).statsmodels_linear_supervised()
+
+        Table_results(
+            5, z_score_table, ".3g", "fancy_grid", "Z-score = params/bse", 30
+        ).print_table()
+
+        # Columns_two contain the best predictors
+        columns_two, columns_Index = Best_features_wrap(self.idoc,self.GenLogit_shape).z_score(
+            z_score_table, 1.96
+        )
+
+        # Draw_binary_classification_results of Best Predictors
+        # based on Z-score
+
+        K_fold = self.K_fold
+        names = ["Logit", "GenLogit"]
+        method = ""
+        par_reg =self.regpar
+        cols_data = df.columns[:-1]
+        N_cols_base = len(columns_two)
+        params = params_table.T
+        columns_Index_plus = ["const"]
+        for name in columns_Index:
+            columns_Index_plus.append(name)
+        params = params[columns_Index_plus]
+        params = params.T
+        x = U_test[columns_Index]
+        y = V_test
+
+        columns = columns_two.copy()
+        columns.append(df.columns[-1])
+        columns_two_two = columns_two.copy()
+        mis_classif = ""
+
+        (
+            K_fold,
+            N_features,
+            data_fold,
+            Iperformance,
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).cross_validation_binary_classifier_classification(
+            names,
+            cols_data,
+            columns_two_two,
+            columns_Index_plus,
+            U_train_exog,
+            U_test_exog,
+            endog,
+            y,
+            family,
+            method,
+            par_reg,
+            task,
+            90,
+            K_fold,
+            mis_classif,
+        )
+
+        # Draw ACC and PPV from K_fold Cross-Validation fitting numerical results
+        # print(K_fold,N_features)
+        # print(Iperformance.keys())
+        # for ii in range(K_fold):
+        #        print(Iperformance[ii].keys(),Iperformance[ii].values())
+        # print(input("STOP"))
+
+        Best_features_wrap(self.idoc,self.GenLogit_shape).draw_K_fold_numerical_results(
+            K_fold, N_cols_base, N_features, data_fold, Iperformance
+        )
+
+        # Generation of numerical results to draw mis-classification with K_fold splitting
+        (
+            Iperfor,
+            model_name_selected,
+            columns_base,
+            x_train_fold_exog,
+            y_train_fold,
+            x_test_fold_exog,
+            y_test_fold,
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            residuals_table,
+        ) = Best_features_wrap(self.idoc,self.GenLogit_shape).K_fold_numerical_results(
+            K_fold, N_cols_base, N_features, data_fold, Iperformance, 90
+        )
+
+        # Checking that the best reults are shown
+        # Relation between Residues and misclassification in calibration stage
+        params = params_table.T
+
+        kind = "Validation"
+        Title = (
+            "K_fold Cross-Validation in Binary Classification using statsmodels"
+            " (Validation Case)"
+        )
+        if self.idoc >= 1:
+            print("Fig:Binary classification with K-fold validation")
+        Draw_binary_classification_results(
+            "",
+            "",
+            names,
+            params,
+            x_train_fold_exog,
+            y_train_fold,
+            x_test_fold_exog,
+            y_test_fold,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_base,
+            Title,
+            kind,
+            self.idoc,
+            self.GenLogit_shape,
+        ).draw_mis_classification()
+
+        kind = "Prediction"
+        Title = (
+            "K_fold Cross-Validation in Binary Classification using statsmodels"
+            " (Prediction Case)"
+        )
+        if self.idoc >= 1:
+            print("Fig:Binary Missclassification case")
+        Draw_binary_classification_results(
+            "",
+            "",
+            names,
+            params,
+            x_train_fold_exog,
+            y_train_fold,
+            x_test_fold_exog,
+            y_test_fold,
+            y_calibrated_table,
+            y_estimated_table,
+            residuals_table,
+            columns_base,
+            Title,
+            kind,
+            self.idoc,
+            self.GenLogit_shape,
+        ).draw_mis_classification()
+
+    def binary_classification_with_pca(self):
+        """Working to explore a spectral mehthod"""
+
+        columns_pred = []
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        n, m = U_train.shape
+ 
+        parameters=[self.index_columns_base,self.subset_search,self.min_shuffle_size,\
+                    self.shuffle_mode,self.filter_cond]
+                    
+        _, columns_ = self.find_subsets_predictors(U_train,*parameters)
+
+        # print(columns_)
+
+        for ii in range(len(columns_)):
+            columns_base = columns_[ii]
+
+            print(columns_base)
+
+            N_base = len(columns_base)
+            U_train_reduced = U_train[columns_base]
+            U_test_reduced = U_test[columns_base]
+
+            U_train_pca = PCA(U_train_reduced,N_base,self.idoc).pca_transformation()
+            U_test_pca = PCA(U_test_reduced,N_base,self.idoc).pca_transformation()
+            U_train_pca_exog = data_add_constant(U_train_pca)
+            U_test_pca_exog = data_add_constant(U_test_pca)
+
+            # GET NEW PREDICTION WITH X-TRANSFORMED BY PCA
+            names = ["Logit", "GenLogit"]
+            endog = V_train.reset_index(drop=True)
+            y = V_test
+            par_=self.par
+            family = "Binomial"
+            method = ""
+            par_reg = self.regpar
+            task = "BinaryClassification"
+
+            exog = U_train_pca_exog
+
+            x = U_test_pca_exog
+
+            mis_classif = ""
+            # Observation with resampling based on perturbation
+            (
+                y_calibrated_table,
+                y_estimated_table,
+                params_table,
+                residuals_table,
+                fitted_values_table,
+                z_score_table,
+                FPR,
+                TPR,
+                confusion_matrix,
+                to_model_names,
+            ) = Statsmodels_linear_filter(
+                names,
+                exog,
+                endog,
+                x,
+                y,
+                par_,
+                family,
+                method,
+                par_reg,
+                task,
+                mis_classif,
+            ).statsmodels_linear_supervised()
+
+            Title = (
+                "Confusion Matrix (PCA: var. in transformed space)"
+                + " with "
+                + str(N_base)
+                + " predictors :"
+                + columns_base[0]
+            )
+            for name in columns_base[1:]:
+                Title += "," + name
+
+            Table_results(
+                6, confusion_matrix, ".2f", "fancy_grid", Title, 60
+            ).print_table()
+
+    def binary_classification_additional_test(self):
+        """
+        TEST ADITIONAL OF features: npreg,glu,bmi,ped without PCA
+        """
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        cols_list = [int(num) for num in re.findall(r"\d+", self.index_columns_base)]
+        columns = []
+        for ii in cols_list:
+            columns.append(df.columns[ii])
+
+        columns_base = columns.copy()
+        N_base = len(columns_base)
+        U_train_test_exog = data_add_constant(U_train[columns_base])
+        U_test_test_exog = data_add_constant(U_test[columns_base])
+
+        names = ["Logit", "GenLogit"]
+        endog = V_train.reset_index(drop=True)
+        y = V_test
+        par_=self.par
+        family = "Binomial"
+        method = ""
+        par_reg =self.regpar
+        task = "BinaryClassification"
+
+        exog = U_train_test_exog.reset_index(drop=True)
+
+        x = U_test_test_exog
+
+        mis_classif = ""
+        # Observation with resampling based on perturbation
+        (
+            y_calibrated_table,
+            y_estimated_table,
+            params_table,
+            residuals_table,
+            fitted_values_table,
+            z_score_table,
+            FPR,
+            TPR,
+            confusion_matrix,
+            to_model_names,
+        ) = Statsmodels_linear_filter(
+            names, exog, endog, x, y, par_, family, method, par_reg, task, mis_classif
+        ).statsmodels_linear_supervised()
+
+        Title = (
+            "Confusion Matrix (original var.)"
+            + " with "
+            + str(N_base)
+            + " predictors :"
+            + columns_base[0]
+        )
+        for name in columns_base[1:]:
+            Title += "," + name
+
+        Table_results(6, confusion_matrix, ".2f", "fancy_grid", Title, 60).print_table()
+
+    def binary_classification_discriminant_methods(self):
+        columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
+
+        columns_test, X_test, Y_test, de = data_list_unpack_dict(self.data_test)
+
+        U_train, V_train = data_list_unpack_dict(self.data_dummy_train)
+
+        U_test, V_test = data_list_unpack_dict(self.data_dummy_test)
+
+        # Manual selection of the best results in previous test
+
+        cols_list = [[int(num) for num in re.findall(r"\d+", self.index_columns_base)]]
+
+        columns_base = []
+        for cols in cols_list:
+            confusion_matrix = []
+            columns_base = df.columns[cols]
+            print(columns_base)
+            N_base = len(columns_base)
+            U_train_reduced = U_train[columns_base]
+            U_test_reduced = U_test[columns_base]
+            lda = skLDA(solver="svd", store_covariance=True)
+            qda = skQDA(store_covariance=True)
+            to_model_names = ["LDA", "QDA"]
+            # ORIGINAL SPACE
+            print("ORIGINAL VARIABLES")
+
+            y_calibrated = lda.fit(U_train_reduced, V_train).predict(U_train_reduced)
+            y_estimated_ = list(map(lambda x: np.where(x < 0.5, 0, 1), y_calibrated))
+            y_t = np.array(V_train)
+            y_est = np.array(V_test)
+            (
+                acc,
+                tpr,
+                tnr,
+                ppv,
+                fpr,
+                fnr,
+                dor,
+                BIAS,
+                pt1,
+                pp1,
+                _,
+                _,
+            ) = MetricsBinaryClassifier.metrics_binary_classifier(y_t, y_estimated_, False)
+            print("LDA_CALIBRATED")
+            # print(acc,tpr,tnr,ppv,fpr,fnr,dor,BIAS,pt1,pp1)
+            y_estimated = lda.fit(U_test_reduced, V_test).predict(U_test_reduced)
+            y_estimated_ = list(map(lambda x: np.where(x < 0.5, 0, 1), y_estimated))
+            (
+                acc,
+                tpr,
+                tnr,
+                ppv,
+                fpr,
+                fnr,
+                dor,
+                BIAS,
+                pt1,
+                pp1,
+                _,
+                _,
+            ) = MetricsBinaryClassifier.metrics_binary_classifier(y_est, y_estimated_, False)
+            print("LDA_ESTIMATED")
+            # print(acc,tpr,tnr,ppv,fpr,fnr,dor,BIAS,pt1,pp1)
+            confusion_matrix.append([acc, tpr, tnr, ppv, fpr, fnr, dor, BIAS, pt1, pp1])
+            # Quadratic Discriminant Analysis
+
+            y_calibrated = qda.fit(U_train_reduced, V_train).predict(U_train_reduced)
+            y_estimated_ = list(map(lambda x: np.where(x < 0.5, 0, 1), y_calibrated))
+            (
+                acc,
+                tpr,
+                tnr,
+                ppv,
+                fpr,
+                fnr,
+                dor,
+                BIAS,
+                pt1,
+                pp1,
+                _,
+                _,
+            ) = MetricsBinaryClassifier.metrics_binary_classifier(y_t, y_estimated_, False)
+            print("QDA_CALIBRATED")
+            # print(acc,tpr,tnr,ppv,fpr,fnr,dor,BIAS,pt1,pp1)
+            y_estimated = qda.fit(U_test_reduced, V_test).predict(U_test_reduced)
+            y_estimated_ = list(map(lambda x: np.where(x < 0.5, 0, 1), y_estimated))
+
+            (
+                acc,
+                tpr,
+                tnr,
+                ppv,
+                fpr,
+                fnr,
+                dor,
+                BIAS,
+                pt1,
+                pp1,
+                _,
+                _,
+            ) = MetricsBinaryClassifier.metrics_binary_classifier(y_est, y_estimated_, False)
+            print("QDA_ESTIMATED")
+            # print(acc,tpr,tnr,ppv,fpr,fnr,dor,BIAS,pt1,pp1)
+            confusion_matrix.append([acc, tpr, tnr, ppv, fpr, fnr, dor, BIAS, pt1, pp1])
+            # print("===========================================")
+            confusion_matrix = pd.DataFrame(
+                confusion_matrix,
+                index=to_model_names,
+                columns=[
+                    "ACC",
+                    "TPR",
+                    "TNR",
+                    "PPV",
+                    "FPR",
+                    "FNR",
+                    "DOR",
+                    "BIAS",
+                    "P[X=1]",
+                    "P[X*=1]",
+                ],
+            )
+            Title = (
+                "Confusion Matrix (original var.)"
+                + " with "
+                + str(N_base)
+                + " predictors :"
+                + columns_base[0]
+            )
+            for name in columns_base[1:]:
+                Title += "," + name
+
+            Table_results(
+                6, confusion_matrix, ".2f", "fancy_grid", Title, 60
+            ).print_table()

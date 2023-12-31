@@ -21,25 +21,16 @@ from ..output.table import Table_results
 from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
 from scipy import stats
 
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.preprocessing import OneHotEncoder
 
-from sklearn.feature_selection import SelectKBest as skSB
-from sklearn.feature_selection import f_classif as skf_c
-from sklearn.feature_selection import f_regression as skf_r
-from sklearn.feature_selection import VarianceThreshold as skVT
-from sklearn.feature_selection import RFE as skRFE
-from sklearn.feature_selection import RFECV as skRFECV
-from sklearn.feature_selection import mutual_info_classif as skmiC
-from sklearn.feature_selection import mutual_info_regression as skmiR
-from sklearn.feature_selection import SelectFromModel as skFM
-from sklearn.feature_selection import SequentialFeatureSelector as SFS
-from sklearn.feature_selection import chi2
 #from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
 #from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
 
-class Features_selection_sklearn(Data_Generation):
+class Features_extraction_sklearn(Data_Generation):
     def __init__(self, *args):
         self.idoc = -1
         self.dataset=args[0]
@@ -80,32 +71,17 @@ class Features_selection_sklearn(Data_Generation):
             self.par.append(float(self.GenLogit_shape))
         if isinstance(self.nclass,int):
             self.par.append(self.nclass)
-
-
-    def selection_RFE(self):
-        pass
-    def selection_RFECV(self):
-        pass
-    def selection_mutual_info_classif(self):
-        pass
-    def selection_mutual_info_regression(self):
-        pass
-    def selection_FromModel(self):
-        pass
-    def selection_sequential_feature(self):
-        pass
-    def selection_chi2(self):
-        pass            
-    def features_selection_sklearn_master(self):
+        
+    def features_extraction_sklearn_master(self):
         print(self.proc)
         # print(self.data_train.values())
         # print(self.data_dummy_train.values())
-        method_name = "selection_" + str(self.proc)
+        method_name = str(self.proc)
         print(method_name)
         process = getattr(self, method_name, "Invalid Method selected")
         return process()
 
-    def selection_KBest(self):
+    def DictVectorizer(self):
         if self.idoc == 1:
             """To create header of Report..."""
             pass
@@ -141,7 +117,7 @@ class Features_selection_sklearn(Data_Generation):
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
     
-    def selection_f_classif(self):
+    def OneHotEncoder(self):
         """Working with diferents criterie of features selection."""
 
         columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
@@ -187,7 +163,7 @@ class Features_selection_sklearn(Data_Generation):
         ).print_table()
 
         
-    def selection_f_regression(self):
+    def selection_K_fold_cross_validation(self):
         print("K_fold CROSS-VALIDATION PROCESS WITH FITTING AND PREDICT")
         """
             | Best selection of features based on K_fold Cross-Validation
@@ -374,7 +350,7 @@ class Features_selection_sklearn(Data_Generation):
             self.GenLogit_shape,
         ).draw_mis_classification()
 
-    def selection_VarianceThreshold(self):
+    def selection_with_pca(self):
         """Working to explore a spectral mehthod"""
 
         columns_pred = []

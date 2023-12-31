@@ -12,10 +12,35 @@ def macro_strategies(macros,**kwargs):
                       "features_z_score",
                       "K_fold_cross_validation",
                       "with_pca",
+                      "KBest",
+                      "f_classif",
+                      "f_regression",
+                      "VarianceThreshold",
+                      "RFE",
+                      "RFECV",
+                      "mutual_info_classif",
+                      "mutual_info_regression",
+                      "FromModel",
+                      "sequential_feature",
+                      "chi2",
+                        ]
+              elif key=="Features_extraction":
+                  dict0[key]=[
+                      "DictVectorizer",
+                      "OneHotEncoder",
+                      
                  ]
               elif key=="Model_selection":
-                 # MODIFY OCTOBER 14,2023 
+                 # MODIFY Nov 24,2023 
                  dict0[key]= [
+                      "K_fold_cross_validation",
+                      "with_pca",
+                      "cross_val_score",
+                      "StratifiedKFold",
+                      "GridSearchCV",
+                      "learning_curve",
+                      "validation_curve",
+               
                  ]   
               elif key=="Classification":
                  dict0[key]= [
@@ -25,6 +50,8 @@ def macro_strategies(macros,**kwargs):
                       "with_pca",
                       "additional_test",
                       "discriminant_methods",
+                      "binary_classifiers",
+                      "multiple_classifiers",
                  ]
 
               elif key=="Data":

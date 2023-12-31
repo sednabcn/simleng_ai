@@ -22,8 +22,10 @@ from .resources.io import checking_input_list
 from .resources.design import macro_strategies,update_macros_strategies_client
 
 from .featureseng.strategies_features_selection import Features_selection
+from .featureseng.strategies_features_extraction import Features_extraction
 from .simula.strategies_classification import Classification
 from .simula.strategies_model_selection import Model_selection
+
 # setting ignore as a parameter and further adding category
 warnings.simplefilter(action="ignore", category=(FutureWarning, UserWarning))
 
@@ -90,7 +92,7 @@ class Simleng:
         self.idoc,self.vis,self.lib=update_macros_strategies_client(self.dataset_name,self.strategies,"STRATEGY",self.strategies_client,"LIBRARY","stats")
         
         _,_,self.make_task=update_macros_strategies_client(self.dataset_name,\
-            self.strategies,"STRATEGY",self.strategies_client,"MAKETASK",True)
+            self.strategies,"STRATEGY",self.strategies_client," ",True)
 
     
         
@@ -117,6 +119,11 @@ class Simleng:
             print(self.action["strategy"])
             return Features_selection(*plist).\
                              strategies_features_selection_master()
+
+        if self.action["strategy"]=="Features_extraction":
+            print(self.action["strategy"])
+            return Features_extraction(*plist).\
+                             strategies_features_extraction_master()
         
         elif self.action["strategy"]=="Model_selection":
             print(self.action["strategy"])

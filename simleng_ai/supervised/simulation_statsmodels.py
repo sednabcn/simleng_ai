@@ -228,7 +228,7 @@ class Statsmodels_simula:
             self.y_estimated = self.model.predict(exog=self.x)
 
         return self.y_estimated
-
+   
     def confusion_matrix(self):
 
         if self.misclassif == True and self.nclass==2:
@@ -468,6 +468,7 @@ class Statsmodels_linear_filter(Statsmodels_simula):
                             for class_id in range(self.nclass):
                                 to_fpr[(str(self.model_name),class_id)] = fpr[class_id]
                                 to_tpr[(str(self.model_name),class_id)] = tpr[class_id]
+                                
                     else:
                         pass
                 else:

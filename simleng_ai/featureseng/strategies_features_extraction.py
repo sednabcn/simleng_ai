@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import re
-#===
 from ..data_manager.generation import Data_Generation
 from ..data_manager.feature_eng import (
     Data_Engineering,
@@ -19,8 +18,6 @@ from ..supervised.simulation_statsmodels import Statsmodels_linear_filter
 
 from ..output.table import Table_results
 from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
-
-#===
 from scipy import stats
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
@@ -28,10 +25,11 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
-from ..simula.model_sel_sklearn import Model_selection_sklearn
- 
-# Make new one, PLEASE OCTOBER 14,2023
-class Model_selection(Data_Generation):
+from ..feautureseng.features_ext_sklearn import Features_extraction_sklearn
+
+from ..featureseng.features_sel_sklearn import Features_selection_sklearn
+
+class Features_extraction(Data_Generation):
     def __init__(self, *args):
         self.idoc = -1
         self.dataset =args[0]
@@ -44,7 +42,7 @@ class Model_selection(Data_Generation):
         self.params = args[6]
         self.action = args[7]
                 
-    def strategies_model_selection_master(self):
+    def strategies_features_extraction_master(self):
          #print(self.action["method"])
           
          plist = [
@@ -59,10 +57,11 @@ class Model_selection(Data_Generation):
             ]
 
          self.lib = self.action["library"]
+         self.data_type = self.dataset["TYPE"]
          # Becareful categorical variables
-         if self.lib=="stats":
-            pass
+         if self.lib=="stats" and self.data_type="numeric":
+           pass
          elif self.lib=="sklearn":
-            return Model_selection_sklearn(*plist).model_selection_sklearn_master()
+            return Features_extraction_sklearn(*plist).features_extraction_sklearn_master()
          else:
             pass

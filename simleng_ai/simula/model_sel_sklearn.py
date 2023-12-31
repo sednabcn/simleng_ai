@@ -21,8 +21,19 @@ from ..output.table import Table_results
 from ..output.graphics import Draw_numerical_results, Draw_binary_classification_results
 from scipy import stats
 
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold
+from sklearn.decomposition import PCA as skPCA
+from sklearn.model_selection import GridSearchCV as skGridSCV
+from sklearn.model_selection import KFold
+
+from sklearn.model_selection import (
+    learning_curve as sklearncur,
+    validation_curve as skvalcur,
+)
+
+#from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as skLDA
+#from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as skQDA
 
 from collections import OrderedDict, defaultdict
 
@@ -78,7 +89,7 @@ class Model_selection_sklearn(Data_Generation):
         process = getattr(self, method_name, "Invalid Method selected")
         return process()
 
-    def selection_full_features(self):
+    def selection_cross_val_score(self):
         if self.idoc == 1:
             """To create header of Report..."""
             pass
@@ -114,7 +125,7 @@ class Model_selection_sklearn(Data_Generation):
 
         Best_features_filter(U_train, U_train.columns, 10).variance_influence_factors()
     
-    def selection_features_z_score(self):
+    def selection_GridSearchCV(self):
         """Working with diferents criterie of features selection."""
 
         columns_train, X_train, Y_train, df = data_list_unpack_dict(self.data_train)
@@ -375,3 +386,9 @@ class Model_selection_sklearn(Data_Generation):
 
         # print(columns_)
  
+    def selection_StratifiedKFold(self):
+        pass
+    def selection_learning_curve(self):
+        pass
+    def selection_validation_curve(self):
+        pass
