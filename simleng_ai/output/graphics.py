@@ -768,15 +768,15 @@ class Classifiers_comparison:
                                 ax.set_xticks(())
                                 ax.set_yticks(())
                                 if ds_cnt == 0:
-                                ax.set_title(name)
-                                ax.text(
-                                    x_max - 0.3,
-                                    y_min + 0.3,
-                                    ("%.2f" % score).lstrip("0"),
-                                    size=15,
-                                    horizontalalignment="right",
-                                )
+                                    ax.set_title(name)
+                                    ax.text(
+                                        x_max - 0.3,
+                                        y_min + 0.3,
+                                        ("%.2f" % score).lstrip("0"),
+                                        size=15,
+                                        horizontalalignment="right",
+                                    )
                                 i += 1
-      plt.suptitle(self.Title)                          
-      plt.tight_layout()
-      return image_to_report(self.idoc, "classifiers_comparison", "png")
+          plt.suptitle(self.Title)                          
+          plt.tight_layout()
+          return image_to_report(self.idoc, "classifiers_comparison", "png")

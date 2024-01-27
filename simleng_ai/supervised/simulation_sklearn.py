@@ -412,7 +412,7 @@ class Sklearn_simula:
         return fpr, tpr,aucr
 
     def classification_report(self):
-        return classification_report(self.y,self.y_estimated))
+        return classification_report(self.y,self.y_estimated)
 
     def summary_models(self):
         self.model_sim=Sklearn_simula(self.model).fit(self)

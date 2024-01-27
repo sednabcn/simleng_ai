@@ -70,11 +70,11 @@ class Classification(Data_Generation):
          if (self.lib=="stats" and self.ntarget==1 and self.nclass==2):
                      return Binary_classification_statsmodels(*plist).\
                          binary_classification_statsmodels_master()
-         elif (self.lib=="stats" and and self.ntarget==1 and self.nclass>2):
+         elif (self.lib=="stats" and self.ntarget==1 and self.nclass>2):
                      return Multi_classification_statsmodels(*plist).\
                          multi_classification_statsmodels_master()
          #nov 24/2023
-         elif (self.lib=="sklearn" and self.ntarget==1 
+         elif (self.lib=="sklearn" and self.ntarget==1): 
              return One_label_classification_sklearn(*plist).one_label_classification_sklearn_master()
          elif (self.lib=="sklearn" and self.ntarget>1 and self.nclass==2):
              pass

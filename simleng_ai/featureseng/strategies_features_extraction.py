@@ -59,7 +59,7 @@ class Features_extraction(Data_Generation):
          self.lib = self.action["library"]
          self.data_type = self.dataset["TYPE"]
          # Becareful categorical variables
-         if self.lib=="stats" and self.data_type="numeric":
+         if self.lib=="stats" and self.data_type=="numeric":
            pass
          elif self.lib=="sklearn":
             return Features_extraction_sklearn(*plist).features_extraction_sklearn_master()

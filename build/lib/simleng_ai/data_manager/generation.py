@@ -7,13 +7,14 @@ from ..resources.io import find_full_path, file_reader
 from ..resources.manipulation_data import data_dummy_classification
 from ..resources.pandas import mapping_zero_one
 from ..resources.db import MyDB
-
+from collections import OrderedDict
 
 # file_input='simlengin.txt'
 
 MACROS = [
     "Simlengin.txt",
     "DATA_PROJECT",
+    "PREPROCESS",
     "FILES",
     "LISTFILES",
     "FEATURES",
@@ -36,11 +37,15 @@ class Data_Generation(DATA, Init):
         self.target = {}
         self.strategies = {}
         self.params = {}
-
+        self.preprocess={}
         self.data_dummy_train = {}
         self.data_dummy_test = {}
 
-        MACROSIN = Init(file_input, score).get_macros()
+        
+        MACROSIN =OrderedDict()
+        ff=Init(file_input, score).get_macros()
+        for ii, (key,value) in enumerate(ff):
+            MACROSIN.update({key:value})
         # print(list(MACROSIN.items()))
 
         input = {}
@@ -49,6 +54,9 @@ class Data_Generation(DATA, Init):
 
             if key == "DATA_PROJECT":
                 self.dataset.update(input)
+                input = {}
+            elif key== "PREPROCESS":
+                self.preprocess.update(input)
                 input = {}
             elif key == "FILES":
                 self.files.update(input)
@@ -77,6 +85,7 @@ class Data_Generation(DATA, Init):
         return print(
             self.title,
             self.dataset,
+            self.preprocess,
             self.files,
             self.listfiles,
             self.features,
@@ -90,6 +99,7 @@ class Data_Generation(DATA, Init):
         return (
             self.title,
             self.dataset,
+            self.preprocess,
             self.files,
             self.listfiles,
             self.features,
@@ -109,7 +119,7 @@ class Data_Generation(DATA, Init):
     def get_update_parameters_to_read_files(self):
         pass
 
-    def data_generation_from_table(self):
+    def data_generation_from_num(self):
         """load data_from_file"""
         from sklearn.model_selection import train_test_split
         from ..resources.pandas import col_data
@@ -149,18 +159,15 @@ class Data_Generation(DATA, Init):
 
         pars = [mode, index_col, header, sep]
 
-        name = str(self.listfiles["FILENAME"]) # Becarefull when it will be a list
-
+        
+        if not (imbalance):
+            stratify = None
+        else:
+            stratify = last
+ 
         test_size = float(self.target["SPLITDATA"])
 
         train_size = 1.0 - test_size
-
-        self.full_path = find_full_path(name)
-        #print(self.full_path)
-        #print(input("PAUSE"))
-        self.data = file_reader(self.full_path, type_file, *pars)
-        #print(self.data.head())
-        #print(input("PAUSE"))
 
         # update datasets_store
 
@@ -170,15 +177,26 @@ class Data_Generation(DATA, Init):
         # Future Checking  what happen in the case of a list of datasets #
         MyDB(dataset, "_datasets_", kind=source).datasets_store()
 
+        # Modify for reading train and test files separately
+        if isinstance(self.listfiles["FILENAME"],list):
+           name=[]
+           for names in self.listfiles["FILENAME"]:
+               name.append(file_reader(find_full_path(names),format_file,*pars))
+           self.data=pd.concat(name,axis=0)
+           self.data=self.data.sort_index()
+        else:   
+            name = str(self.listfiles["FILENAME"]) 
+            self.full_path = find_full_path(name)
+            #print(self.full_path)
+            #print(input("PAUSE"))
+            self.data = file_reader(self.full_path, type_file, *pars)
+            #print(self.data.head())
+            #print(input("PAUSE"))
+
         # columns_data_to selected
         last = col_data(self.data, -1)
 
         nolast = col_data(self.data, range(self.data.shape[1] - 1))
-
-        if not (imbalance):
-            stratify = None
-        else:
-            stratify = last
 
         # print("pimas",'\n',self.data)
 
@@ -250,7 +268,50 @@ class Data_Generation(DATA, Init):
         data_dummy_test = {}
 
         nclass = int (self.target["NCLASS"])
+        ntarget = np.max(1,int(self.target["NTARGET"]))
+        categ= self.preprocess["KIND"]
+        #Dec25,2023        
+        if categ=="mixture":
+            self.X_train,
+            self.X_test,
+            self.y_train,
+            self.y_test,
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val= self.data_generation_from_mixture()
+            return (
+                self.X_train,
+                self.X_test,
+                self.y_train,
+                self.y_test,
+                self.X_train_val,
+                self.X_test_val,
+                self.y_train_val,
+                self.y_test_val)
+
+        elif categ=="categ":
+            self.X_train,
+            self.X_test,
+            self.y_train,
+            self.y_test,
+            self.X_train_val,
+            self.X_test_val,
+            self.y_train_val,
+            self.y_test_val= self.data_generation_from_categ()
+            return (
+                self.X_train,
+                self.X_test,
+                self.y_train,
+                self.y_test,
+                self.X_train_val,
+                self.X_test_val,
+                self.y_train_val,
+                self.y_test_val)
+        else:
+            pass
         
+        #         
         # Dummy variables to categorical variable
         if isdummy(self.y_train) or self.dataset["UNDUMMY"]:
             V_train = self.y_train
@@ -275,6 +336,7 @@ class Data_Generation(DATA, Init):
     def data_generation_target(self):
         target = self.target["GOAL"]
         nclass = int(self.target["NCLASS"])
+        ntarget = np.max(1,int(self.target["NTARGET"]))
 
         if target == "CLASSIFICATION":
                 return self.data_generation_classification()
@@ -283,11 +345,47 @@ class Data_Generation(DATA, Init):
 
         else:
             pass
+    def data_generation_from_categ(self):
+        pass
+    def data_generation_from_mixture(self):
+        from category_encoders import OrdinalEncoder
+        from sklearn.preprocessing import LabelEncoder, MinMaxScaler,Normalizer
+        # prepare inputs
+        oe=OrdinalEncoder()
+        pp=oe.fit(self.X_train)
+        X_train_enc = oe.transform(self.X_train)
+        X_test_enc = oe.transform(self.X_test)
+        pp=oe.fit(self.X_train_val)
+        X_train_enc_val = oe.transform(self.X_train_val)
+        X_test_enc_val = oe.transform(self.X_test_val)
 
+        # prepare target
+         le = LabelEncoder()
+         le.fit(self.y_train)
+         y_train_enc = le.transform(self.y_train)
+         y_test_enc = le.transform(self.y_test)
+         le.fit(self.y_train_val)
+         y_train_enc_val = le.transform(self.y_train_val)
+         y_test_enc_val = le.transform(self.y_test_val)
+         return self.X_train_enc,
+            self.X_test_enc,
+            self.y_train_enc,
+            self.y_test_enc,
+            self.X_train_enc_val,
+            self.X_test_enc_val,
+            self.y_train_enc_val,
+            self.y_test_enc_val
+         
+        pass
     def data_generation_functions(self):
         source = self.dataset["DATASOURCE"]
-        if source == "table":
-            return self.data_generation_from_table()
+        type_file=self.dataset["TYPE"]
+        if source == "table"and type_file=="numeric":
+            return self.data_generation_from_num()
+        elif source == "table"and type_file=="categ":
+            return self.data_generation_from_categ()
+        elif source == "table"and type_file=="mixture":
+            return self.data_generation_from_mixture()
         elif source == "cloud":
             return data_generation_from_cloud()
         elif source == "web":

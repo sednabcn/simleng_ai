@@ -114,7 +114,7 @@ names = [
 ]
 
 classifiers = [
-    LogisticRegression(random_state=16) 
+    LogisticRegression(random_state=16), 
     KNeighborsClassifier(3),
     SVC(kernel="linear", C=0.025, random_state=42),
     SVC(gamma=2, C=1, random_state=42),

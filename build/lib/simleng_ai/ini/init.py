@@ -19,6 +19,7 @@ from ..resources.scrapping import read_txt_to_dict
 MACROS = [
     "Simlengin.txt",
     "DATA_PROJECT",
+    "PREPROCESS",
     "FILES",
     "LISTFILES",
     "FEATURES",

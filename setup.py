@@ -37,7 +37,7 @@ setup(
         "numpy>=1.24.4",  # 1.24.4
         "packaging>=23",  # 21.3
         "pandas>=2.0.3",  # 2.0.3
-        "scipy==1.10.1",  # 1.8.0
+        "scipy>=1.11.4",  # 1.8.0
         "statsmodels>=0.14.0",  # 0.14.0
         "scikit-learn>=1.3.0",
     ],
