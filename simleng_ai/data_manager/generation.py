@@ -4,7 +4,7 @@ from ..abstract.data_abstract import DATA
 from ..ini.init import Init
 from ..resources.sets import reduce_value_list_double_to_single_key
 from ..resources.io import find_full_path, file_reader
-from ..resources.manipulation_data import data_dummy_classification
+from ..resources.manipulation_data import data_dummy_classification, transf_mixed_dataset,transf_dataset
 from ..resources.pandas import mapping_zero_one
 from ..resources.db import MyDB
 from collections import OrderedDict
@@ -122,7 +122,7 @@ class Data_Generation(DATA, Init):
     def data_generation_from_num(self):
         """load data_from_file"""
         from sklearn.model_selection import train_test_split
-        from ..resources.pandas import col_data
+        from ..resources.pandas import col_data, missing_data
         from ..resources.manipulation_data import isdummy, isimbalance
         import pandas as pd
 
@@ -165,7 +165,11 @@ class Data_Generation(DATA, Init):
         else:
             stratify = last
  
-        test_size = float(self.target["SPLITDATA"])
+        test_size = float(self.target["SPLITDATA"][0])
+
+        # Modification 29/02/2024 to input validation_size
+        
+        valid_size = float(self.target["SPLITDATA"][1]) 
 
         train_size = 1.0 - test_size
 
@@ -193,12 +197,32 @@ class Data_Generation(DATA, Init):
             #print(self.data.head())
             #print(input("PAUSE"))
 
+        # Working with one dataset     
+
         # columns_data_to selected
         last = col_data(self.data, -1)
-
+        
         nolast = col_data(self.data, range(self.data.shape[1] - 1))
 
-        # print("pimas",'\n',self.data)
+        # Modification on 29/02/2024
+        # Detect misssing values and filling ones 
+
+        nolast= missing_data(nolast)
+
+        # Transformation of dataset
+        if self.preprocess=={}:
+            pass
+        else:
+            # Function to transform dataset according its characteristics
+            # including col_data_classification, transf_mixed_dataset in case of mixed datasets
+            catcols=self.preprocess["columns"]
+            categ= self.preprocess["KIND"]
+            # consider an unique value to max value in order and only one column to drop
+            vord = int(self.preprocess["VORD"])
+            dropcol=int(self.preprocess["DROPCOL"])
+            nolast,nolast_columns=transf_dataset(nolast,catcols,categ,dropcol,vord)
+      
+        # print(dataset,'\n',self.data)
 
         # print("Y_data",'\n',last,'\n',"X_data",'\n',nolast)
 
@@ -208,10 +232,15 @@ class Data_Generation(DATA, Init):
 
         # Older implementations of data_base COMPATIBILITY
         train_size = self.X_train.shape[0]
-        df = pd.DataFrame()
-        df = self.data.iloc[:train_size, :]
+        df = pd.DataFrame()       
         de = pd.DataFrame()
-        de = self.data.iloc[train_size:, :]
+        if categ in ["mixture","categ"]:
+            df = pd.DataFrame(nolast).iloc[:train_size,:]
+            de = pd.DataFrame(nolast).iloc[train_size:,:]
+        else:
+            df = self.data.iloc[:train_size, :]
+            de = self.data.iloc[train_size:, :]
+
         self.data_train = {}
         self.data_train["train"] = [
             self.X_train.columns,
@@ -228,19 +257,28 @@ class Data_Generation(DATA, Init):
         else:
             stratify = self.y_train
 
-        (
-            self.X_train_val,
-            self.X_test_val,
-            self.y_train_val,
-            self.y_test_val,
-        ) = train_test_split(
-            self.X_train,
-            self.y_train,
-            test_size=0.25 * test_size,
-            random_state=1,
-            stratify=stratify,
-        )  # 0.25 x 0.8 = 0.2
+        # Modification 29/02/2024 to input validation_size
+        
+        if valid_size > 0:
+            (
+                self.X_train_val,
+                self.X_test_val,
+                self.y_train_val,
+                self.y_test_val,
+            ) = train_test_split(
+                self.X_train,
+                self.y_train,
+                test_size=valid_size*train_size,
+                random_state=1,
+                stratify=stratify,
+            )  
 
+        else:
+            self.X_train_val=self.X_train
+            self.y_train_val=self.y_train
+            self.X_test_val=self.X_test
+            self.y_test_val=self.y_test
+            
         # print (self.X_train.columns)
                 
         return (
@@ -256,6 +294,21 @@ class Data_Generation(DATA, Init):
             self.y_train_val,
             self.y_test_val,
         )
+
+
+    def data_generation_target(self):
+        target = self.target["GOAL"]
+        nclass = int(self.target["NCLASS"])
+        ntarget = np.max(1,int(self.target["NTARGET"]))
+
+        if target == "CLASSIFICATION":
+                return self.data_generation_classification()
+        elif target == "REGRESSION":
+            pass
+
+        else:
+            pass
+
     # Future Checking [END] what happen in the case of a list of datasets #
     def data_generation_classification(self):
         """Generation of dummy variables to Classification Task
@@ -279,7 +332,7 @@ class Data_Generation(DATA, Init):
             self.X_train_val,
             self.X_test_val,
             self.y_train_val,
-            self.y_test_val= self.data_generation_from_mixture()
+            self.y_test_val= self.data_transf_from_mixture()
             return (
                 self.X_train,
                 self.X_test,
@@ -298,7 +351,7 @@ class Data_Generation(DATA, Init):
             self.X_train_val,
             self.X_test_val,
             self.y_train_val,
-            self.y_test_val= self.data_generation_from_categ()
+            self.y_test_val= self.data_transf_from_categ()
             return (
                 self.X_train,
                 self.X_test,
@@ -333,23 +386,12 @@ class Data_Generation(DATA, Init):
 
         return self.data_dummy_train, self.data_dummy_test
 
-    def data_generation_target(self):
-        target = self.target["GOAL"]
-        nclass = int(self.target["NCLASS"])
-        ntarget = np.max(1,int(self.target["NTARGET"]))
-
-        if target == "CLASSIFICATION":
-                return self.data_generation_classification()
-        elif target == "REGRESSION":
-            pass
-
-        else:
-            pass
-    def data_generation_from_categ(self):
+    def data_transf_from_categ(self):
         pass
-    def data_generation_from_mixture(self):
+    def data_transf_from_mixture(self):
         from category_encoders import OrdinalEncoder
-        from sklearn.preprocessing import LabelEncoder, MinMaxScaler,Normalizer
+        from sklearn.preprocessing import LabelEncoder, MinMaxScaler,Normalizer,StandardScaler()
+        scaler= StandardScaler()
         # prepare inputs
         oe=OrdinalEncoder()
         pp=oe.fit(self.X_train)
@@ -360,21 +402,15 @@ class Data_Generation(DATA, Init):
         X_test_enc_val = oe.transform(self.X_test_val)
 
         # prepare target
-         le = LabelEncoder()
-         le.fit(self.y_train)
-         y_train_enc = le.transform(self.y_train)
-         y_test_enc = le.transform(self.y_test)
-         le.fit(self.y_train_val)
-         y_train_enc_val = le.transform(self.y_train_val)
-         y_test_enc_val = le.transform(self.y_test_val)
-         return self.X_train_enc,
-            self.X_test_enc,
-            self.y_train_enc,
-            self.y_test_enc,
-            self.X_train_enc_val,
-            self.X_test_enc_val,
-            self.y_train_enc_val,
-            self.y_test_enc_val
+        le = LabelEncoder()
+        le.fit(self.y_train)
+        y_train_enc = le.transform(self.y_train)
+        y_test_enc = le.transform(self.y_test)
+        le.fit(self.y_train_val)
+        y_train_enc_val = le.transform(self.y_train_val)
+        y_test_enc_val = le.transform(self.y_test_val)
+        return self.X_train_enc,self.X_test_enc,self.y_train_enc,self.y_test_enc,self.X_train_enc_val,
+    self.X_test_enc_val,self.y_train_enc_val,self.y_test_enc_val
          
         pass
     def data_generation_functions(self):

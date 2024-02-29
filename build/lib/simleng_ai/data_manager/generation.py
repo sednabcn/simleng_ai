@@ -360,21 +360,15 @@ class Data_Generation(DATA, Init):
         X_test_enc_val = oe.transform(self.X_test_val)
 
         # prepare target
-         le = LabelEncoder()
-         le.fit(self.y_train)
-         y_train_enc = le.transform(self.y_train)
-         y_test_enc = le.transform(self.y_test)
-         le.fit(self.y_train_val)
-         y_train_enc_val = le.transform(self.y_train_val)
-         y_test_enc_val = le.transform(self.y_test_val)
-         return self.X_train_enc,
-            self.X_test_enc,
-            self.y_train_enc,
-            self.y_test_enc,
-            self.X_train_enc_val,
-            self.X_test_enc_val,
-            self.y_train_enc_val,
-            self.y_test_enc_val
+        le = LabelEncoder()
+        le.fit(self.y_train)
+        y_train_enc = le.transform(self.y_train)
+        y_test_enc = le.transform(self.y_test)
+        le.fit(self.y_train_val)
+        y_train_enc_val = le.transform(self.y_train_val)
+        y_test_enc_val = le.transform(self.y_test_val)
+        return self.X_train_enc,self.X_test_enc,self.y_train_enc,self.y_test_enc,self.X_train_enc_val,
+    self.X_test_enc_val,self.y_train_enc_val,self.y_test_enc_val
          
         pass
     def data_generation_functions(self):

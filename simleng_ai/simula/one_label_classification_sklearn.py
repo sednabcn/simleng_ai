@@ -166,7 +166,7 @@ class One_label_classification_sklearn(Data_Generation):
         ]
 
         classifiers = [
-            LogisticRegression(random_state=16) 
+            LogisticRegression(random_state=16), 
             KNeighborsClassifier(3),
             SVC(kernel="linear", C=0.025, random_state=42),
             SVC(gamma=2, C=1, random_state=42),
@@ -182,8 +182,8 @@ class One_label_classification_sklearn(Data_Generation):
             QuadraticDiscriminantAnalysis(),
         ]
 
-        keys=["par":self.par,"ntarget","nclass","missclassif","par_reg","columns","task"]
-        kwargs={"par": ,"ntarget":self.ntarget, "nclass":self.nclass, "missclassif":self.missclass, "par_reg":self.regpar, "columns":self.index_columns_base,
+        keys=["par","ntarget","nclass","missclassif","par_reg","columns","task"]
+        kwargs={"par":self.par ,"ntarget":self.ntarget, "nclass":self.nclass, "missclassif":self.missclass, "par_reg":self.regpar, "columns":self.index_columns_base,
                 "task":self.make_task}
         
         (
@@ -257,7 +257,7 @@ class One_label_classification_sklearn(Data_Generation):
         #classifiers_names
         #classifiers
         #Title
-        Classifiers_comparison.classifiers_comparison(datasets_names, datasets, classifiers_names,classifiers,Title,self.idoc):
+        Classifiers_comparison.classifiers_comparison(datasets_names, datasets, classifiers_names,classifiers,Title,self.idoc)
     # ending HERE
     #         
     def multiclass_classifiers(self):
@@ -300,14 +300,14 @@ class One_label_classification_sklearn(Data_Generation):
         classifiers = [
             BernoulliNB(force_alpha=True),
             DecisionTreeClassifier(max_depth=5, random_state=42),
-            BaggingClassifier(ExtraTreeClassifier(random_state=0),random_state=0)
-            GaussianNB()
+            BaggingClassifier(ExtraTreeClassifier(random_state=0),random_state=0),
+            GaussianNB(),
             RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1, random_state=42),
-            MultinomialNB(force_alpha=True)
-            KNeighborsClassifier(n_neighbors=5)
-            GradientBoostingClassifier()
-            LinearSVC("crammer\_singer")
-            OneVsRestClassifier(LinearSVC())
+            MultinomialNB(force_alpha=True),
+            KNeighborsClassifier(n_neighbors=5),
+            GradientBoostingClassifier(),
+            LinearSVC("crammer\_singer"),
+            OneVsRestClassifier(LinearSVC()),
             LinearDiscriminantAnalysis(),
             AdaBoostClassifier(random_state=42),
             LogisticRegression(multi_class='multinomial', solver='lbfgs',random_state=16)

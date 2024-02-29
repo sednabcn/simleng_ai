@@ -164,5 +164,3 @@ def checking_input_list(item,list0):
         print("Checking the input_file, please")
     else:
         pass
-        
-        

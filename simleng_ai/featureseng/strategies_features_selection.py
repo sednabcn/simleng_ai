@@ -58,7 +58,7 @@ class Features_selection(Data_Generation):
          self.lib = self.action["library"]
          self.data_type = self.dataset["TYPE"]
          # Becareful categorical variables
-         if self.lib=="stats" and self.data_type="numeric":
+         if self.lib=="stats" and self.data_type=="numeric":
             return Features_num_selection_statsmodels(*plist).features_num_selection_statsmodels_master()
          elif self.lib=="sklearn":
             return Features_selection_sklearn(*plist).features_selection_sklearn_master()

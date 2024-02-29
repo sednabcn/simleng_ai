@@ -1,5 +1,31 @@
-# ==["gen_col_data","mapping_zero_one","get_pandas_from_groupby","max_in_col_matrix","get_max_from_multi_index","pandas_to_array","diif_series","f_index","g_index","col_data"]
+# ==["gen_col_data","mapping_zero_one","get_pandas_from_groupby","max_in_col_matrix","get_max_from_multi_index","pandas_to_array","diif_series","f_index","g_index","col_data","missing_data","col_data_classification"]
 
+
+def col_data_classification(X,cat_cols,drop_col=0,value=5):
+        """Classification of X matrix"""
+        X=X.drop(X.iloc[:,[drop_col]],axis=1)
+        cat_cols_org=X.columns[cat_cols]
+        cat_cols= [col for col in X.columns if X[col].dtype=="object"]
+        if cat_cols == cat_cols_org:
+                pass
+        else:
+            cat_cols=cat_cols_org    
+        ord_cols= [col for col in X.columns if min(X[col]) in {0,1} and max(X[col])==value]
+        cont_cols=[col for col in X.columns if col not in ord_cols + cat_cols]
+        columns=X.columns
+        # retrieve numpy array
+        Xv=X.values
+        #dfset = X.values
+        # split into input (X) and output (y) variables
+        #X = dfset[:, :-1]
+        #y = dfset[:,-1]
+        return Xv,columns,cat_cols[:-1],ord_cols,cont_cols
+
+def missing_data(X,value=None):
+    # for only one column
+    clm=list(X.columns[X.isna().sum()>0])
+    value=X[clm].median()
+    return X.replace(np.nan,value,inplace=True)
 
 def col_data(X, arg):
     """X is a pandas reader file"""

@@ -1,4 +1,4 @@
-# ==["find_subsets_predictors","data_add_constant",data_sorted", "data_dummy_binary_classification","data_0_1_exposure","data_add_exposure","boostrap_datasets","isdummy","isimbalance","data_dummy_classification"]
+# ==["find_subsets_predictors","data_add_constant",data_sorted", "data_dummy_binary_classification","data_0_1_exposure","data_add_exposure","boostrap_datasets","isdummy","isimbalance","data_dummy_classification","transf_mixed_dataset",]
 
 '''
 #def find_subsets_predictors(x,dict_index,shuffle_mode,filter_cond):
@@ -349,3 +349,43 @@ class MDS:
             % (2 * pval_perm, pval_test)
         )
         return plt.show()
+
+
+def transf_mixed_dataset(X,cols,cat_cols,ord_cols,cont_cols):
+    """ transformation using embedding to numerical datasets"""
+    import pandas as pd
+    df_comb_cols=[]
+    X=pd.DataFrame(X,columns=cols[:-1])
+    # categorical
+    df_cat=X[cat_cols]
+    df_cat_enc = pd.get_dummies(df_cat,columns=cat_cols,dtype='int')
+    df_comb_cols.extend(df_cat_enc.columns)
+    # ordinal
+    df_ord=X[ord_cols]
+    ord_mapping = lambda x:x
+    df_ord_map = df_ord.applymap(ord_mapping)
+    df_ord_enc =pd.get_dummies(df_ord_map,columns=ord_cols, dtype='int')
+    df_comb_cols.extend(df_ord_enc.columns)
+    # continuous
+    df_cont=X[cont_cols]
+    df_cont_scaled = scaler.fit_transform(df_cont)
+    df_comb_cols.extend(df_cont.columns)
+    # combined
+    df_comb = np.hstack((df_cat_enc,df_ord_enc,df_cont_scaled))
+    return df_comb, df_comb_cols
+
+        
+def transf_dataset(X,catcols,key,dropcol,value_ord=5)
+    import pandas as pd
+    from ..resources.pandas import col_data_classification
+
+    #value_ord is a reference value but it will be generalized in future versions
+    
+    if key=="mixture":
+        Xv,columns,cat_cols,ord_cols,cont_cols= \
+            col_data_classification(X,catcols,dropcol,value=value_ord)
+        df_comb, df_comb_cols=\
+            transf_mixed_dataset(Xv,columns,cat_cols,ord_cols,cont_cols)
+        return df_comb, df_comb_cols 
+    else:
+        pass
