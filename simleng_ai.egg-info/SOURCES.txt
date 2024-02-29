@@ -17,7 +17,6 @@ simleng_ai.egg-info/PKG-INFO
 simleng_ai.egg-info/SOURCES.txt
 simleng_ai.egg-info/dependency_links.txt
 simleng_ai.egg-info/not-zip-safe
-simleng_ai.egg-info/requires.txt
 simleng_ai.egg-info/top_level.txt
 simleng_ai/_datasets_/__init__.py
 simleng_ai/_datasets_/banknote/banknote authentication - UCI Machine Learning Repository.pdf
@@ -48,10 +47,8 @@ simleng_ai/featureseng/strategies_features_extraction.py
 simleng_ai/featureseng/strategies_features_selection.py
 simleng_ai/ini/__init__.py
 simleng_ai/ini/init.py
-simleng_ai/input_file/simlengin19091246.txt~
 simleng_ai/input_file/simlengin20091830.txt
-simleng_ai/input_file/simlengin21090917.txt
-simleng_ai/input_file/simlengin25121700.txt
+simleng_ai/input_file/simlengin29021026.txt
 simleng_ai/output/__init__.py
 simleng_ai/output/graphics.py
 simleng_ai/output/picture.py
